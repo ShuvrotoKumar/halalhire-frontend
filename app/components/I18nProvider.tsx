@@ -8,42 +8,34 @@ import deTranslation from '../../public/locales/de/translation.json';
 import trTranslation from '../../public/locales/tr/translation.json';
 import arTranslation from '../../public/locales/ar/translation.json';
 
-import LanguageDetector from 'i18next-browser-languagedetector';
+let isInitialized = false;
 
-// Initialize i18next for the client
-if (!i18next.isInitialized) {
-  i18next
-    .use(LanguageDetector)
-    .use(initReactI18next)
-    .init({
-      returnEmptyString: false,
-      fallbackLng: 'en',
-      defaultNS: 'translation',
-      resources: {
-        en: { translation: enTranslation },
-        de: { translation: deTranslation },
-        tr: { translation: trTranslation },
-        ar: { translation: arTranslation },
-      },
-      detection: {
-        order: ['localStorage', 'cookie', 'htmlTag', 'path', 'subdomain'],
-        caches: ['localStorage', 'cookie'],
-      },
-      interpolation: {
-        escapeValue: false, // react already safes from xss
-      },
-    });
-}
+export function I18nProvider({ children, initialLocale = 'en' }: { children: React.ReactNode, initialLocale?: string }) {
+  if (!isInitialized) {
+    i18next
+      .use(initReactI18next)
+      .init({
+        lng: initialLocale,
+        fallbackLng: 'en',
+        defaultNS: 'translation',
+        resources: {
+          en: { translation: enTranslation },
+          de: { translation: deTranslation },
+          tr: { translation: trTranslation },
+          ar: { translation: arTranslation },
+        },
+        interpolation: {
+          escapeValue: false, // react already safes from xss
+        },
+      });
+    isInitialized = true;
+  }
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return <>{children}</>;
+  // Ensure language matches the server's initialLocale during SSR and fast refresh
+  if (i18next.language !== initialLocale) {
+     if (typeof window === 'undefined') {
+        i18next.changeLanguage(initialLocale);
+     }
   }
 
   return (

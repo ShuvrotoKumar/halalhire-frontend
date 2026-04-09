@@ -13,21 +13,25 @@ import type { Metadata } from 'next';
 import i18next from 'i18next';
 import '../i18n';
 import { I18nProvider } from './components/I18nProvider';
+import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
   title: i18next.t('halalhireTheUmmahsTrustedJobNetwork', 'HalalHire - The Ummah\'s Trusted Job Network'),
   description: i18next.t('halalverifiedJobsPrayerOpportunitiesIslamicEthicBasedStandards', 'Halal-Verified Jobs, Prayer Opportunities, Islamic Ethic Based Standards'),
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const lng = cookieStore.get('i18next')?.value || 'en';
+
   return (
-    <html lang="en">
+    <html lang={lng}>
       <body>
-        <I18nProvider>
+        <I18nProvider initialLocale={lng}>
           <AuthProvider>
             <ModalProvider>
               {children}
