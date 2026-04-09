@@ -1,0 +1,84 @@
+.excellenceSection {
+  background-color: #ffffff;
+  padding: 100px 0;
+  text-align: center;
+}
+
+.header {
+  max-width: 600px;
+  margin: 0 auto 60px auto;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 16px 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.pillarsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  background-color: #f6f8f7; /* Very light tinted background for the cards area shown in mockup */
+  padding: 40px;
+  border-radius: 24px;
+}
+
+.pillarCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.iconCircle {
+  width: 64px;
+  height: 64px;
+  background-color: #e6eee9; /* Soft green tint */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #193f35;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(25, 63, 53, 0.05);
+}
+
+.pillarTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 12px 0;
+}
+
+.pillarDescription {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 992px) {
+  .pillarsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .excellenceSection {
+    padding: 60px 0;
+  }
+  
+  .pillarsGrid {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+}

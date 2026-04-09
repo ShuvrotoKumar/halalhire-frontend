@@ -1,0 +1,339 @@
+.pageWrapper {
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+}
+
+.topBar {
+  padding: 24px 48px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatarCircle {
+  width: 40px;
+  height: 40px;
+  background: #6200ee;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mainContent {
+  flex: 1;
+  padding: 60px 48px 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.stepInfo {
+  font-size: 11px;
+  font-weight: 800;
+  color: #0c3126;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progressBar {
+  width: 100%;
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #0c3126;
+  width: 40%;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #6b7280;
+  max-width: 600px;
+  margin: 0 auto 40px;
+  line-height: 1.5;
+}
+
+.uploadGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.uploadCard {
+  background: white;
+  border: 1.5px dashed #eee;
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.uploadCard:hover {
+  border-color: #0c3126;
+  background: #fffcf8;
+}
+
+.cardLabel {
+  display: block;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 12px;
+}
+
+.iconCircle {
+  width: 48px;
+  height: 48px;
+  background: #f3f0e8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  color: #4a5d5a;
+}
+
+.uploadTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.uploadSub {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-bottom: 16px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 12px;
+  background: #ece8dd;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.photoSection {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.photoWrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border: 3px solid #0c3126;
+  border-radius: 12px;
+  padding: 8px;
+  background: #f9f9f9;
+}
+
+.photoImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+.checkMark {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  background: #10b981;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
+.photoInfo {
+  flex: 1;
+}
+
+.photoTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.photoSub {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.photoActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.changeBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #ece8dd;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+  border: none;
+  cursor: pointer;
+}
+
+.useOther {
+  font-size: 13px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+.securityBox {
+  background: #0f1c0f;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.securityIcon {
+  width: 32px;
+  height: 32px;
+  background: #1a2a1a;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0c3126;
+}
+
+.securityContent {
+  flex: 1;
+}
+
+.securityTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0c3126;
+  margin-bottom: 4px;
+}
+
+.securityText {
+  font-size: 13px;
+  color: #ccc;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 32px;
+  border-top: 1px solid #eee;
+}
+
+.backLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.continueBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 48px;
+  background: #0c3126;
+  color: white;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(188, 156, 99, 0.4);
+}
+
+.footer {
+  padding: 40px;
+  text-align: center;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+@media (max-width: 768px) {
+  .uploadGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .photoSection {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .topBar {
+    padding: 16px 20px;
+  }
+
+  .mainContent {
+    padding: 40px 20px;
+  }
+}

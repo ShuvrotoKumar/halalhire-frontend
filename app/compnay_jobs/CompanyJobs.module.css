@@ -1,0 +1,313 @@
+/* .pageWrapper {
+  min-height: 100vh;
+  background-color: #f7f8f6;
+  color: #193f35;
+  font-family: 'Inter', sans-serif;
+  padding-bottom: 80px;
+} */
+
+.banner {
+  height: 200px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.bannerImage {
+  object-fit: cover;
+  opacity: 0.8;
+}
+
+.headerContainer {
+  max-width: 1200px;
+  margin: -60px auto 0;
+  position: relative;
+  z-index: 10;
+  padding: 0 20px;
+}
+
+.headerCard {
+  background: white;
+  border-radius: 24px;
+  padding: 0;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e8e1;
+  overflow: hidden;
+}
+
+.topSection {
+  padding: 32px 48px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.logoContainer {
+  width: 120px;
+  height: 120px;
+  background: #0c8b82;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 24px;
+}
+
+.infoContent {
+  flex: 1;
+}
+
+.companyName {
+  font-size: 32px;
+  font-weight: 800;
+  color: #193f35;
+  margin-bottom: 8px;
+}
+
+.tagline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.verifiedIcon {
+  color: #e2ab4c;
+}
+
+.metaRow {
+  display: flex;
+  gap: 24px;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.editBtn {
+  background: #0c3126;
+  border: 1px solid #e5e8e1;
+  color: white;
+  padding: 12px 28px;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.editBtn:hover {
+  background-color: #0c3126;
+  transform: translateY(-2px);
+}
+
+.tabs {
+  padding: 0 48px;
+  display: flex;
+  gap: 32px;
+  border-top: 1px solid #f1f3ef;
+}
+
+.tab {
+  padding: 24px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #94a3b8;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.activeTab {
+  color: #fe6b2e;
+}
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #fe6b2e;
+}
+
+.badgeCount {
+  background: #f1f3ef;
+  color: #94a3b8;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+/* Content Area */
+.contentArea {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  padding: 0 20px;
+}
+
+.contentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.titleGroup h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #193f35;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.postJobBtn {
+  background: #c4a66a;
+  /* Gold/Yellow from image */
+  color: #193f35;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(196, 166, 106, 0.3);
+}
+
+.postJobBtn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+/* Job Cards */
+.jobsList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.jobCard {
+  background: white;
+  border-radius: 24px;
+  padding: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  border: 1px solid #f1f3ef;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.jobMainInfo {
+  flex: 1;
+}
+
+.jobTitle {
+  font-size: 18px;
+  font-weight: 800;
+  color: #193f35;
+  margin-bottom: 4px;
+}
+
+.companyRow {
+  font-size: 14px;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.metaRow {
+  display: flex;
+  gap: 24px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+/* Badges */
+.halalBadges {
+  display: flex;
+  gap: 8px;
+}
+
+.halalBadge {
+  background: #f1f3ef;
+  color: #193f35;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Action Buttons */
+.cardActions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 140px;
+}
+
+.editJobBtn {
+  background: #0c3126;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.deleteJobBtn {
+  background: white;
+  color: #e63946;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  border: 1px solid #f1f3ef;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.editJobBtn:hover {
+  filter: brightness(1.1);
+}
+
+.deleteJobBtn:hover {
+  background: #fff5f5;
+  border-color: #ffcccc;
+}

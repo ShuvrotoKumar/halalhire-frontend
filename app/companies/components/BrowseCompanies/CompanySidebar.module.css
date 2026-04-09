@@ -1,0 +1,102 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ctaBox {
+  background: linear-gradient(135deg, #13332a 0%, #0d251f 100%);
+  border-radius: var(--radius-md);
+  padding: 32px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.ctaIcon {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  color: var(--accent-primary);
+}
+
+.ctaTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.ctaText {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+.ctaBtn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #F9D423 0%, #FF4E50 100%); /* Gold/Orange gradient as seen in design */
+  background: linear-gradient(90deg, #FEEE96 0%, #E49E21 100%);
+  color: var(--text-dark);
+  font-weight: 800;
+  border-radius: var(--radius-xl);
+  text-align: center;
+  font-size: 14px;
+  display: block;
+}
+
+.filterBox {
+  background: #13332a;
+  border-radius: var(--radius-md);
+  padding: 32px;
+  color: white;
+}
+
+.filterHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filterTitle {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.filterList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.filterItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  transition: var(--transition);
+}
+
+.filterItem:hover {
+  color: var(--accent-primary);
+}
+
+.filterIcon {
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  color: var(--accent-primary);
+  opacity: 0.8;
+}

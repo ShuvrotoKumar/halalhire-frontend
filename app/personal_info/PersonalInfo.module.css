@@ -1,0 +1,287 @@
+.pageWrapper {
+  min-height: 100vh;
+  background-color: #f7f6f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 20px 40px;
+}
+
+.header {
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 32px;
+}
+
+.stepInfo {
+  font-size: 11px;
+  font-weight: 800;
+  color: #0c3126;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.percentageBadge {
+  background-color: #f2ede0;
+  color: #0c3126;
+  padding: 6px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.progressBarContainer {
+  width: 100%;
+  height: 8px;
+  background-color: #e5e1d4;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background-color: #0c3126;
+  border-radius: 100px;
+}
+
+.formCard {
+  width: 100%;
+  max-width: 800px;
+  background-color: #ffffff;
+  border-radius: 32px;
+  padding: 48px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  margin-bottom: 40px;
+}
+
+.infoBox {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 40px;
+  padding-left: 20px;
+  border-left: 3px solid #0c3126;
+}
+
+.infoText {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #6b7280;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 14px 20px;
+  border: 1.5px solid #efefef;
+  border-radius: 12px;
+  font-size: 15px;
+  color: #1a1a1a;
+  background-color: #ffffff;
+  transition: border-color 0.2s;
+  appearance: none;
+}
+
+.input::placeholder {
+  color: #9ca3af;
+}
+
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: #0c3126;
+}
+
+.selectWrapper {
+  position: relative;
+}
+
+.selectWrapper::after {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.religiousSection {
+  background-color: #fdfcf9;
+  border: 1px solid #f2ede0;
+  border-radius: 20px;
+  padding: 32px;
+}
+
+.religiousHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.religiousTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.shieldIcon {
+  color: #0c3126;
+}
+
+.visibilityBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #ffffff;
+  border: 1px solid #f2ede0;
+  padding: 6px 12px;
+  border-radius: 100px;
+}
+
+.visibilityLabel {
+  font-size: 10px;
+  font-weight: 800;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.visibilityStatus {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #0c3126;
+}
+
+.religionSelect {
+  margin-bottom: 20px;
+}
+
+.privacyNote {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #9ca3af;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid #f2ede0;
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.backBtn:hover {
+  color: #1a1a1a;
+}
+
+.continueBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #0c3126;
+  color: #ffffff;
+  padding: 16px 32px;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.continueBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(197, 163, 102, 0.3);
+}
+
+.certBadges {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 40px;
+}
+
+.certItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #8a7c5c;
+}
+
+.copyright {
+  margin-top: 60px;
+  text-align: center;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+@media (max-width: 768px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .formCard {
+    padding: 24px;
+  }
+
+  .certBadges {
+    flex-direction: column;
+    gap: 16px;
+  }
+}

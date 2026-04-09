@@ -1,0 +1,129 @@
+.getStartedSection {
+  padding: 100px 0;
+  background-color: #ffffff;
+  text-align: center;
+}
+
+.header {
+  max-width: 600px;
+  margin: 0 auto 80px auto;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #193f35;
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.stepsContainer {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.connectorLine {
+  position: absolute;
+  top: 60px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, #193f35 0%, #E49E21 50%, #193f35 100%);
+  opacity: 0.1;
+  z-index: 1;
+}
+
+.stepsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+  position: relative;
+  z-index: 2;
+}
+
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.numberCircle {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.numInner {
+  width: 56px;
+  height: 56px;
+  background-color: #193f35;
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 800;
+  position: relative;
+  z-index: 3;
+  box-shadow: 0 8px 20px rgba(25, 63, 53, 0.3);
+}
+
+.numGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(228, 158, 33, 0.2) 0%, rgba(228, 158, 33, 0) 70%);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+/* Adjusting colors for Step 2 and 3 like in design */
+.stepItem:nth-child(2) .numInner {
+  background: #ffffff;
+  color: #193f35;
+  border: 4px solid #F59E0B; /* Amber/Gold border */
+}
+
+.stepItem:nth-child(3) .numInner {
+  background: linear-gradient(135deg, #F59E0B 0%, #E49E21 100%);
+  color: #ffffff;
+}
+
+.stepTitle {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 12px;
+}
+
+.stepDesc {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  max-width: 250px;
+}
+
+@media (max-width: 992px) {
+  .stepsGrid {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+  
+  .connectorLine {
+    display: none;
+  }
+}

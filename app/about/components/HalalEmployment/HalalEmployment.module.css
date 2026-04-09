@@ -1,0 +1,196 @@
+.employmentSection {
+  background-color: #ffffff;
+  padding: 100px 0;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+/* Left Column */
+.contentColumn {
+  padding-right: 20px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #193f35;
+  margin: 0 0 24px 0;
+  line-height: 1.3;
+}
+
+.highlight {
+  color: #FBBF24;
+}
+
+.description {
+  font-size: 15px;
+  color: #6b7280;
+  line-height: 1.7;
+  margin: 0 0 40px 0;
+}
+
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.featureItem {
+  display: flex;
+  gap: 20px;
+}
+
+.iconBox {
+  width: 48px;
+  height: 48px;
+  background-color: #f2f5f3;
+  /* very light green tint */
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #193f35;
+  flex-shrink: 0;
+}
+
+.featureTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px 0;
+}
+
+.featureDescription {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Right Column - Collage */
+.collageColumn {
+  width: 100%;
+}
+
+.collageGrid {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.masonryColLeft, .masonryColRight {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 50%;
+}
+
+.masonryColLeft {
+  margin-top: 40px; /* Offset to match the design */
+}
+
+.imageBox1 {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+.auditBox {
+  background-color: #FFFDF8;
+  border-radius: 16px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(228, 158, 33, 0.1);
+}
+
+.auditNumber {
+  font-size: 32px;
+  font-weight: 800;
+  color: #193f35;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.auditText {
+  font-size: 10px;
+  font-weight: 700;
+  color: #E49E21; /* Subtle gold */
+  letter-spacing: 1.5px;
+}
+
+.premiumBox {
+  background-color: #0f2c23;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 16px rgba(15, 44, 35, 0.15);
+}
+
+.premiumTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #E49E21;
+  margin-bottom: 6px;
+}
+
+.premiumText {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 1.5px;
+}
+
+.imageBox2 {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 5;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 992px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .contentColumn {
+    padding-right: 0;
+  }
+
+  .collageColumn {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .collageGrid {
+    gap: 16px;
+  }
+  
+  .masonryColLeft, .masonryColRight {
+    gap: 16px;
+  }
+
+  .auditBox {
+    padding: 20px 16px;
+  }
+
+  .premiumBox {
+    padding: 16px;
+  }
+}

@@ -1,0 +1,147 @@
+.ethicsSection {
+  background: #f2eddc;
+  padding: 100px 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 64px;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 80px;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-family: 'Inter', sans-serif;
+  font-size: 32px;
+  color: #123e30;
+  margin-bottom: 32px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 44px;
+    margin-bottom: 48px;
+    line-height: 1.5;
+  }
+}
+
+@media (min-width: 1024px) {
+  .title {
+    font-size: 60px;
+  }
+}
+
+.featuresList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.featureItem {
+  background: #205c49;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  gap: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.featureIconWrapper {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.featureText {
+  display: flex;
+  flex-direction: column;
+}
+
+.featureText h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #f8c850;
+  margin-bottom: 6px;
+}
+
+.featureText p {
+  color: #ffffff;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 40px;
+  padding-left: 20px;
+}
+
+.imageContainer {
+  position: relative;
+  width: 85%;
+  margin-left: auto;
+  aspect-ratio: 4 / 5;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 4px solid #ffffff;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.testimonialCard {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  background: #194636;
+  border: 4px solid #ffffff;
+  border-radius: 12px;
+  padding: 32px 24px;
+  max-width: 300px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.quoteIcon {
+  font-family: 'Inter', sans-serif;
+  font-size: 60px;
+  line-height: 0;
+  color: #f8c850;
+  margin-bottom: 32px;
+  margin-top: 10px;
+}
+
+.quoteText {
+  color: #ffffff;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.author {
+  color: #f8c850;
+  font-size: 13px;
+  font-weight: 700;
+}

@@ -1,0 +1,175 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+.applicantCount {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #193f35;
+}
+
+.btnApply {
+  width: 100%;
+  background: linear-gradient(135deg, #193f35 0%, #0d4d3b 100%);
+  color: #ffffff;
+  border: none;
+  padding: 14px;
+  border-radius: 100px;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(25, 63, 53, 0.2);
+}
+
+.btnApply:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(25, 63, 53, 0.3);
+}
+
+.btnSave {
+  width: 100%;
+  background: transparent;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  padding: 14px;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  margin-bottom: 24px;
+  transition: background-color 0.2s ease;
+}
+
+.btnSave:hover {
+  background-color: #f9fafb;
+}
+
+.agreementText {
+  font-size: 11px;
+  color: #9ca3af;
+  text-align: center;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0 12px;
+}
+
+/* Alert Card */
+.alertCard {
+  background: #FFFBF2;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  border: 1px solid #fef3c7;
+}
+
+.alertHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.alertTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.alertDescription {
+  font-size: 13px;
+  color: #4b5563;
+  line-height: 1.5;
+  margin: 0 0 20px 0;
+}
+
+.btnUpdate {
+  width: 100%;
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #E49E21;
+  padding: 12px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btnUpdate:hover {
+  background: #fffcf5;
+}
+
+/* Similar Offers */
+.similarTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: #9ca3af;
+  letter-spacing: 1px;
+  margin: 0 0 20px 0;
+}
+
+.similarJobsList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.similarJob {
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 20px;
+}
+
+.similarJob:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.companyName {
+  font-size: 13px;
+  color: #E49E21;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.jobTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 6px 0;
+}
+
+.jobMeta {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+}

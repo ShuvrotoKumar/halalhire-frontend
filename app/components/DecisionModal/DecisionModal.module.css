@@ -1,0 +1,113 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(12, 27, 24, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  padding: 20px;
+}
+
+.modal {
+  background: white;
+  width: 100%;
+  max-width: 440px;
+  border-radius: 28px;
+  padding: 40px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+}
+
+.iconBox {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.iconBoxAccept {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.iconBoxReject {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #193f35;
+}
+
+.description {
+  font-size: 15px;
+  color: #64748b;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.applicantHighlight {
+  color: #193f35;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.cancelBtn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #193f35;
+  background: #f8faf9;
+  border: 1px solid #e5e8e1;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.confirmBtn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #193f35;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.confirmBtnAccept {
+  background: #c4a66a;
+}
+
+.confirmBtnReject {
+  background: #f1f3ef;
+  border: 1px solid #e5e8e1;
+}
+
+.cancelBtn:hover, .confirmBtn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.02);
+}

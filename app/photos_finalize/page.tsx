@@ -1,0 +1,134 @@
+'use client';
+
+import React, { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import styles from './PhotosFinalize.module.css';
+import { useTranslation } from 'react-i18next'
+
+const PhotosFinalizePage = () => {
+    const { t } = useTranslation()
+    const [portrait, setPortrait] = useState<File | null>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setPortrait(file);
+        }
+    };
+
+    return (
+        <div className={styles.pageWrapper}>
+            {/* Top Bar */}
+            <header className={styles.topBar}>
+                <div className={styles.logo}>
+                    <Image src="/logo.png" alt={t('halalhireLogo', 'HalalHire Logo')} width={120} height={40} style={{ objectFit: 'contain' }} />
+                </div>
+            </header>
+
+            <main className={styles.mainContent}>
+                {/* Progress Header */}
+                <header className={styles.header}>
+                    <div className={styles.stepBadge}>{t('step5Of5', 'Step 5 of 5')}</div>
+                    <h1 className={styles.title}>{t('completeYourProfessionalPresence', 'Complete Your Professional Presence')}</h1>
+                    <p className={styles.subtitle}>
+                        {t('aProfessionalPhotoHelpsBuildTrustAndDignityWithinTheHalalhireGlobalCommunity', 'A professional photo helps build trust and dignity within the HalalHire global community.')}
+                    </p>
+                </header>
+
+                <div className={styles.formCard}>
+                    {/* Upload Section */}
+                    <div className={styles.uploadSection}>
+                        <label className={styles.uploadArea}>
+                            <input type="file" style={{ display: 'none' }} onChange={handleFileChange} accept="image/*" />
+                            <div className={styles.uploadIcon}>
+                                {portrait ? (
+                                    <Image 
+                                        src={URL.createObjectURL(portrait)} 
+                                        alt="Preview" 
+                                        width={64} 
+                                        height={64} 
+                                        style={{ borderRadius: '12px', objectFit: 'cover' }} 
+                                    />
+                                ) : (
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                                        <circle cx="12" cy="13" r="4" />
+                                        <line x1="12" y1="13" x2="12" y2="13.01" />
+                                        <line x1="21" y1="9" x2="21" y2="9.01" />
+                                    </svg>
+                                )}
+                            </div>
+                            <h2 className={styles.uploadTitle}>{portrait ? portrait.name : t('uploadYourPortrait', 'Upload Your Portrait')}</h2>
+                            <p className={styles.uploadSub}>{portrait ? t('clickToChangePhoto', 'Click to change photo') : t('dragAndDropOrClickToBrowseFiles', 'Drag and drop or click to browse files')}</p>
+                            <div className={styles.uploadBadges}>
+                                <div className={styles.badge}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                        <circle cx="8.5" cy="8.5" r="1.5" />
+                                        <polyline points="21 15 16 10 5 21" />
+                                    </svg>
+                                    {t('jpgPng', 'JPG, PNG')}
+                                </div>
+                                <div className={styles.badge}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                    </svg>
+                                    {t('max5mb', 'Max 5MB')}
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    {/* Moderation Box */}
+                    <div className={styles.moderationBox}>
+                        <div className={styles.infoIcon}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                <polyline points="9 12 11 14 15 10" />
+                            </svg>
+                        </div>
+                        <div className={styles.infoText}>
+                            <h3 className={styles.infoTitle}>{t('ethicalPhotoModeration', 'Ethical Photo Moderation')}</h3>
+                            <p className={styles.infoDesc}>
+                                {t('toMaintainOurProfessionalStandardsYourPhotoWillBeReviewedBeforeBecomingVisibleToOthersPleaseEnsureAClearProfessionalPortrait', 'To maintain our professional standards, your photo will be reviewed before becoming visible to others. Please ensure a clear, professional portrait.')}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Action Bar */}
+                    <div className={styles.actionBar}>
+                        <div className={styles.socialProof}>
+                            <div className={styles.avatars}>
+                                <div className={styles.avatarMini} style={{ backgroundColor: '#e5e7eb' }}></div>
+                                <div className={styles.avatarMini} style={{ backgroundColor: '#d1d5db' }}></div>
+                                <div className={styles.avatarMini} style={{ backgroundColor: '#9ca3af' }}></div>
+                                <div className={styles.countBadge}>{t('10k', '+10k')}</div>
+                            </div>
+                            <span className={styles.socialText}>{t('joinThousandsOfProfessionalsAlreadyOnHalalhire', 'Join thousands of professionals already on HalalHire')}</span>
+                        </div>
+                        <div className={styles.actions}>
+                            <Link href="/completed_auth" className={styles.skipBtn}>{t('skipForNow', 'Skip for now')}</Link>
+                            <Link href="/completed_auth" className={styles.finishBtn}>
+                                {t('finishProfile', 'Finish Profile')}
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                    <polyline points="12 5 19 12 12 19" />
+                                </svg>
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+
+                <footer className={styles.pageFooter}>
+                    <Link href="/privacy" className={styles.footerLink}>{t('privacyPolicy', 'Privacy Policy')}</Link>
+                    <Link href="/standards" className={styles.footerLink}>{t('communityStandards', 'Community Standards')}</Link>
+                    <Link href="/terms" className={styles.footerLink}>{t('termsOfService', 'Terms of Service')}</Link>
+                </footer>
+            </main>
+        </div>
+    );
+};
+
+export default PhotosFinalizePage;

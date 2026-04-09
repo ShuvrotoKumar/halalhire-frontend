@@ -1,0 +1,94 @@
+.pageWrapper {
+  background-color: #f2f0e9;
+  color: #111827;
+  min-height: 100vh;
+}
+
+
+.contentSection {
+  padding: 80px 0;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 40px;
+}
+
+.resultsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 32px;
+}
+
+.resultsCount {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.resultsCount span {
+  display: block;
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 400;
+  margin-top: 4px;
+}
+
+.sort {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.sortSelect {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  font-weight: 600;
+  color: #111827;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 48px;
+}
+
+.pageBtn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  transition: all 0.2s;
+}
+
+.pageBtn:hover {
+  background: #f3f4f6;
+}
+
+.pageBtnActive {
+  background: #193f35;
+  color: #ffffff;
+}
+
+.pageArrow {
+  border: 1px solid #e5e7eb;
+}
+
+@media (max-width: 992px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}

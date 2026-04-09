@@ -1,0 +1,401 @@
+.pageWrapper {
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+}
+
+.topBar {
+  padding: 24px 48px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatarCircle {
+  width: 40px;
+  height: 40px;
+  background: #6200ee;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mainContent {
+  flex: 1;
+  padding: 60px 48px 40px;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.header {
+  margin-bottom: 48px;
+}
+
+.stepInfo {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.percentage {
+  color: #0c3126;
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #0c3126;
+  width: 60%;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  line-height: 1.5;
+  max-width: 600px;
+}
+
+.section {
+  margin-bottom: 48px;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 24px;
+  text-transform: capitalize;
+}
+
+.iconCircle {
+  color: #0c3126;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 15px;
+  color: #111827;
+  background: white;
+}
+
+.selectWrapper {
+  position: relative;
+}
+
+.selectWrapper::after {
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.select {
+  appearance: none;
+}
+
+/* Skills Tags */
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: white;
+  min-height: 54px;
+  align-items: center;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #f1ebd5;
+  color: #0c3126;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.removeTag {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  opacity: 0.7;
+}
+
+.tagInput {
+  border: none;
+  outline: none;
+  padding: 8px;
+  font-size: 14px;
+  flex: 1;
+  min-width: 120px;
+}
+
+.recommended {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* Resume Upload */
+.uploadArea {
+  border: 1.5px dashed #e5e7eb;
+  border-radius: 16px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fcfcfc;
+  cursor: pointer;
+}
+
+.docIcon {
+  width: 48px;
+  height: 48px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0c3126;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.fileName {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.fileInfo {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 16px;
+}
+
+.changeBtn {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0c3126;
+  text-decoration: underline;
+}
+
+.successBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f0fdf4;
+  border: 1px solid #dcfce7;
+  padding: 12px 20px;
+  border-radius: 10px;
+  color: #15803d;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 20px;
+}
+
+.certificatesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.certCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.certIcon {
+  color: #9ca3af;
+}
+
+.certDetails {
+  flex: 1;
+}
+
+.certName {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.certStatus {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.deleteCert {
+  color: #fca5a5;
+  cursor: pointer;
+}
+
+.addCert {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  background: #fdfdfd;
+  border: 1px dashed #e5e7eb;
+  border-radius: 12px;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.addIcon {
+  color: #0c3126;
+}
+
+/* Navigation */
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 60px;
+  padding-top: 32px;
+  border-top: 1px solid #eee;
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.continueBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 48px;
+  background: #0c3126;
+  color: white;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(188, 156, 99, 0.4);
+}
+
+.docNote {
+  margin-top: 48px;
+  text-align: center;
+}
+
+.securityNote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.privacyText {
+  font-size: 11px;
+  color: #9ca3af;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+
+  .formGrid,
+  .certificatesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .topBar {
+    padding: 16px 20px;
+  }
+
+  .mainContent {
+    padding: 40px 20px;
+  }
+
+  .title {
+    font-size: 26px;
+  }
+}

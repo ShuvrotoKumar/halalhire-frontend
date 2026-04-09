@@ -1,0 +1,45 @@
+.poweredSection {
+  background-color: #f2f0e9; /* Same beige as hero */
+  padding: 80px 0 100px 0;
+  text-align: center;
+  border-top: 1px solid rgba(0,0,0,0.05); /* subtle separation if needed */
+}
+
+.content {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.badge {
+  background-color: #0f2c23; /* Dark green box */
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 2px;
+  padding: 12px 32px;
+  border-radius: 8px; /* Slightly rounded corners */
+  margin-bottom: 32px;
+  display: inline-block;
+  box-shadow: 0 10px 20px rgba(15, 44, 35, 0.2);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #193f35;
+  margin: 0 0 24px 0;
+}
+
+.text {
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.8;
+  margin: 0 0 24px 0;
+}
+
+.text:last-child {
+  margin-bottom: 0;
+}

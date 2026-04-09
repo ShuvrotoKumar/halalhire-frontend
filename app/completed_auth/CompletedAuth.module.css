@@ -1,0 +1,220 @@
+.pageWrapper {
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.topBar {
+  padding: 24px 48px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatarCircle {
+  width: 40px;
+  height: 40px;
+  background: #6200ee;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  position: relative;
+}
+
+.successCard {
+  background: #fdfaf3;
+  border-radius: 32px;
+  padding: 80px 40px 60px;
+  width: 100%;
+  max-width: 640px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(188, 156, 99, 0.1);
+}
+
+/* Bottom Glow line */
+.successCard::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #15803d 0%, #bc9c63 100%);
+}
+
+.iconWrapper {
+  width: 100px;
+  height: 100px;
+  background: #064e3b;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bc9c63;
+  margin: 0 auto 32px;
+  box-shadow: 0 12px 24px rgba(6, 78, 59, 0.2);
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #6b7280;
+  line-height: 1.6;
+  max-width: 480px;
+  margin: 0 auto 40px;
+}
+
+.highlight {
+  color: #111827;
+  font-weight: 700;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 10px 20px;
+  border-radius: 100px;
+  border: 1px solid #f2ede0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #bc9c63;
+  margin-bottom: 60px;
+}
+
+.homeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 20px;
+  background: #0c3126;
+  color: white;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 8px 16px rgba(188, 156, 99, 0.3);
+}
+
+.homeBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(188, 156, 99, 0.4);
+}
+
+/* Floating Badges */
+.floatingGroup {
+  position: absolute;
+  right: 80px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: -15px;
+  /* Overlap effect */
+}
+
+.floatingBadge {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: 800;
+  border: 4px solid white;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.yBadge {
+  background: #a855f7;
+  transform: translateX(-20px);
+}
+
+.kBadge {
+  background: #7e22ce;
+}
+
+.pageFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding-bottom: 40px;
+}
+
+.footerLinks {
+  display: flex;
+  gap: 32px;
+}
+
+.footerLink {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.copyright {
+  font-size: 12px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .floatingGroup {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .successCard {
+    padding: 60px 24px 40px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .topBar {
+    padding: 16px 20px;
+  }
+}

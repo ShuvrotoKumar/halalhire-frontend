@@ -1,0 +1,96 @@
+.heroSection {
+  background-color: #f2f0e9; /* Same light beige as used in other pages */
+  padding: 100px 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.badge {
+  background-color: #ffffff;
+  color: #111827;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+}
+
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  background-color: #E49E21;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: 800;
+  color: #193f35; /* Dark Green */
+  margin: 0 0 24px 0;
+  line-height: 1.2;
+}
+
+.highlight {
+  color: #FBBF24; /* Yellow/Gold for "Ethical Standards" */
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #6b7280;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Background Lines */
+.bgLines {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.line {
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(8, 29, 23, 0) 0%, rgba(8, 29, 23, 0.05) 50%, rgba(8, 29, 23, 0) 100%);
+}
+
+@media (max-width: 768px) {
+  .heroSection {
+    padding: 60px 0;
+  }
+  
+  .title {
+    font-size: 36px;
+  }
+  
+  .subtitle {
+    font-size: 15px;
+  }
+}

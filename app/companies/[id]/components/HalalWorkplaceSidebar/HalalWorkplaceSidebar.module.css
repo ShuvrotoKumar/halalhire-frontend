@@ -1,0 +1,50 @@
+.sidebar {
+  background: #eff1f0;
+  border-radius: var(--radius-md);
+  padding: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  height: fit-content;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 32px;
+}
+
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.featureItem {
+  display: flex;
+  gap: 16px;
+}
+
+.iconCircle {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background: #112b23;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fbbf24;
+}
+
+.featureTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+
+.featureDesc {
+  font-size: 12px;
+  color: var(--text-gray);
+  line-height: 1.5;
+}
