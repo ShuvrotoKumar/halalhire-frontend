@@ -29,6 +29,34 @@ const JobEditModal = () => {
   const [perks, setPerks] = useState<string[]>([]);
   const [minSalary, setMinSalary] = useState('');
   const [maxSalary, setMaxSalary] = useState('');
+  const [countriesData, setCountriesData] = useState<any[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+  const [availableCities, setAvailableCities] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch('https://countriesnow.space/api/v0.1/countries')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error) {
+          setCountriesData(data.data);
+        }
+      })
+      .catch(err => console.error("Error fetching countries:", err));
+  }, []);
+
+  useEffect(() => {
+    if (selectedCountry && countriesData.length > 0) {
+      const countryObj = countriesData.find(c => c.country === selectedCountry);
+      if (countryObj) {
+        setAvailableCities(countryObj.cities);
+      } else {
+        setAvailableCities([]);
+      }
+    } else {
+      setAvailableCities([]);
+    }
+  }, [selectedCountry, countriesData]);
   
   useEffect(() => {
     if (activeJob && activeJob.badges) {
@@ -44,6 +72,20 @@ const JobEditModal = () => {
     } else {
       setMinSalary('');
       setMaxSalary('');
+    }
+
+    if (activeJob?.location) {
+      const parts = activeJob.location.split(',');
+      if (parts.length >= 2) {
+        setSelectedCity(parts[0].trim());
+        setSelectedCountry(parts[1].trim());
+      } else {
+        setSelectedCountry(parts[0].trim());
+        setSelectedCity('');
+      }
+    } else {
+      setSelectedCountry('');
+      setSelectedCity('');
     }
   }, [activeJob, isJobEditModalOpen]);
 
@@ -120,30 +162,36 @@ const JobEditModal = () => {
 
               <div className={styles.inputGroup}>
                 <label className={styles.label}>{t('country', 'Country')}</label>
-                <div className={styles.locationInputWrapper}>
-                  <MapPin size={18} className={styles.locationIcon} />
-                  <input 
-                    type="text" 
-                    placeholder={t('egUnitedKingdom', 'e.g. United Kingdom')} 
-                    className={`${styles.input} ${styles.locationInput}`}
-                    defaultValue={activeJob?.location ? activeJob.location.split(',')[1]?.trim() : ''}
-                    required
-                  />
-                </div>
+                <select 
+                  className={styles.select}
+                  value={selectedCountry}
+                  onChange={(e) => {
+                    setSelectedCountry(e.target.value);
+                    setSelectedCity('');
+                  }}
+                  required
+                >
+                  <option value="" disabled>{t('selectCountry', 'Select Country')}</option>
+                  {countriesData.map((c, idx) => (
+                    <option key={idx} value={c.country}>{c.country}</option>
+                  ))}
+                </select>
               </div>
 
               <div className={styles.inputGroup}>
                 <label className={styles.label}>{t('city', 'City Name')}</label>
-                <div className={styles.locationInputWrapper}>
-                  <MapPin size={18} className={styles.locationIcon} />
-                  <input 
-                    type="text" 
-                    placeholder={t('egLondon', 'e.g. London')} 
-                    className={`${styles.input} ${styles.locationInput}`}
-                    defaultValue={activeJob?.location ? activeJob.location.split(',')[0]?.trim() : ''}
-                    required
-                  />
-                </div>
+                <select 
+                  className={styles.select}
+                  value={selectedCity}
+                  onChange={(e) => setSelectedCity(e.target.value)}
+                  disabled={!selectedCountry || availableCities.length === 0}
+                  required
+                >
+                  <option value="" disabled>{t('selectCity', 'Select City')}</option>
+                  {availableCities.map((city, idx) => (
+                    <option key={idx} value={city}>{city}</option>
+                  ))}
+                </select>
               </div>
 
               <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
