@@ -17,10 +17,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
-import { useTranslation } from 'react-i18next'
-
 const AuthContent = () => {
-    const { t } = useTranslation()
     const searchParams = useSearchParams();
     const router = useRouter();
     const { login } = useAuth();
@@ -47,8 +44,8 @@ const AuthContent = () => {
     return (
         <div className={styles.pageContainer}>
             <header className={styles.header}>
-                <h1 className="animate-fade-in">{t('secureAccessPortal', 'Secure Access Portal')}</h1>
-                <p className="animate-fade-in delay-1">{t('buildingADignifiedFutureForTheGlobalUmmah', 'Building a dignified future for the global Ummah.')}</p>
+                <h1 className="animate-fade-in">Secure Access Portal</h1>
+                <p className="animate-fade-in delay-1">Building a dignified future for the global Ummah.</p>
             </header>
 
             <main className={`${styles.authCard} animate-fade-in delay-2`}>
@@ -57,13 +54,13 @@ const AuthContent = () => {
                         className={`${styles.tab} ${activeTab === 'login' ? styles.activeTab : ''}`}
                         onClick={() => setActiveTab('login')}
                     >
-                        {t('login', 'Login')}
+                        Login
                     </button>
                     <button
                         className={`${styles.tab} ${activeTab === 'register' ? styles.activeTab : ''}`}
                         onClick={() => setActiveTab('register')}
                     >
-                        {t('register', 'Register')}
+                        Register
                     </button>
                 </div>
 
@@ -73,14 +70,14 @@ const AuthContent = () => {
                             <div className={styles.banner}>
                                 <Image
                                     src="/g1.png"
-                                    alt={t('welcome', 'Welcome')}
+                                    alt="Welcome"
                                     width={48}
                                     height={48}
                                     className={styles.bannerImage}
                                 />
                                 <div className={styles.bannerText}>
-                                    <h3>{t('welcomeBack', 'Welcome Back')}</h3>
-                                    <p>{t('accessYourEthicalCareerDashboard', 'Access your ethical career dashboard')}</p>
+                                    <h3>Welcome Back</h3>
+                                    <p>Access your ethical career dashboard</p>
                                 </div>
                             </div>
 
@@ -95,8 +92,8 @@ const AuthContent = () => {
                                             <User size={20} />
                                         </div>
                                         <div className={styles.roleText}>
-                                            <span>{t('individual', 'Individual')}</span>
-                                            <p>{t('iAmLookingForEthicalWork', 'I am looking for ethical work')}</p>
+                                            <span>Individual</span>
+                                            <p>I am looking for ethical work</p>
                                         </div>
                                         {role === 'user' && <CheckCircle size={16} className={styles.roleCheck} />}
                                     </button>
@@ -110,15 +107,15 @@ const AuthContent = () => {
                                             <Briefcase size={20} />
                                         </div>
                                         <div className={styles.roleText}>
-                                            <span>{t('company', 'Company')}</span>
-                                            <p>{t('weAreHiringEthicalTalent', 'We are hiring ethical talent')}</p>
+                                            <span>Company</span>
+                                            <p>We are hiring ethical talent</p>
                                         </div>
                                         {role === 'company' && <CheckCircle size={16} className={styles.roleCheck} />}
                                     </button>
                                 </div>
 
                                 <div className={styles.formGroup}>
-                                    <label className={styles.label}>{t('emailAddress', 'Email Address')}</label>
+                                    <label className={styles.label}>Email Address</label>
                                     <div className={styles.inputWrapper}>
                                         <Mail size={18} className={styles.inputIcon} />
                                         <input
@@ -131,15 +128,15 @@ const AuthContent = () => {
 
                                 <div className={styles.formGroup}>
                                     <div className={styles.labelRow}>
-                                        <label className={styles.label}>{t('password2', 'Password')}</label>
-                                        <Link href="#" className={styles.forgotLink}>{t('forgotPassword', 'Forgot password?')}</Link>
+                                        <label className={styles.label}>Password</label>
+                                        <Link href="#" className={styles.forgotLink}>Forgot password?</Link>
                                     </div>
                                     <div className={styles.inputWrapper}>
                                         <Lock size={18} className={styles.inputIcon} />
                                         <input
                                             type={showPassword ? "text" : "password"}
                                             className={styles.input}
-                                            placeholder={t('key3', '........')}
+                                            placeholder="........"
                                         />
                                         <button
                                             type="button"
@@ -160,12 +157,12 @@ const AuthContent = () => {
                                         {agreed && <CheckCircle size={16} color="white" />}
                                     </div>
                                     <p className={styles.checkboxText}>
-                                        {t('iConfirmMyCommitmentTo', 'I confirm my commitment to')} <Link href="#">{t('halalEmploymentStandards', 'Halal Employment Standards')}</Link> {t('andEthicalConductWithinTheWorkplace', 'and ethical conduct within the workplace.')}
+                                        I confirm my commitment to <Link href="#">Halal Employment Standards</Link> and ethical conduct within the workplace.
                                     </p>
                                 </div>
 
                                 <button type="submit" className={styles.submitBtn}>
-                                    <ArrowRight size={20} /> {t('signInToAccount', 'Sign In to Account')}
+                                    <ArrowRight size={20} /> Sign In to Account
                                 </button>
                             </form>
                         </div>
@@ -176,8 +173,8 @@ const AuthContent = () => {
                                     <Fingerprint size={24} color="#FEEE96" />
                                 </div>
                                 <div className={styles.bannerText}>
-                                    <h3>{t('joinHalalhire', 'Join HalalHire')}</h3>
-                                    <p>{t('startYourEthicalCareerJourneyToday', 'Start your ethical career journey today')}</p>
+                                    <h3>Join HalalHire</h3>
+                                    <p>Start your ethical career journey today</p>
                                 </div>
                             </div>
 
@@ -192,8 +189,8 @@ const AuthContent = () => {
                                             <User size={20} />
                                         </div>
                                         <div className={styles.roleText}>
-                                            <span>{t('individual', 'Individual')}</span>
-                                            <p>{t('iAmLookingForEthicalWork', 'I am looking for ethical work')}</p>
+                                            <span>Individual</span>
+                                            <p>I am looking for ethical work</p>
                                         </div>
                                         {role === 'user' && <CheckCircle size={16} className={styles.roleCheck} />}
                                     </button>
@@ -207,27 +204,27 @@ const AuthContent = () => {
                                             <Briefcase size={20} />
                                         </div>
                                         <div className={styles.roleText}>
-                                            <span>{t('company', 'Company')}</span>
-                                            <p>{t('weAreHiringEthicalTalent', 'We are hiring ethical talent')}</p>
+                                            <span>Company</span>
+                                            <p>We are hiring ethical talent</p>
                                         </div>
                                         {role === 'company' && <CheckCircle size={16} className={styles.roleCheck} />}
                                     </button>
                                 </div>
 
                                 <div className={styles.formGroup}>
-                                    <label className={styles.label}>{role === 'user' ? t('fullName', 'Full Name') : t('companyName', 'Company Name')}</label>
+                                    <label className={styles.label}>{role === 'user' ? 'Full Name' : 'Company Name'}</label>
                                     <div className={styles.inputWrapper}>
                                         <User size={18} className={styles.inputIcon} />
                                         <input
                                             type="text"
                                             className={styles.input}
-                                            placeholder={t('enterYourFullName', 'Enter your full name')}
+                                            placeholder="Enter your full name"
                                         />
                                     </div>
                                 </div>
 
                                 <div className={styles.formGroup}>
-                                    <label className={styles.label}>{t('emailAddress', 'Email Address')}</label>
+                                    <label className={styles.label}>Email Address</label>
                                     <div className={styles.inputWrapper}>
                                         <Mail size={18} className={styles.inputIcon} />
                                         <input
@@ -239,13 +236,13 @@ const AuthContent = () => {
                                 </div>
 
                                 <div className={styles.formGroup}>
-                                    <label className={styles.label}>{t('password2', 'Password')}</label>
+                                    <label className={styles.label}>Password</label>
                                     <div className={styles.inputWrapper}>
                                         <Lock size={18} className={styles.inputIcon} />
                                         <input
                                             type={showPassword ? "text" : "password"}
                                             className={styles.input}
-                                            placeholder={t('key3', '........')}
+                                            placeholder="........"
                                         />
                                         <button
                                             type="button"
@@ -266,12 +263,12 @@ const AuthContent = () => {
                                         {agreed && <CheckCircle size={16} color="white" />}
                                     </div>
                                     <p className={styles.checkboxText}>
-                                        {t('iAgreeToThe', 'I agree to the')} <Link href="#">{t('termsOfService', 'Terms of Service')}</Link> {t('and', 'and')} <Link href="#">{t('privacyPolicy', 'Privacy Policy')}</Link> {t('andCommitToEthicalProfessionalStandards', 'and commit to ethical professional standards.')}
+                                        I agree to the <Link href="#">Terms of Service</Link> and <Link href="#">Privacy Policy</Link> and commit to ethical professional standards.
                                     </p>
                                 </div>
 
                                 <Link href={role === 'company' ? "/company_on" : "/personal_info"} className={styles.submitBtn}>
-                                    <User size={20} /> {t('createNewAccount', 'Create New Account')}
+                                    <User size={20} /> Create New Account
                                 </Link>
                             </form>
                         </div>
@@ -280,22 +277,22 @@ const AuthContent = () => {
 
                 <footer className={styles.footer}>
                     <div className={styles.secureTag}>
-                        <ShieldCheck size={14} /> {t('secureEncryption', 'Secure Encryption')}
+                        <ShieldCheck size={14} /> Secure Encryption
                     </div>
                     <p>
-                        {t('yourDataIsSecuredWithEndtoendEncryptionBuiltOnThePrinciplesOfAmanahTrustAndShariacompliantDataPrivacy', 'Your data is secured with end-to-end encryption. Built on the principles of Amanah (Trust) and Sharia-compliant data privacy.')}
+                        Your data is secured with end-to-end encryption. Built on the principles of Amanah (Trust) and Sharia-compliant data privacy.
                     </p>
                 </footer>
             </main>
 
             <div className={`${styles.externalLinks} animate-fade-in delay-3`}>
-                <Link href="#" className={styles.externalLink}>{t('privacyPolicy', 'Privacy Policy')}</Link>
-                <Link href="#" className={styles.externalLink}>{t('termsOfService', 'Terms of Service')}</Link>
-                <Link href="#" className={styles.externalLink}>{t('shariaComplianceCertificate', 'Sharia Compliance Certificate')}</Link>
+                <Link href="#" className={styles.externalLink}>Privacy Policy</Link>
+                <Link href="#" className={styles.externalLink}>Terms of Service</Link>
+                <Link href="#" className={styles.externalLink}>Sharia Compliance Certificate</Link>
             </div>
 
             <div className={`${styles.copyright} animate-fade-in delay-3`}>
-                {t('2026HalalhireBuildingTheGlobalUmmahThroughEthicalWork', '© 2026 HalalHire. Building the Global Ummah through Ethical Work.')}
+                © 2026 HalalHire. Building the Global Ummah through Ethical Work.
             </div>
         </div>
     );
