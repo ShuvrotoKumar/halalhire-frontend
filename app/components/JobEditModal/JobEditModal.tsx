@@ -119,20 +119,34 @@ const JobEditModal = () => {
               </div>
 
               <div className={styles.inputGroup}>
-                <label className={styles.label}>{t('location', 'Location')}</label>
+                <label className={styles.label}>{t('country', 'Country')}</label>
                 <div className={styles.locationInputWrapper}>
                   <MapPin size={18} className={styles.locationIcon} />
                   <input 
                     type="text" 
-                    placeholder={t('cityCountry', 'City, Country')} 
+                    placeholder={t('egUnitedKingdom', 'e.g. United Kingdom')} 
                     className={`${styles.input} ${styles.locationInput}`}
-                    defaultValue={activeJob?.location || ''}
+                    defaultValue={activeJob?.location ? activeJob.location.split(',')[1]?.trim() : ''}
                     required
                   />
                 </div>
               </div>
 
               <div className={styles.inputGroup}>
+                <label className={styles.label}>{t('city', 'City Name')}</label>
+                <div className={styles.locationInputWrapper}>
+                  <MapPin size={18} className={styles.locationIcon} />
+                  <input 
+                    type="text" 
+                    placeholder={t('egLondon', 'e.g. London')} 
+                    className={`${styles.input} ${styles.locationInput}`}
+                    defaultValue={activeJob?.location ? activeJob.location.split(',')[0]?.trim() : ''}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
                 <label className={styles.label}>{t('fullAddress', 'Full Address')}</label>
                 <div className={styles.locationInputWrapper}>
                   <Map size={18} className={styles.locationIcon} />
