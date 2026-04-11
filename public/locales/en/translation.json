@@ -470,7 +470,7 @@
   "helpUsUnderstandYourBackgroundToProvideATailoredExperienceYourDataIsStoredEthicallyAndWithFullDignity": "Help us understand your background to provide a tailored experience. Your data is stored ethically and with full dignity.",
   "heroImage": "Hero Image",
   "highContrastComponents": "High Contrast Components",
-  "highlyExperiencedPrincipalSoftwareEngineerWithOver9YearsOfExpertiseInBuildingScalableCloudnativeArchitecturesDedicatedToEthicalTechSolutionsAndSustainableEngineeringPracticesProvenTrackRecordOfLeadingMultidisciplinaryTeamsAcrossRiyadhapossGrowingFintechSectorDeliveringHighperformancePlatformsWhileMaintainingAdherenceToIslamicFinancePrinciplesAndEthicalGovernance": "Highly experienced Principal Software Engineer with over 9 years of expertise in building \n            scalable cloud-native architectures. Dedicated to ethical tech solutions and sustainable \n            engineering practices. Proven track record of leading multidisciplinary teams across \n            Riyadh&apos;s growing fintech sector, delivering high-performance platforms while maintaining \n            adherence to Islamic finance principles and ethical governance.",
+  "highlyExperiencedPrincipalSoftwareEngineerWithOver9YearsOfExpertiseInBuildingScalableCloudnativeArchitecturesDedicatedToEthicalTechSolutionsAndSustainableEngineeringPracticesProvenTrackRecordOfLeadingMultidisciplinaryTeamsAcrossRiyadhapossGrowingFintechSectorDeliveringHighperformancePlatformsWhileMaintainingAdherenceToIslamicFinancePrinciplesAndEthicalGovernance": "Highly experienced Principal Software Engineer with over 9 years of expertise in building scalable cloud-native architectures. Dedicated to ethical tech solutions and sustainable engineering practices. Proven track record of leading multidisciplinary teams across Riyadh's growing fintech sector, delivering high-performance platforms while maintaining adherence to Islamic finance principles and ethical governance.",
   "highResolutionRequired": "High resolution required",
   "home": "Home",
   "home2": "HOME",
@@ -1031,5 +1031,16 @@
   "halalCertified": "HALAL CERTIFIED",
   "legalServices": "Legal Services",
   "global": "GLOBAL",
-  "fintech": "FINTECH"
+  "fintech": "FINTECH",
+  "systemArchitecture": "System Architecture",
+  "microservices": "Microservices",
+  "fintechCompliance": "FinTech Compliance",
+  "teamLeadership": "Team Leadership",
+  "go": "Go",
+  "react": "React",
+  "aws": "AWS",
+  "principalEngineer": "Principal Engineer",
+  "techSalatSolutions": "TechSalat Solutions",
+  "seniorDeveloper": "Senior Developer",
+  "softwareEngineer": "Software Engineer"
 }
