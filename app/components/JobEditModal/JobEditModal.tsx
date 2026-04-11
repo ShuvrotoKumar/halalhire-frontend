@@ -19,19 +19,31 @@ import {
   Baby,
   Clock,
   Check,
-  ChevronDown
+  ChevronDown,
+  Map
 } from 'lucide-react';
 
 const JobEditModal = () => {
   const { t } = useTranslation()
   const { isJobEditModalOpen, closeJobEditModal, activeJob } = useModal();
   const [perks, setPerks] = useState<string[]>([]);
+  const [minSalary, setMinSalary] = useState('');
+  const [maxSalary, setMaxSalary] = useState('');
   
   useEffect(() => {
     if (activeJob && activeJob.badges) {
       setPerks(activeJob.badges);
     } else {
       setPerks([]);
+    }
+
+    if (activeJob && activeJob.salary) {
+      const parts = activeJob.salary.split('-');
+      setMinSalary(parts[0]?.replace(/[^0-9]/g, '') || '');
+      setMaxSalary(parts[1]?.replace(/[^0-9]/g, '') || '');
+    } else {
+      setMinSalary('');
+      setMaxSalary('');
     }
   }, [activeJob, isJobEditModalOpen]);
 
@@ -60,7 +72,7 @@ const JobEditModal = () => {
 
   return (
     <div className={styles.overlay} onClick={handleClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+      <form className={styles.modal} onSubmit={(e) => { e.preventDefault(); handleClose(); }} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <h2>{activeJob ? t('editJobPosting', 'Edit Job Posting') : t('postANewJob', 'Post a New Job')}</h2>
           <p>{t('createAProfessionalJobListingToAttractTopTalentInTheHalalconsciousCommunity', 'Create a professional job listing to attract top talent in the halal-conscious community.')}</p>
@@ -115,17 +127,50 @@ const JobEditModal = () => {
                     placeholder={t('cityCountry', 'City, Country')} 
                     className={`${styles.input} ${styles.locationInput}`}
                     defaultValue={activeJob?.location || ''}
+                    required
                   />
                 </div>
               </div>
 
               <div className={styles.inputGroup}>
-                <label className={styles.label}>{t('salaryRangeAnnual', 'Salary Range (Annual)')}</label>
+                <label className={styles.label}>{t('fullAddress', 'Full Address')}</label>
+                <div className={styles.locationInputWrapper}>
+                  <Map size={18} className={styles.locationIcon} />
+                  <input 
+                    type="text" 
+                    placeholder={t('fullAddressPlaceholder', 'e.g. 123 Main St, Suite 100')} 
+                    className={`${styles.input} ${styles.locationInput}`}
+                    defaultValue={activeJob?.fullAddress || ''}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>{t('minSalary', 'Min Salary (Annual)')}</label>
                 <input 
-                  type="text" 
-                  placeholder={t('eg80k120k', 'e.g. $80k - $120k')} 
+                  type="number" 
+                  min="0"
+                  max="10000000"
+                  placeholder={t('eg80000', 'e.g. 80000')} 
                   className={styles.input}
-                  defaultValue={activeJob?.salary || ''}
+                  value={minSalary}
+                  onChange={(e) => setMinSalary(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>{t('maxSalary', 'Max Salary (Annual)')}</label>
+                <input 
+                  type="number" 
+                  min={minSalary || "0"}
+                  max="10000000"
+                  placeholder={t('eg120000', 'e.g. 120000')} 
+                  className={styles.input}
+                  value={maxSalary}
+                  onChange={(e) => setMaxSalary(e.target.value)}
+                  required
                 />
               </div>
             </div>
@@ -192,12 +237,12 @@ const JobEditModal = () => {
         </div>
 
         <div className={styles.footer}>
-          <button className={styles.cancelBtn} onClick={handleClose}>{t('cancel', 'Cancel')}</button>
-          <button className={styles.submitBtn} onClick={handleClose}>
-            {activeJob ? t('updatePosting', 'Update Posting') : 'Post Job'}
+          <button type="button" className={styles.cancelBtn} onClick={handleClose}>{t('cancel', 'Cancel')}</button>
+          <button type="submit" className={styles.submitBtn}>
+            {activeJob ? t('updatePosting', 'Update Posting') : t('postJob', 'Post Job')}
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
