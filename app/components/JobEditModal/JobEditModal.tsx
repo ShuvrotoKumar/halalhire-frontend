@@ -218,7 +218,7 @@ const JobEditModal = () => {
                   className={styles.input}
                   value={minSalary}
                   onChange={(e) => setMinSalary(e.target.value)}
-                  required
+                  required={!!maxSalary}
                 />
               </div>
 
@@ -232,7 +232,7 @@ const JobEditModal = () => {
                   className={styles.input}
                   value={maxSalary}
                   onChange={(e) => setMaxSalary(e.target.value)}
-                  required
+                  required={!!minSalary}
                 />
               </div>
             </div>
