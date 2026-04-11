@@ -4,10 +4,8 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './IdentityDoc.module.css';
-import { useTranslation } from 'react-i18next'
 
 const IdentityVerification = () => {
-    const { t } = useTranslation()
     const [nationalID, setNationalID] = useState<File | null>(null);
     const [passport, setPassport] = useState<File | null>(null);
     const [profilePhoto, setProfilePhoto] = useState<string>('/b1.png');
@@ -40,7 +38,7 @@ const IdentityVerification = () => {
             {/* Top Bar */}
             <header className={styles.topBar}>
                 <div className={styles.logo}>
-                    <Image src="/logo.png" alt={t('halalhireLogo', 'HalalHire Logo')} width={120} height={40} style={{ objectFit: 'contain' }} />
+                    <Image src="/logo.png" alt="HalalHire Logo" width={120} height={40} style={{ objectFit: 'contain' }} />
                 </div>
             </header>
 
@@ -48,16 +46,17 @@ const IdentityVerification = () => {
                 {/* Progress Header */}
                 <div className={styles.header}>
                     <div className={styles.stepInfo}>
-                        <span>{t('step32IdentityVerification', 'STEP 3.2: IDENTITY VERIFICATION')}</span>
-                        <span>{t('40Complete', '40% Complete')}</span>
+                        <span>STEP 3.2: IDENTITY VERIFICATION</span>
+                        <span>40% Complete</span>
                     </div>
                     <div className={styles.progressBar}>
                         <div className={styles.progressFill}></div>
                     </div>
 
-                    <h1 className={styles.title}>{t('verifyYourIdentity', 'Verify Your Identity')}</h1>
+                    <h1 className={styles.title}>Verify Your Identity</h1>
                     <p className={styles.subtitle}>
-                        {t('toMaintainTheIntegrityOfOurEthicalUmmahNetworkPleaseProvideAValidGovernmentIdForVerification', 'To maintain the integrity of our ethical Ummah network, please\n                        provide a valid government ID for verification.')}
+                        To maintain the integrity of our ethical Ummah network, please
+                        provide a valid government ID for verification.
                     </p>
                 </div>
 
@@ -65,7 +64,7 @@ const IdentityVerification = () => {
                 <div className={styles.uploadGrid}>
                     <label className={styles.uploadContainer}>
                         <input type="file" style={{ display: 'none' }} onChange={handleNationalIDUpload} />
-                        <span className={styles.cardLabel}>{t('nationalIdFrontBack', 'National ID (Front & Back)')}</span>
+                        <span className={styles.cardLabel}>National ID (Front & Back)</span>
                         <div className={styles.uploadCard}>
                             <div className={styles.iconCircle}>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -76,15 +75,15 @@ const IdentityVerification = () => {
                                     <line x1="7" y1="16" x2="17" y2="16" />
                                 </svg>
                             </div>
-                            <h3 className={styles.uploadTitle}>{nationalID ? nationalID.name : t('uploadNationalId', 'Upload National ID')}</h3>
-                            <p className={styles.uploadSub}>{nationalID ? t('clickToChange', 'Click to change') : t('dragAndDropOrClickToUpload', 'Drag and drop or click to upload')}</p>
-                            <span className={styles.badge}>{t('jpgPngOrPdfMax5mb', 'JPG, PNG or PDF (Max 5MB)')}</span>
+                            <h3 className={styles.uploadTitle}>{nationalID ? nationalID.name : 'Upload National ID'}</h3>
+                            <p className={styles.uploadSub}>{nationalID ? 'Click to change' : 'Drag and drop or click to upload'}</p>
+                            <span className={styles.badge}>JPG, PNG or PDF (Max 5MB)</span>
                         </div>
                     </label>
 
                     <label className={styles.uploadContainer}>
                         <input type="file" style={{ display: 'none' }} onChange={handlePassportUpload} />
-                        <span className={styles.cardLabel}>{t('internationalPassport', 'International Passport')}</span>
+                        <span className={styles.cardLabel}>International Passport</span>
                         <div className={styles.uploadCard}>
                             <div className={styles.iconCircle}>
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -94,9 +93,9 @@ const IdentityVerification = () => {
                                     <line x1="12" y1="16" x2="12" y2="16" />
                                 </svg>
                             </div>
-                            <h3 className={styles.uploadTitle}>{passport ? passport.name : t('uploadPassport', 'Upload Passport')}</h3>
-                            <p className={styles.uploadSub}>{passport ? t('clickToChange', 'Click to change') : t('scanAndUploadYourDataPage', 'Scan and upload your data page')}</p>
-                            <span className={styles.badge}>{t('highResolutionRequired', 'High resolution required')}</span>
+                            <h3 className={styles.uploadTitle}>{passport ? passport.name : 'Upload Passport'}</h3>
+                            <p className={styles.uploadSub}>{passport ? 'Click to change' : 'Scan and upload your data page'}</p>
+                            <span className={styles.badge}>High resolution required</span>
                         </div>
                     </label>
                 </div>
@@ -106,7 +105,7 @@ const IdentityVerification = () => {
                     <div className={styles.photoWrapper}>
                         <Image
                             src={profilePhoto}
-                            alt={t('extractedProfile', 'Extracted Profile')}
+                            alt="Extracted Profile"
                             className={styles.photoImage}
                             width={100}
                             height={100}
@@ -118,9 +117,10 @@ const IdentityVerification = () => {
                         </div>
                     </div>
                     <div className={styles.photoInfo}>
-                        <h3 className={styles.photoTitle}>{t('autoextractedProfilePhoto', 'Auto-extracted Profile Photo')}</h3>
+                        <h3 className={styles.photoTitle}>Auto-extracted Profile Photo</h3>
                         <p className={styles.photoSub}>
-                            {t('profilePhotoDetectedAutomaticallyFromYourDocumentThisWillBeYourPublicProfileImageUnlessChanged', 'Profile photo detected automatically from your document. This will be your public\n                            profile image unless changed.')}
+                            Profile photo detected automatically from your document. This will be your public
+                            profile image unless changed.
                         </p>
                         <div className={styles.photoActions}>
                             <button className={styles.changeBtn} onClick={handlePhotoChange}>
@@ -128,7 +128,7 @@ const IdentityVerification = () => {
                                     <path d="M12 20h9" />
                                     <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                                 </svg>
-                                {t('changePhoto', 'Change Photo')}
+                                Change Photo
                             </button>
                             <button className={styles.useOther} onClick={() => { setNationalID(null); setPassport(null); }}>Use Different Document</button>
                         </div>
@@ -143,9 +143,10 @@ const IdentityVerification = () => {
                         </svg>
                     </div>
                     <div className={styles.securityContent}>
-                        <h4 className={styles.securityTitle}>{t('shariahcompliantSecurity', 'Shariah-Compliant Security')}</h4>
+                        <h4 className={styles.securityTitle}>Shariah-Compliant Security</h4>
                         <p className={styles.securityText}>
-                            {t('yourDocumentsAreEncryptedAndStoredInAnIsolatedSecureEnvironmentInAlignmentWithOurEthicalPrinciplesWeNeverSellOrShareYourPrivateDataWithThirdPartiesYourPrivacyIsASacredTrustAmanah', 'Your documents are encrypted and stored in an isolated secure environment. In alignment with our ethical principles, we never sell or share\n                            your private data with third parties. Your privacy is a sacred trust (Amanah).')}
+                            Your documents are encrypted and stored in an isolated secure environment. In alignment with our ethical principles, we never sell or share
+                            your private data with third parties. Your privacy is a sacred trust (Amanah).
                         </p>
                     </div>
                 </div>
@@ -157,10 +158,10 @@ const IdentityVerification = () => {
                             <line x1="19" y1="12" x2="5" y2="12" />
                             <polyline points="12 19 5 12 12 5" />
                         </svg>
-                        {t('backToPreviousStep', 'Back to previous step')}
+                        Back to previous step
                     </Link>
                     <Link href="/professional_info" className={styles.continueBtn}>
-                        {t('saveContinue', 'Save & Continue')}
+                        Save & Continue
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                             <line x1="5" y1="12" x2="19" y2="12" />
                             <polyline points="12 5 19 12 12 19" />
@@ -170,7 +171,7 @@ const IdentityVerification = () => {
             </main>
 
             <footer className={styles.footer}>
-                {t('2026HalalhireTheEthicalProfessionalNetworkForTheUmmah2', '© 2026 HalalHire. The Ethical Professional Network for the Ummah.')}
+                © 2026 HalalHire. The Ethical Professional Network for the Ummah.
             </footer>
         </div>
     );

@@ -4,13 +4,11 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './WorkPre.module.css';
-import { useTranslation } from 'react-i18next'
 
 const WorkPreferencesPage = () => {
-    const { t } = useTranslation()
     const [salaryMin, setSalaryMin] = useState(85000);
     const [salaryMax, setSalaryMax] = useState(140000);
-    const [employmentType, setEmploymentType] = useState(t('fulltime', 'Full-time'));
+    const [employmentType, setEmploymentType] = useState('Full-time');
     const [availableDate, setAvailableDate] = useState('06/01/2024');
     const [flexibility, setFlexibility] = useState({
         remote: true,
@@ -27,7 +25,7 @@ const WorkPreferencesPage = () => {
             {/* Top Bar */}
             <header className={styles.topBar}>
                 <div className={styles.logo}>
-                    <Image src="/logo.png" alt={t('halalhireLogo', 'HalalHire Logo')} width={120} height={40} style={{ objectFit: 'contain' }} />
+                    <Image src="/logo.png" alt="HalalHire Logo" width={120} height={40} style={{ objectFit: 'contain' }} />
                 </div>
             </header>
 
@@ -35,17 +33,18 @@ const WorkPreferencesPage = () => {
                 {/* Progress Header */}
                 <header className={styles.header}>
                     <div className={styles.stepInfo}>
-                        <span>{t('step3Of5', 'Step 3 of 5')}</span>
-                        <span className={styles.percentage}>{t('80Complete', '80% Complete')}</span>
+                        <span>Step 3 of 5</span>
+                        <span className={styles.percentage}>80% Complete</span>
                     </div>
                     <div className={styles.progressBar}>
                         <div className={styles.progressFill}></div>
                     </div>
-                    <p className={styles.stepMessage}>{t('almostThereWereTailoringYourCareerPathWithEthicalOpportunities', 'Almost there! We\'re tailoring your career path with ethical opportunities.')}</p>
+                    <p className={styles.stepMessage}>Almost there! We&apos;re tailoring your career path with ethical opportunities.</p>
 
-                    <h1 className={styles.title}>{t('workPreferences', 'Work Preferences')}</h1>
+                    <h1 className={styles.title}>Work Preferences</h1>
                     <p className={styles.subtitle}>
-                        {t('tellUsAboutYourIdealWorkingConditionsAndLogisticalRequirementsToHelpUsFindThePerfectMatch', 'Tell us about your ideal working conditions and logistical requirements to help\n                        us find the perfect match.')}
+                        Tell us about your ideal working conditions and logistical requirements to help
+                        us find the perfect match.
                     </p>
                 </header>
 
@@ -58,12 +57,12 @@ const WorkPreferencesPage = () => {
                                 <circle cx="12" cy="12" r="2" />
                                 <path d="M6 12h.01M18 12h.01" />
                             </svg>
-                            {t('salaryExpectations', 'Salary Expectations')}
+                            Salary Expectations
                         </div>
                         
                         <div className={styles.salaryLabelRow}>
-                            <div className={styles.label}>{t('desiredAnnualSalaryUsd', 'Desired Annual Salary (USD)')}</div>
-                            <div className={styles.priceBadge}>${salaryMin.toLocaleString()} {t('key', '- $')}{salaryMax.toLocaleString()}+</div>
+                            <div className={styles.label}>Desired Annual Salary (USD)</div>
+                            <div className={styles.priceBadge}>${salaryMin.toLocaleString()} - ${salaryMax.toLocaleString()}+</div>
                         </div>
 
                         <div className={styles.sliderContainer}>
@@ -92,11 +91,11 @@ const WorkPreferencesPage = () => {
                                 />
                             </div>
                             <div className={styles.sliderTicks}>
-                                <span className={styles.tick}>{t('40k', '$40k')}</span>
-                                <span className={styles.tick}>{t('100k', '$100k')}</span>
-                                <span className={styles.tick}>{t('150k', '$150k')}</span>
-                                <span className={styles.tick}>{t('200k', '$200k')}</span>
-                                <span className={styles.tick}>{t('250k', '$250k+')}</span>
+                                <span className={styles.tick}>$40k</span>
+                                <span className={styles.tick}>$100k</span>
+                                <span className={styles.tick}>$150k</span>
+                                <span className={styles.tick}>$200k</span>
+                                <span className={styles.tick}>$250k+</span>
                             </div>
                         </div>
                     </section>
@@ -109,7 +108,7 @@ const WorkPreferencesPage = () => {
                                     <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
                                     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                                 </svg>
-                                {t('employmentType', 'Employment Type')}
+                                Employment Type
                             </div>
                             <div className={styles.selectorRow}>
                                 {['Full-time', 'Contract', 'Part-time'].map((type) => (
@@ -132,7 +131,7 @@ const WorkPreferencesPage = () => {
                                     <line x1="8" y1="2" x2="8" y2="6" />
                                     <line x1="3" y1="10" x2="21" y2="10" />
                                 </svg>
-                                {t('availableFrom', 'Available From')}
+                                Available From
                             </div>
                             <input 
                                 type="text" 
@@ -150,13 +149,13 @@ const WorkPreferencesPage = () => {
                                 <circle cx="12" cy="12" r="10" />
                                 <circle cx="12" cy="12" r="3" />
                             </svg>
-                            {t('flexibility', 'Flexibility')}
+                            Flexibility
                         </div>
                         <div className={styles.flexGrid}>
                             <div className={styles.flexItem}>
                                 <div className={styles.flexInfo}>
-                                    <div className={styles.flexTitle}>{t('remoteAcceptable', 'Remote Acceptable?')}</div>
-                                    <div className={styles.flexSub}>{t('iAmOpenToFullyRemoteOrHybridRoles', 'I am open to fully remote or hybrid roles.')}</div>
+                                    <div className={styles.flexTitle}>Remote Acceptable?</div>
+                                    <div className={styles.flexSub}>I am open to fully remote or hybrid roles.</div>
                                 </div>
                                 <div 
                                     className={`${styles.toggle} ${flexibility.remote ? styles.toggleActive : ''}`}
@@ -168,8 +167,8 @@ const WorkPreferencesPage = () => {
 
                             <div className={styles.flexItem}>
                                 <div className={styles.flexInfo}>
-                                    <div className={styles.flexTitle}>{t('willingToRelocate', 'Willing to relocate?')}</div>
-                                    <div className={styles.flexSub}>{t('iAmOpenToMovingForTheRightOpportunity', 'I am open to moving for the right opportunity.')}</div>
+                                    <div className={styles.flexTitle}>Willing to relocate?</div>
+                                    <div className={styles.flexSub}>I am open to moving for the right opportunity.</div>
                                 </div>
                                 <div 
                                     className={`${styles.toggle} ${flexibility.relocate ? styles.toggleActive : ''}`}
@@ -181,8 +180,8 @@ const WorkPreferencesPage = () => {
 
                             <div className={styles.flexItem}>
                                 <div className={styles.flexInfo}>
-                                    <div className={styles.flexTitle}>{t('willingToTravel', 'Willing to travel?')}</div>
-                                    <div className={styles.flexSub}>{t('includesOccasionalBusinessTripsOrClientVisits', 'Includes occasional business trips or client visits.')}</div>
+                                    <div className={styles.flexTitle}>Willing to travel?</div>
+                                    <div className={styles.flexSub}>Includes occasional business trips or client visits.</div>
                                 </div>
                                 <div 
                                     className={`${styles.toggle} ${flexibility.travel ? styles.toggleActive : ''}`}
@@ -202,10 +201,10 @@ const WorkPreferencesPage = () => {
                             <line x1="19" y1="12" x2="5" y2="12" />
                             <polyline points="12 19 5 12 12 5" />
                         </svg>
-                        {t('back', 'Back')}
+                        Back
                     </Link>
                     <Link href="/photos_finalize" className={styles.continueBtn}>
-                        {t('saveContinue', 'Save & Continue')}
+                        Save & Continue
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                             <line x1="5" y1="12" x2="19" y2="12" />
                             <polyline points="12 5 19 12 12 19" />
@@ -217,7 +216,7 @@ const WorkPreferencesPage = () => {
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
-                    {t('yourDataIsStoredSecurelyAndHandledWithEthicalIntegrity', 'Your data is stored securely and handled with ethical integrity.')}
+                    Your data is stored securely and handled with ethical integrity.
                 </div>
             </main>
         </div>
