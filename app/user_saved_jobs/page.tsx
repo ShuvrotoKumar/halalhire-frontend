@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import styles from './SavedJobs.module.css';
+import styles from '../user_profile/UserProfile.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../components/Navbar/Navbar';
@@ -10,11 +10,9 @@ import {
   CheckCircle, 
   MapPin, 
   Globe, 
-  MoreHorizontal, 
   Bookmark,
   Compass,
-  Shield,
-  CreditCard
+  Shield
 } from 'lucide-react';
 
 import { useModal } from '@/app/context/ModalContext';
@@ -105,44 +103,62 @@ const SavedJobs = () => {
       </header>
 
       <main className={styles.contentContainer}>
-        <div className={styles.contentHeader}>
-          <h2 className={styles.contentTitle}>{t('savedJobsLength', 'Saved Jobs ({{length}})', { length: savedJobs.length })}</h2>
-          <span className={styles.contentSubtitle}>{t('manageYourBookmarkedOpportunities', 'Manage your bookmarked opportunities')}</span>
-        </div>
-
-        <div className={styles.jobsList}>
-          {savedJobs.map((job) => (
-            <div key={job.id} className={styles.jobCard}>
-              <div className={styles.iconBox}>
-                {job.icon}
-              </div>
-              <div className={styles.jobCardContent}>
-                <div className={styles.cardHeader}>
-                  <h3 className={styles.cardTitle}>{job.title}</h3>
-                  <Bookmark size={20} className={styles.bookmarkIcon} fill="currentColor" />
-                </div>
-                <p className={styles.companyName}>{job.company}</p>
-                <div className={styles.cardMeta}>
-                  <div className={styles.metaItem}>
-                    <MapPin size={14} /> {job.location}
-                  </div>
-                  <div className={styles.metaItem}>
-                    <CreditCard size={14} /> {job.salary}
-                  </div>
-                </div>
-                <div className={styles.cardActions}>
-                  <button className={styles.removeBtn}>{t('remove', 'Remove')}</button>
-                  <button 
-                    className={styles.applyBtn}
-                    onClick={() => openApplyModal({ title: job.title, company: job.company, logo: '/logo.png' })}
-                  >
-                    {t('applyNow', 'Apply Now')}
-                  </button>
-                </div>
-              </div>
+        {/* Saved Jobs Section */}
+        <section className={styles.card}>
+          <div className={styles.sectionHeader}>
+            <div className={styles.sectionTitle}>
+              <Bookmark size={20} color="#e2ab4c" />
+              {t('savedJobs', 'Saved Jobs')}
             </div>
-          ))}
-        </div>
+            <div className={styles.matchBadge}>
+              {t('totalSaved', 'Total Saved')}
+              <div className={styles.progressBar}>
+                <div className={styles.progressFill} style={{ width: '75%' }}></div>
+              </div>
+              {savedJobs.length}
+            </div>
+          </div>
+          <p className={styles.summaryText}>
+            {t('manageYourBookmarkedOpportunities', 'Manage your bookmarked opportunities and track your application progress for positions that align with your values and career goals.')}
+          </p>
+        </section>
+
+        {/* Saved Jobs List */}
+        <section className={styles.card}>
+          <div className={styles.sectionTitle} style={{ marginBottom: '32px' }}>
+            <CheckCircle size={20} color="#e2ab4c" />
+            {t('yourSavedPositions', 'Your Saved Positions')}
+          </div>
+          
+          <div className={styles.timeline}>
+            {savedJobs.map((job) => (
+              <div key={job.id} className={styles.timelineItem}>
+                <div className={styles.dotContainer}>
+                  <div className={styles.dot}></div>
+                </div>
+                <div className={styles.workDetails}>
+                  <div className={styles.workHeader}>
+                    <h3 className={styles.roleTitle}>{job.title}</h3>
+                    <span className={styles.workDate}>{job.salary}</span>
+                  </div>
+                  <div className={styles.companyName}>{job.company}</div>
+                  <p className={styles.roleDesc}>
+                    <MapPin size={14} /> {job.location}
+                  </p>
+                  <div className={styles.cardActions} style={{ marginTop: '16px' }}>
+                    <button className={styles.removeBtn}>{t('remove', 'Remove')}</button>
+                    <button 
+                      className={styles.applyBtn}
+                      onClick={() => openApplyModal({ title: job.title, company: job.company, logo: '/logo.png' })}
+                    >
+                      {t('applyNow', 'Apply Now')}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
 
       <Footer />
