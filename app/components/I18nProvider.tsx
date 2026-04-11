@@ -8,11 +8,10 @@ import deTranslation from '../../public/locales/de/translation.json';
 import trTranslation from '../../public/locales/tr/translation.json';
 import arTranslation from '../../public/locales/ar/translation.json';
 
-let isInitialized = false;
-
 export function I18nProvider({ children, initialLocale = 'en' }: { children: React.ReactNode, initialLocale?: string }) {
-  if (!isInitialized) {
-    i18next
+  const [i18nInstance] = useState(() => {
+    const instance = i18next.createInstance();
+    instance
       .use(initReactI18next)
       .init({
         lng: initialLocale,
@@ -28,18 +27,17 @@ export function I18nProvider({ children, initialLocale = 'en' }: { children: Rea
           escapeValue: false, // react already safes from xss
         },
       });
-    isInitialized = true;
-  }
+    return instance;
+  });
 
-  // Ensure language matches the server's initialLocale during SSR and fast refresh
-  if (i18next.language !== initialLocale) {
-     if (typeof window === 'undefined') {
-        i18next.changeLanguage(initialLocale);
-     }
-  }
+  useEffect(() => {
+    if (i18nInstance.language !== initialLocale) {
+      i18nInstance.changeLanguage(initialLocale);
+    }
+  }, [initialLocale, i18nInstance]);
 
   return (
-    <I18nextProvider i18n={i18next}>
+    <I18nextProvider i18n={i18nInstance}>
       {children}
     </I18nextProvider>
   );
