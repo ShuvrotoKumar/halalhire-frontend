@@ -29,8 +29,8 @@ export default async function RootLayout({
   const lng = cookieStore.get('i18next')?.value || 'en';
 
   return (
-    <html lang={lng}>
-      <body>
+    <html lang={lng} suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <I18nProvider initialLocale={lng}>
           <AuthProvider>
             <ModalProvider>

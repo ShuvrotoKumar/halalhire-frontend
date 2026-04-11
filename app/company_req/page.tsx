@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import styles from './CompanyReq.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
