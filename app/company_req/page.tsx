@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import styles from './CompanyReq.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,12 +14,14 @@ import {
   Users,
   Briefcase,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Search
 } from 'lucide-react';
 
 const CompanyReq = () => {
   const { t } = useTranslation();
   const { openProfileEditModal, openAcceptModal, openRejectModal } = useModal();
+  const [searchTerm, setSearchTerm] = useState('');
   
   const jobRequests = useMemo(() => [
     {
@@ -63,6 +65,15 @@ const CompanyReq = () => {
       appliedDate: t('oct202023', 'Oct 20, 2023')
     }
   ], [t]);
+
+  const filteredRequests = useMemo(() => {
+    return jobRequests.filter(req => 
+      req.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      req.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      req.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      req.department.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [jobRequests, searchTerm]);
 
   return (
     <div className={styles.pageWrapper}>
@@ -115,12 +126,27 @@ const CompanyReq = () => {
 
       <main className={styles.contentArea}>
         <div className={styles.contentHeader}>
-          <h2>{t('jobRequests', 'Job Requests')}</h2>
-          <p className={styles.subtitle}>{t('reviewAndManageCandidatesApplyingThroughHalalhire', 'Review and manage candidates applying through HalalHire.')}</p>
+          <div className={styles.headerTitleRow}>
+            <div>
+              <h2>{t('jobRequests', 'Job Requests')}</h2>
+              <p className={styles.subtitle}>{t('reviewAndManageCandidatesApplyingThroughHalalhire', 'Review and manage candidates applying through HalalHire.')}</p>
+            </div>
+            <div className={styles.searchWrapper}>
+              <Search className={styles.searchIcon} size={18} />
+              <input 
+                type="text" 
+                placeholder={t('searchByNamePositionEmail', 'Search by name, position, email...')}
+                className={styles.searchInput}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
         </div>
 
         <div className={styles.requestsGrid}>
-          {jobRequests.map((req) => (
+          {filteredRequests.length > 0 ? (
+            filteredRequests.map((req) => (
             <div key={req.id} className={styles.requestCard}>
               <div className={styles.cardHeader}>
                 <div className={styles.avatar}>
@@ -150,7 +176,12 @@ const CompanyReq = () => {
                 <button className={styles.rejectBtn} onClick={() => openRejectModal(req)}>{t('reject', 'Reject')}</button>
               </div>
             </div>
-          ))}
+          ))
+          ) : (
+            <div className={styles.noResults}>
+              {t('noApplicationsMatchYourSearch', 'No applications match your search.')}
+            </div>
+          )}
         </div>
 
         <div className={styles.pagination}>
