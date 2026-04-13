@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useMemo } from 'react';
 import styles from './FeaturedCompanies.module.css';
 import FeaturedCompanyCard from './FeaturedCompanyCard';
 import Link from 'next/link';

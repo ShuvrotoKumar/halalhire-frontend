@@ -176,7 +176,7 @@ const Page = () => {
                             <JobFilters filters={filters} setFilters={setFilters} />
 
                             <div className={styles.mainContent}>
-                                <div className={styles.resultsHeader}>
+                                {/* <div className={styles.resultsHeader}>
                                     <h2 className={styles.resultsCount}>
                                         {filteredAndSortedJobs.length.toLocaleString()}<Trans i18nKey="jobsFoundSpanresultsBasedOnYourSelectedFiltersspan">Jobs Found
                                         <span>Results based on your selected filters</span></Trans></h2>
@@ -192,7 +192,7 @@ const Page = () => {
                                             <option value="Salary">{t('salaryHighToLow', 'Salary (High to Low)')}</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> */}
 
                                 <div className={styles.jobList}>
                                     {filteredAndSortedJobs.length > 0 ? (
