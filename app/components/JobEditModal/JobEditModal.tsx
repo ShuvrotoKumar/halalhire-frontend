@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './JobEditModal.module.css';
 import { useModal } from '@/app/context/ModalContext';
 import { useTranslation } from 'react-i18next'
@@ -23,6 +23,24 @@ import {
   Map
 } from 'lucide-react';
 
+const JOB_TITLES = [
+  { id: 1, name: 'Product Designer' },
+  { id: 2, name: 'Frontend Developer' },
+  { id: 3, name: 'Backend Developer' },
+  { id: 4, name: 'Full Stack Developer' },
+  { id: 5, name: 'UI/UX Designer' },
+  { id: 6, name: 'Mobile App Developer' },
+  { id: 7, name: 'Data Scientist' },
+  { id: 8, name: 'DevOps Engineer' },
+  { id: 9, name: 'Project Manager' },
+  { id: 10, name: 'Digital Marketing Manager' },
+  { id: 11, name: 'Software Engineer' },
+  { id: 12, name: 'Business Analyst' },
+  { id: 13, name: 'Graphic Designer' },
+  { id: 14, name: 'Content Strategist' },
+  { id: 15, name: 'QA Engineer' },
+];
+
 const JobEditModal = () => {
   const { t } = useTranslation()
   const { isJobEditModalOpen, closeJobEditModal, activeJob } = useModal();
@@ -33,6 +51,12 @@ const JobEditModal = () => {
   const [selectedCountry, setSelectedCountry] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const [experience, setExperience] = useState('Mid');
+  const [jobTitle, setJobTitle] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [filteredTitles, setFilteredTitles] = useState(JOB_TITLES);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     fetch('https://countriesnow.space/api/v0.1/countries')
@@ -87,7 +111,46 @@ const JobEditModal = () => {
       setSelectedCountry('');
       setSelectedCity('');
     }
+
+    if (activeJob?.experience) {
+      setExperience(activeJob.experience);
+    } else {
+      setExperience('Mid');
+    }
+
+    if (activeJob?.title) {
+      setJobTitle(activeJob.title);
+    } else {
+      setJobTitle('');
+    }
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [activeJob, isJobEditModalOpen]);
+
+  const handleJobTitleChange = (value: string) => {
+    setJobTitle(value);
+    if (value.trim()) {
+      const filtered = JOB_TITLES.filter(title =>
+        title.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredTitles(filtered);
+      setIsDropdownOpen(true);
+    } else {
+      setFilteredTitles(JOB_TITLES);
+      setIsDropdownOpen(true);
+    }
+  };
+
+  const selectTitle = (title: string) => {
+    setJobTitle(title);
+    setIsDropdownOpen(false);
+  };
 
   if (!isJobEditModalOpen) return null;
 
@@ -131,14 +194,33 @@ const JobEditModal = () => {
             </div>
             
             <div className={styles.grid}>
-              <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
+              <div className={`${styles.inputGroup} ${styles.fullWidth}`} style={{ position: 'relative' }} ref={dropdownRef}>
                 <label className={styles.label}>{t('jobTitle', 'Job Title')}</label>
                 <input 
                   type="text" 
                   placeholder={t('egSeniorSoftwareEngineer', 'e.g. Senior Software Engineer')} 
                   className={styles.input}
-                  defaultValue={activeJob?.title || ''}
+                  value={jobTitle}
+                  onChange={(e) => handleJobTitleChange(e.target.value)}
+                  onFocus={() => setIsDropdownOpen(true)}
                 />
+                {isDropdownOpen && (
+                  <div className={styles.dropdownMenu}>
+                    {filteredTitles.length > 0 ? (
+                      filteredTitles.map((title) => (
+                        <div 
+                          key={title.id} 
+                          className={styles.dropdownItem}
+                          onClick={() => selectTitle(title.name)}
+                        >
+                          {title.name}
+                        </div>
+                      ))
+                    ) : (
+                      <div className={styles.noResults}>No matches found</div>
+                    )}
+                  </div>
+                )}
               </div>
               
               <div className={styles.inputGroup}>
@@ -157,6 +239,20 @@ const JobEditModal = () => {
                   <option>{t('fulltime', 'Full-time')}</option>
                   <option>{t('contract', 'Contract')}</option>
                   <option>{t('parttime', 'Part-time')}</option>
+                </select>
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>{t('experienceLevel', 'Experience Level')}</label>
+                <select 
+                  className={styles.select}
+                  value={experience}
+                  onChange={(e) => setExperience(e.target.value)}
+                >
+                  <option value="Fresher">{t('fresher', 'Fresher')}</option>
+                  <option value="Junior">{t('junior', 'Junior')}</option>
+                  <option value="Mid">{t('mid', 'Mid')}</option>
+                  <option value="Senior">{t('senior', 'Senior')}</option>
                 </select>
               </div>
 

@@ -1,12 +1,63 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './ProfessionalInfo.module.css';
 
+const JOB_TITLES = [
+    { id: 1, name: 'Product Designer' },
+    { id: 2, name: 'Frontend Developer' },
+    { id: 3, name: 'Backend Developer' },
+    { id: 4, name: 'Full Stack Developer' },
+    { id: 5, name: 'UI/UX Designer' },
+    { id: 6, name: 'Mobile App Developer' },
+    { id: 7, name: 'Data Scientist' },
+    { id: 8, name: 'DevOps Engineer' },
+    { id: 9, name: 'Project Manager' },
+    { id: 10, name: 'Digital Marketing Manager' },
+    { id: 11, name: 'Software Engineer' },
+    { id: 12, name: 'Business Analyst' },
+    { id: 13, name: 'Graphic Designer' },
+    { id: 14, name: 'Content Strategist' },
+    { id: 15, name: 'QA Engineer' },
+];
+
 const ProfessionalProfilePage = () => {
     const [jobTitle, setJobTitle] = useState('Product Designer');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [filteredTitles, setFilteredTitles] = useState(JOB_TITLES);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleJobTitleChange = (value: string) => {
+        setJobTitle(value);
+        if (value.trim()) {
+            const filtered = JOB_TITLES.filter(title =>
+                title.name.toLowerCase().includes(value.toLowerCase())
+            );
+            setFilteredTitles(filtered);
+            setIsDropdownOpen(true);
+        } else {
+            setFilteredTitles(JOB_TITLES);
+            setIsDropdownOpen(true);
+        }
+    };
+
+    const selectTitle = (title: string) => {
+        setJobTitle(title);
+        setIsDropdownOpen(false);
+    };
+
     const [experience, setExperience] = useState('Senior Level (5-10 years)');
     const [skills, setSkills] = useState(['UI/UX DESIGN', 'PRODUCT STRATEGY', 'FIGMA']);
     const [skillInput, setSkillInput] = useState('');
@@ -101,27 +152,46 @@ const ProfessionalProfilePage = () => {
                             Experience Details
                         </div>
                         <div className={styles.formGrid}>
-                            <div className={styles.formGroup}>
+                            <div className={styles.formGroup} style={{ position: 'relative' }} ref={dropdownRef}>
                                 <label className={styles.label}>Current Job Title</label>
-                                <input 
-                                    type="text" 
-                                    className={styles.input} 
-                                    value={jobTitle} 
-                                    onChange={(e) => setJobTitle(e.target.value)}
+                                <input
+                                    type="text"
+                                    className={styles.input}
+                                    value={jobTitle}
+                                    onChange={(e) => handleJobTitleChange(e.target.value)}
+                                    onFocus={() => setIsDropdownOpen(true)}
+                                    placeholder="e.g. Product Designer"
                                 />
+                                {isDropdownOpen && (
+                                    <div className={styles.dropdownMenu}>
+                                        {filteredTitles.length > 0 ? (
+                                            filteredTitles.map((title) => (
+                                                <div
+                                                    key={title.id}
+                                                    className={styles.dropdownItem}
+                                                    onClick={() => selectTitle(title.name)}
+                                                >
+                                                    {title.name}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className={styles.noResults}>No matches found</div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                             <div className={styles.formGroup}>
                                 <label className={styles.label}>Years of Experience</label>
                                 <div className={styles.selectWrapper}>
-                                    <select 
-                                        className={styles.select} 
+                                    <select
+                                        className={styles.select}
                                         value={experience}
                                         onChange={(e) => setExperience(e.target.value)}
                                     >
-                                        <option>Entry Level (0-2 years)</option>
-                                        <option>Mid Level (2-5 years)</option>
-                                        <option>Senior Level (5-10 years)</option>
-                                        <option>Expert Level (10+ years)</option>
+                                        <option>Fresher</option>
+                                        <option>Junior</option>
+                                        <option>Mid</option>
+                                        <option>Senior</option>
                                     </select>
                                 </div>
                             </div>
@@ -149,10 +219,10 @@ const ProfessionalProfilePage = () => {
                                         </span>
                                     </div>
                                 ))}
-                                <input 
-                                    type="text" 
-                                    className={styles.tagInput} 
-                                    placeholder="Add a skill..." 
+                                <input
+                                    type="text"
+                                    className={styles.tagInput}
+                                    placeholder="Add a skill..."
                                     value={skillInput}
                                     onChange={(e) => setSkillInput(e.target.value)}
                                     onKeyDown={handleAddSkill}
@@ -164,8 +234,8 @@ const ProfessionalProfilePage = () => {
                             <div className={styles.formGroup}>
                                 <label className={styles.label}>Primary Language</label>
                                 <div className={styles.selectWrapper}>
-                                    <select 
-                                        className={styles.select} 
+                                    <select
+                                        className={styles.select}
                                         value={primaryLanguage}
                                         onChange={(e) => setPrimaryLanguage(e.target.value)}
                                     >
@@ -178,10 +248,10 @@ const ProfessionalProfilePage = () => {
                             </div>
                             <div className={styles.formGroup}>
                                 <label className={styles.label}>Other Languages</label>
-                                <input 
-                                    type="text" 
-                                    className={styles.input} 
-                                    placeholder="e.g. Arabic, Malay" 
+                                <input
+                                    type="text"
+                                    className={styles.input}
+                                    placeholder="e.g. Arabic, Malay"
                                     value={otherLanguages}
                                     onChange={(e) => setOtherLanguages(e.target.value)}
                                 />

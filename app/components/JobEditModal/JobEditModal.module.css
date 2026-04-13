@@ -257,3 +257,39 @@
 .locationInput {
   padding-left: 44px !important;
 }
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e8e1;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 6px;
+}
+
+.dropdownItem {
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #193f35;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background-color: #fdf8eb;
+  color: #c4a66a;
+}
+
+.noResults {
+  padding: 16px;
+  font-size: 13px;
+  color: #94a3b8;
+  text-align: center;
+}
