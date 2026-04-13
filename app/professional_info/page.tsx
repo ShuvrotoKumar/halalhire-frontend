@@ -6,21 +6,62 @@ import Link from 'next/link';
 import styles from './ProfessionalInfo.module.css';
 
 const JOB_TITLES = [
-    { id: 1, name: 'Product Designer' },
-    { id: 2, name: 'Frontend Developer' },
-    { id: 3, name: 'Backend Developer' },
-    { id: 4, name: 'Full Stack Developer' },
-    { id: 5, name: 'UI/UX Designer' },
-    { id: 6, name: 'Mobile App Developer' },
-    { id: 7, name: 'Data Scientist' },
-    { id: 8, name: 'DevOps Engineer' },
-    { id: 9, name: 'Project Manager' },
-    { id: 10, name: 'Digital Marketing Manager' },
-    { id: 11, name: 'Software Engineer' },
-    { id: 12, name: 'Business Analyst' },
-    { id: 13, name: 'Graphic Designer' },
-    { id: 14, name: 'Content Strategist' },
-    { id: 15, name: 'QA Engineer' },
+  // Technology
+  { id: 1, name: 'Frontend Developer' },
+  { id: 2, name: 'Backend Developer' },
+  { id: 3, name: 'Full Stack Developer' },
+  { id: 4, name: 'Software Engineer' },
+  { id: 5, name: 'UI/UX Designer' },
+  { id: 6, name: 'Mobile App Developer' },
+  { id: 7, name: 'Data Scientist' },
+  { id: 8, name: 'DevOps Engineer' },
+  { id: 9, name: 'QA Engineer' },
+  { id: 10, name: 'Cyber Security Analyst' },
+  { id: 11, name: 'Cloud Architect' },
+  // Finance & Islamic Finance
+  { id: 12, name: 'Islamic Finance Analyst' },
+  { id: 13, name: 'Sharia Auditor' },
+  { id: 14, name: 'Senior Compliance Officer' },
+  { id: 15, name: 'Financial Consultant' },
+  { id: 16, name: 'Investment Banker' },
+  { id: 17, name: 'Risk Manager' },
+  { id: 18, name: 'Accountant' },
+  { id: 19, name: 'Portfolio Manager' },
+  // Healthcare
+  { id: 20, name: 'Clinical Lead' },
+  { id: 21, name: 'Registered Nurse' },
+  { id: 22, name: 'Pharmacist' },
+  { id: 23, name: 'General Practitioner' },
+  { id: 24, name: 'Healthcare Administrator' },
+  // Education
+  { id: 25, name: 'Educational Consultant' },
+  { id: 26, name: 'Online Tutor' },
+  { id: 27, name: 'Arabic Language Teacher' },
+  { id: 28, name: 'Islamic Studies Instructor' },
+  { id: 29, name: 'Curriculum Developer' },
+  // Marketing & Sales
+  { id: 30, name: 'Marketing Manager' },
+  { id: 31, name: 'Content Strategist' },
+  { id: 32, name: 'SEO Specialist' },
+  { id: 33, name: 'Sales Representative' },
+  { id: 34, name: 'Digital Marketing Manager' },
+  { id: 35, name: 'Business Development Manager' },
+  // Operations & Logistics
+  { id: 36, name: 'Operations Manager' },
+  { id: 37, name: 'Logistics Manager' },
+  { id: 38, name: 'Supply Chain Coordinator' },
+  { id: 39, name: 'Procurement Officer' },
+  { id: 40, name: 'Project Manager' },
+  // HR & Administration
+  { id: 41, name: 'HR Manager' },
+  { id: 42, name: 'Recruiter' },
+  { id: 43, name: 'Legal Advisor' },
+  { id: 44, name: 'Office Administrator' },
+  // Creative
+  { id: 45, name: 'Graphic Designer' },
+  { id: 46, name: 'Product Designer' },
+  { id: 47, name: 'Creative Director' },
+  { id: 48, name: 'Video Editor' },
 ];
 
 const ProfessionalProfilePage = () => {
