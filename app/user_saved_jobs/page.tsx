@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import styles from '../user_profile/UserProfile.module.css';
+import styles from './SavedJobs.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../components/Navbar/Navbar';
@@ -14,7 +14,9 @@ import {
   Compass,
   Shield,
   Bell,
-  X
+  X,
+  Trash2,
+  Send
 } from 'lucide-react';
 
 import { useModal } from '@/app/context/ModalContext';
@@ -169,13 +171,17 @@ const SavedJobs = () => {
                   <p className={styles.roleDesc}>
                     <MapPin size={14} /> {job.location}
                   </p>
-                  <div className={styles.cardActions} style={{ marginTop: '16px' }}>
-                    <button className={styles.removeBtn}>{t('remove', 'Remove')}</button>
+                  <div className={styles.cardActions} style={{ marginTop: '24px' }}>
+                    <button className={styles.removeBtn}>
+                      <Trash2 size={16} />
+                      {t('remove', 'Remove')}
+                    </button>
                     <button 
                       className={styles.applyBtn}
                       onClick={() => openApplyModal({ title: job.title, company: job.company, logo: '/logo.png' })}
                     >
                       {t('applyNow', 'Apply Now')}
+                      <Send size={16} />
                     </button>
                   </div>
                 </div>
