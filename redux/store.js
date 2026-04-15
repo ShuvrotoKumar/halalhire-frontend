@@ -1,8 +1,12 @@
+'use client';
+
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { baseApi } from "./api/baseApi";
 import { authSlice } from "./Slice/authSlice";
+import registrationReducer from "./Slice/registrationSlice";
+
 const persistConfig = {
   key: "BAZARYA-app",
   storage,
@@ -12,6 +16,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   [baseApi.reducerPath]: baseApi.reducer,
   auth: authSlice.reducer,
+  registration: registrationReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

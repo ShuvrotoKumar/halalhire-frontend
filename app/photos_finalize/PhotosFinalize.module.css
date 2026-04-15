@@ -241,6 +241,20 @@
   font-weight: 500;
 }
 
+.errorBanner {
+  margin-top: 16px;
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  color: #b91c1c;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
 .actions {
   display: flex;
   align-items: center;

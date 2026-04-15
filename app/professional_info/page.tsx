@@ -3,6 +3,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
+import { setProfessionalProfile } from '@/redux/Slice/registrationSlice';
+import { useRegistrationFiles } from '@/app/context/RegistrationContext';
 import styles from './ProfessionalInfo.module.css';
 
 const JOB_TITLES = [
@@ -65,7 +69,30 @@ const JOB_TITLES = [
 ];
 
 const ProfessionalProfilePage = () => {
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const registration = useSelector((state: any) => state.registration);
+    const { 
+        document: resumeFile, setDocument: setResumeFile,
+        professionalCertificates: certificatesFiles, addCertificate, removeCertificate 
+    } = useRegistrationFiles();
+
     const [jobTitle, setJobTitle] = useState('Product Designer');
+    const [experience, setExperience] = useState('Junior');
+    const [skills, setSkills] = useState(['UI/UX DESIGN', 'PRODUCT STRATEGY', 'FIGMA']);
+    const [skillInput, setSkillInput] = useState('');
+    const [primaryLanguage, setPrimaryLanguage] = useState('English (Native/Professional)');
+    const [otherLanguages, setOtherLanguages] = useState('');
+
+    useEffect(() => {
+        if (registration && registration.professionalProfile) {
+            setJobTitle(registration.professionalProfile.currentJobTitle || 'Product Designer');
+            // Mapping back experience if possible, or just default
+            setSkills(registration.professionalProfile.skills || []);
+            setPrimaryLanguage(registration.professionalProfile.primaryLanguage || 'English (Native/Professional)');
+        }
+    }, []);
+
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [filteredTitles, setFilteredTitles] = useState(JOB_TITLES);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -99,16 +126,6 @@ const ProfessionalProfilePage = () => {
         setIsDropdownOpen(false);
     };
 
-    const [experience, setExperience] = useState('Senior Level (5-10 years)');
-    const [skills, setSkills] = useState(['UI/UX DESIGN', 'PRODUCT STRATEGY', 'FIGMA']);
-    const [skillInput, setSkillInput] = useState('');
-    const [primaryLanguage, setPrimaryLanguage] = useState('English (Native/Professional)');
-    const [otherLanguages, setOtherLanguages] = useState('');
-    const [resume, setResume] = useState({ name: 'resume_july_2023.pdf', size: '1.2 MB', time: '2 mins ago' });
-    const [certificates, setCertificates] = useState([
-        { id: 1, name: 'google_ux_cert.png', status: 'Ready to upload' }
-    ]);
-
     const handleAddSkill = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && skillInput.trim()) {
             e.preventDefault();
@@ -123,19 +140,10 @@ const ProfessionalProfilePage = () => {
         setSkills(skills.filter(skill => skill !== skillToRemove));
     };
 
-    const removeCert = (id: number) => {
-        setCertificates(certificates.filter(cert => cert.id !== id));
-    };
-
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
-            setResume({
-                name: file.name,
-                size: `${sizeMB} MB`,
-                time: 'Just now'
-            });
+            setResumeFile(file);
         }
     };
 
@@ -145,14 +153,21 @@ const ProfessionalProfilePage = () => {
         input.onchange = (e: any) => {
             const file = e.target.files?.[0];
             if (file) {
-                setCertificates([...certificates, {
-                    id: Date.now(),
-                    name: file.name,
-                    status: 'Selected'
-                }]);
+                addCertificate(file);
             }
         };
         input.click();
+    };
+
+    const handleContinue = (e: React.MouseEvent) => {
+        e.preventDefault();
+        dispatch(setProfessionalProfile({
+            currentJobTitle: jobTitle,
+            yearsOfExperience: experience === 'Fresher' ? 0 : experience === 'Junior' ? 2 : experience === 'Mid' ? 5 : 10,
+            skills: skills,
+            primaryLanguage: primaryLanguage
+        }));
+        router.push('/work_pre');
     };
 
     return (
@@ -321,8 +336,8 @@ const ProfessionalProfilePage = () => {
                                     <path d="M12 18v-6" /><polyline points="9 15 12 12 15 15" />
                                 </svg>
                             </div>
-                            <div className={styles.fileName}>{resume.name}</div>
-                            <div className={styles.fileInfo}>Uploaded {resume.time} • {resume.size}</div>
+                            <div className={styles.fileName}>{resumeFile ? resumeFile.name : 'No file chosen'}</div>
+                            <div className={styles.fileInfo}>{resumeFile ? `${(resumeFile.size / (1024 * 1024)).toFixed(1)} MB` : 'Please upload your resume'}</div>
                             <label className={styles.changeBtn}>Change File
                                 <input type="file" style={{ display: 'none' }} onChange={handleFileChange} />
                             </label>
@@ -341,8 +356,8 @@ const ProfessionalProfilePage = () => {
                                 <span style={{ fontWeight: 400, color: '#9ca3af' }}>Optional</span>
                             </div>
                             <div className={styles.certificatesGrid}>
-                                {certificates.map((cert) => (
-                                    <div key={cert.id} className={styles.certCard}>
+                                {certificatesFiles.map((cert, index) => (
+                                    <div key={index} className={styles.certCard}>
                                         <div className={styles.certIcon}>
                                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                                 <circle cx="12" cy="8" r="7" />
@@ -351,9 +366,9 @@ const ProfessionalProfilePage = () => {
                                         </div>
                                         <div className={styles.certDetails}>
                                             <div className={styles.certName}>{cert.name}</div>
-                                            <div className={styles.certStatus}>{cert.status}</div>
+                                            <div className={styles.certStatus}>Selected</div>
                                         </div>
-                                        <div className={styles.deleteCert} onClick={() => removeCert(cert.id)}>
+                                        <div className={styles.deleteCert} onClick={() => removeCertificate(index)}>
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                                 <polyline points="3 6 5 6 21 6" />
                                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -382,13 +397,13 @@ const ProfessionalProfilePage = () => {
                             </svg>
                             Back
                         </Link>
-                        <Link href="/work_pre" className={styles.continueBtn}>
+                        <button onClick={handleContinue} className={styles.continueBtn}>
                             Save & Continue
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                 <line x1="5" y1="12" x2="19" y2="12" />
                                 <polyline points="12 5 19 12 12 19" />
                             </svg>
-                        </Link>
+                        </button>
                     </div>
                 </form>
 

@@ -1,7 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPersonalInfo } from '@/redux/Slice/registrationSlice';
+import { useRouter } from 'next/navigation';
 import styles from './PersonalInfo.module.css';
 
 const PersonalInfoPage = () => {
@@ -13,9 +16,37 @@ const PersonalInfoPage = () => {
         prayerFacility: 'Preference for prayer facilities / Halal food?'
     });
 
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const registration = useSelector((state: any) => state.registration);
+
+    useEffect(() => {
+        if (registration) {
+            setFormData({
+                dob: registration.dateOfBirth || '',
+                country: registration.countryOrigin || 'Select your country',
+                maritalStatus: registration.maritalStatus || 'Select status',
+                childrenCount: registration.numberOfChildren?.toString() || '',
+                prayerFacility: registration.religiousPractice || 'Preference for prayer facilities / Halal food?'
+            });
+        }
+    }, []); // Run once on mount
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleContinue = (e: React.FormEvent) => {
+        e.preventDefault();
+        dispatch(setPersonalInfo({
+            dateOfBirth: formData.dob,
+            countryOrigin: formData.country,
+            maritalStatus: formData.maritalStatus,
+            numberOfChildren: Number(formData.childrenCount),
+            religiousPractice: formData.prayerFacility
+        }));
+        router.push('/identity_doc');
     };
 
     return (
@@ -155,13 +186,13 @@ const PersonalInfoPage = () => {
                             </svg>
                             Back to Login
                         </Link>
-                        <Link href="/identity_doc" className={styles.continueBtn}>
+                        <button type="submit" onClick={handleContinue} className={styles.continueBtn}>
                             Save & Continue
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                                 <polyline points="12 5 19 12 12 19"></polyline>
                             </svg>
-                        </Link>
+                        </button>
                     </div>
                 </form>
             </main>

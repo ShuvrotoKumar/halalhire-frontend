@@ -1,3 +1,5 @@
+'use client';
+
 import { baseApi } from "./baseApi";
 
 const authApi = baseApi.injectEndpoints({
@@ -40,7 +42,7 @@ const authApi = baseApi.injectEndpoints({
     }),
     registerUser: builder.mutation({
       query: (formData) => ({
-        url: "user/create_user",
+        url: "/user/create_user",
         method: "POST",
         body: formData,
       }),

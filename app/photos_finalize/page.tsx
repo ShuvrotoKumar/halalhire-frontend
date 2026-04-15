@@ -3,15 +3,66 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
+import { useRegistrationFiles } from '@/app/context/RegistrationContext';
+import { useRegisterUserMutation } from '@/redux/api/authApi';
+import { resetRegistration } from '@/redux/Slice/registrationSlice';
 import styles from './PhotosFinalize.module.css';
 
 const PhotosFinalizePage = () => {
-    const [portrait, setPortrait] = useState<File | null>(null);
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const registration = useSelector((state: any) => state.registration);
+    const { 
+        photo: portrait, setPhoto: setPortrait,
+        nationalId, internationalPassport, 
+        document: resumeFile, professionalCertificates,
+        clearFiles 
+    } = useRegistrationFiles();
+
+    const [registerUser, { isLoading: isRegistering }] = useRegisterUserMutation();
+    const [finalError, setFinalError] = useState<string | null>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             setPortrait(file);
+        }
+    };
+
+    const handleFinish = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        
+        try {
+            const formData = new FormData();
+            
+            // Append JSON data as requested by the API
+            formData.append('data', JSON.stringify(registration));
+            
+            // Append files from context
+            if (portrait) formData.append('photo', portrait);
+            if (nationalId) formData.append('nationalId', nationalId);
+            if (internationalPassport) formData.append('internationalPassport', internationalPassport);
+            if (resumeFile) formData.append('document', resumeFile);
+            
+            // Append certificates
+            professionalCertificates.forEach((cert) => {
+                formData.append('professionalCertificates', cert);
+            });
+
+            console.log('Submitting registration data:', registration);
+            await registerUser(formData).unwrap();
+            
+            // Clear local and global state
+            dispatch(resetRegistration());
+            clearFiles();
+            
+            router.push('/completed_auth');
+        } catch (err: any) {
+            console.error('Registration failed:', err);
+            const errorMessage = err.data?.message || err.message || 'Registration failed. Please try again.';
+            setFinalError(errorMessage);
         }
     };
 
@@ -106,15 +157,27 @@ const PhotosFinalizePage = () => {
                             </div>
                             <span className={styles.socialText}>Join thousands of professionals already on HalalHire</span>
                         </div>
+                        {finalError && (
+                            <div className={styles.errorBanner}>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                    <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                                </svg>
+                                {finalError.includes('duplicate key') ? 'This email is already registered. Please use a different email.' : finalError}
+                            </div>
+                        )}
                         <div className={styles.actions}>
-                            <Link href="/completed_auth" className={styles.skipBtn}>Skip for now</Link>
-                            <Link href="/completed_auth" className={styles.finishBtn}>
-                                Finish Profile
+                            <button onClick={handleFinish} className={styles.skipBtn}>Skip for now</button>
+                            <button 
+                                onClick={handleFinish} 
+                                className={styles.finishBtn}
+                                disabled={isRegistering}
+                            >
+                                {isRegistering ? 'Registering...' : 'Finish Profile'}
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                                     <line x1="5" y1="12" x2="19" y2="12" />
                                     <polyline points="12 5 19 12 12 19" />
                                 </svg>
-                            </Link>
+                            </button>
                         </div>
                     </div>
                 </div>

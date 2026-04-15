@@ -17,7 +17,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
-import { useRegisterUserMutation } from '@/redux/api/authApi';
+import { useDispatch } from 'react-redux';
+import { setBasicInfo } from '@/redux/Slice/registrationSlice';
 
 const AuthContent = () => {
     const searchParams = useSearchParams();
@@ -34,8 +35,7 @@ const AuthContent = () => {
     const [password, setPassword] = useState('');
     const [registerError, setRegisterError] = useState<string | null>(null);
     
-    // RTK Query mutation
-    const [registerUser, { isLoading: isRegistering }] = useRegisterUserMutation();
+    const dispatch = useDispatch();
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,43 +55,8 @@ const AuthContent = () => {
         }
         
         try {
-            // Build full user data structure
-            const userData = {
-                name: name,
-                email: email,
-                password: password,
-                role: role,
-                // Default values - will be updated during onboarding
-                dateOfBirth: "",
-                countryOrigin: "",
-                maritalStatus: "",
-                numberOfChildren: 0,
-                religiousPractice: "",
-                professionalProfile: {
-                    currentJobTitle: "",
-                    yearsOfExperience: 0,
-                    skills: [],
-                    primaryLanguage: ""
-                },
-                WorkPreferences: {
-                    salaryExpectations: "",
-                    employmentType: "",
-                    availableFrom: ""
-                }
-            };
-            
-            // Create FormData
-            const formData = new FormData();
-            formData.append('data', JSON.stringify(userData));
-            
-            // Call API
-            const result = await registerUser(formData).unwrap();
-            console.log('Registration successful:', result);
-            
-            // Store user data in localStorage for onboarding flow
-            localStorage.setItem('registration_email', email);
-            localStorage.setItem('registration_password', password);
-            localStorage.setItem('registration_role', role);
+            // Save to Redux instead of calling API
+            dispatch(setBasicInfo({ name, email, password, role }));
             
             // Navigate to onboarding flow
             router.push(role === 'company' ? '/company_on' : '/personal_info');
@@ -360,14 +325,8 @@ const AuthContent = () => {
                                 <button 
                                     type="submit" 
                                     className={styles.submitBtn}
-                                    disabled={isRegistering}
-                                    style={{ opacity: isRegistering ? 0.7 : 1 }}
                                 >
-                                    {isRegistering ? (
-                                        <><span>Creating...</span></>
-                                    ) : (
-                                        <><User size={20} /> Create New Account</>
-                                    )}
+                                    <User size={20} /> Create New Account
                                 </button>
                             </form>
                         </div>

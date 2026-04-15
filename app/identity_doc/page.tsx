@@ -1,14 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRegistrationFiles } from '@/app/context/RegistrationContext';
+import { useRouter } from 'next/navigation';
 import styles from './IdentityDoc.module.css';
 
 const IdentityVerification = () => {
-    const [nationalID, setNationalID] = useState<File | null>(null);
-    const [passport, setPassport] = useState<File | null>(null);
-    const [profilePhoto, setProfilePhoto] = useState<string>('/b1.png');
+    const { 
+        nationalId: nationalID, setNationalId: setNationalID, 
+        internationalPassport: passport, setInternationalPassport: setPassport, 
+        photo, setPhoto 
+    } = useRegistrationFiles();
+    const router = useRouter();
 
     const handleNationalIDUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -27,10 +31,17 @@ const IdentityVerification = () => {
         input.onchange = (e: any) => {
             const file = e.target.files?.[0];
             if (file) {
-                setProfilePhoto(URL.createObjectURL(file));
+                setPhoto(file);
             }
         };
         input.click();
+    };
+
+    const profilePhoto = photo ? URL.createObjectURL(photo) : '/b1.png';
+
+    const handleContinue = (e: React.MouseEvent) => {
+        e.preventDefault();
+        router.push('/professional_info');
     };
 
     return (
@@ -160,13 +171,13 @@ const IdentityVerification = () => {
                         </svg>
                         Back to previous step
                     </Link>
-                    <Link href="/professional_info" className={styles.continueBtn}>
+                    <button onClick={handleContinue} className={styles.continueBtn}>
                         Save & Continue
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                             <line x1="5" y1="12" x2="19" y2="12" />
                             <polyline points="12 5 19 12 12 19" />
                         </svg>
-                    </Link>
+                    </button>
                 </div>
             </main>
 

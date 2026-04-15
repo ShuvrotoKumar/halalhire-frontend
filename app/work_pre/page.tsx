@@ -1,11 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
+import { setWorkPreferences } from '@/redux/Slice/registrationSlice';
 import styles from './WorkPre.module.css';
 
 const WorkPreferencesPage = () => {
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const registration = useSelector((state: any) => state.registration);
+
     const [salaryMin, setSalaryMin] = useState(85000);
     const [salaryMax, setSalaryMax] = useState(140000);
     const [employmentType, setEmploymentType] = useState('Full-time');
@@ -16,8 +23,25 @@ const WorkPreferencesPage = () => {
         travel: true
     });
 
+    useEffect(() => {
+        if (registration && registration.WorkPreferences) {
+            setEmploymentType(registration.WorkPreferences.employmentType || 'Full-time');
+            setAvailableDate(registration.WorkPreferences.availableFrom || '06/01/2024');
+        }
+    }, []);
+
     const toggleFlex = (key: keyof typeof flexibility) => {
         setFlexibility(prev => ({ ...prev, [key]: !prev[key] }));
+    };
+
+    const handleContinue = (e: React.FormEvent) => {
+        e.preventDefault();
+        dispatch(setWorkPreferences({
+            salaryExpectations: `${salaryMin} - ${salaryMax} USD`,
+            employmentType: employmentType,
+            availableFrom: availableDate
+        }));
+        router.push('/photos_finalize');
     };
 
     return (
@@ -203,13 +227,13 @@ const WorkPreferencesPage = () => {
                         </svg>
                         Back
                     </Link>
-                    <Link href="/photos_finalize" className={styles.continueBtn}>
+                    <button onClick={handleContinue} className={styles.continueBtn}>
                         Save & Continue
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                             <line x1="5" y1="12" x2="19" y2="12" />
                             <polyline points="12 5 19 12 12 19" />
                         </svg>
-                    </Link>
+                    </button>
                 </div>
 
                 <div className={styles.securityNote}>

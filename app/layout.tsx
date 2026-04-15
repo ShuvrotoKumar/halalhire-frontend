@@ -15,6 +15,7 @@ import i18next from 'i18next';
 import '../i18n';
 import { I18nProvider } from './components/I18nProvider';
 import { cookies } from 'next/headers';
+import { RegistrationProvider } from './context/RegistrationContext';
 
 export const metadata: Metadata = {
   title: i18next.t('halalhireTheUmmahsTrustedJobNetwork', 'HalalHire - The Ummah\'s Trusted Job Network'),
@@ -35,18 +36,20 @@ export default async function RootLayout({
         <ReduxProvider>
           <I18nProvider initialLocale={lng}>
             <AuthProvider>
-              <ModalProvider>
-                {children}
-              <ApplyModal />
-              <ProfileEditModal />
-              <JobEditModal />
-              <JobDeleteModal />
-              <TeamMemberModal />
-              <AcceptModal />
-              <RejectModal />
-              <ContactConfirmModal />
-            </ModalProvider>
-          </AuthProvider>
+              <RegistrationProvider>
+                <ModalProvider>
+                  {children}
+                  <ApplyModal />
+                  <ProfileEditModal />
+                  <JobEditModal />
+                  <JobDeleteModal />
+                  <TeamMemberModal />
+                  <AcceptModal />
+                  <RejectModal />
+                  <ContactConfirmModal />
+                </ModalProvider>
+              </RegistrationProvider>
+            </AuthProvider>
           </I18nProvider>
         </ReduxProvider>
       </body>
