@@ -1,6 +1,7 @@
 import './globals.css';
 import { AuthProvider } from './context/AuthContext';
 import { ModalProvider } from './context/ModalContext';
+import ReduxProvider from '../redux/ReduxProvider';
 import ApplyModal from './components/ApplyModal/ApplyModal';
 import ProfileEditModal from './components/ProfileEditModal/ProfileEditModal';
 import JobEditModal from './components/JobEditModal/JobEditModal';
@@ -31,10 +32,11 @@ export default async function RootLayout({
   return (
     <html lang={lng} suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <I18nProvider initialLocale={lng}>
-          <AuthProvider>
-            <ModalProvider>
-              {children}
+        <ReduxProvider>
+          <I18nProvider initialLocale={lng}>
+            <AuthProvider>
+              <ModalProvider>
+                {children}
               <ApplyModal />
               <ProfileEditModal />
               <JobEditModal />
@@ -45,7 +47,8 @@ export default async function RootLayout({
               <ContactConfirmModal />
             </ModalProvider>
           </AuthProvider>
-        </I18nProvider>
+          </I18nProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

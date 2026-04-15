@@ -36,7 +36,14 @@ const authApi = baseApi.injectEndpoints({
           Authorization: localStorage.getItem("resetToken"),
         },
       }),
-
+      invalidatesTags: ["admin"],
+    }),
+    registerUser: builder.mutation({
+      query: (formData) => ({
+        url: "user/create_user",
+        method: "POST",
+        body: formData,
+      }),
       invalidatesTags: ["admin"],
     }),
   }),
@@ -47,6 +54,7 @@ export const {
   useForgotPasswordMutation,
   useVerifyEmailMutation,
   useResetPasswordMutation,
+  useRegisterUserMutation,
 } = authApi;
 
 export default authApi;

@@ -17,6 +17,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
+import { useRegisterUserMutation } from '@/redux/api/authApi';
+
 const AuthContent = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -25,19 +27,88 @@ const AuthContent = () => {
     const [role, setRole] = useState<'user' | 'company'>('user');
     const [showPassword, setShowPassword] = useState(false);
     const [agreed, setAgreed] = useState(false);
+    
+    // Registration form state
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [registerError, setRegisterError] = useState<string | null>(null);
+    
+    // RTK Query mutation
+    const [registerUser, { isLoading: isRegistering }] = useRegisterUserMutation();
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
-        // Trigger mock login
+        // For now, trigger mock login with role
+        // TODO: Integrate with useLogInMutation when API is ready
         login(role);
-        // Redirect to home or specific page
         router.push('/');
+    };
+
+    const handleRegister = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setRegisterError(null);
+        
+        if (!agreed) {
+            setRegisterError('Please agree to the terms to continue');
+            return;
+        }
+        
+        try {
+            // Build full user data structure
+            const userData = {
+                name: name,
+                email: email,
+                password: password,
+                role: role,
+                // Default values - will be updated during onboarding
+                dateOfBirth: "",
+                countryOrigin: "",
+                maritalStatus: "",
+                numberOfChildren: 0,
+                religiousPractice: "",
+                professionalProfile: {
+                    currentJobTitle: "",
+                    yearsOfExperience: 0,
+                    skills: [],
+                    primaryLanguage: ""
+                },
+                WorkPreferences: {
+                    salaryExpectations: "",
+                    employmentType: "",
+                    availableFrom: ""
+                }
+            };
+            
+            // Create FormData
+            const formData = new FormData();
+            formData.append('data', JSON.stringify(userData));
+            
+            // Call API
+            const result = await registerUser(formData).unwrap();
+            console.log('Registration successful:', result);
+            
+            // Store user data in localStorage for onboarding flow
+            localStorage.setItem('registration_email', email);
+            localStorage.setItem('registration_password', password);
+            localStorage.setItem('registration_role', role);
+            
+            // Navigate to onboarding flow
+            router.push(role === 'company' ? '/company_on' : '/personal_info');
+        } catch (err: unknown) {
+            console.error('Registration failed:', err);
+            const errorMessage = err instanceof Error ? err.message : 'Registration failed. Please try again.';
+            setRegisterError(errorMessage);
+        }
     };
 
     useEffect(() => {
         const mode = searchParams.get('mode');
         if (mode === 'login' || mode === 'register') {
-            setActiveTab(mode);
+            // Use requestAnimationFrame to avoid synchronous setState warning
+            requestAnimationFrame(() => {
+                setActiveTab(mode as 'login' | 'register');
+            });
         }
     }, [searchParams]);
 
@@ -122,6 +193,8 @@ const AuthContent = () => {
                                             type="email"
                                             className={styles.input}
                                             placeholder="name@halalhire.com"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
                                         />
                                     </div>
                                 </div>
@@ -137,6 +210,8 @@ const AuthContent = () => {
                                             type={showPassword ? "text" : "password"}
                                             className={styles.input}
                                             placeholder="........"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
                                         />
                                         <button
                                             type="button"
@@ -178,7 +253,7 @@ const AuthContent = () => {
                                 </div>
                             </div>
 
-                              <form onSubmit={(e) => e.preventDefault()}>
+                              <form onSubmit={handleRegister}>
                                 <div className={styles.roleSelection}>
                                     <button
                                         type="button"
@@ -211,6 +286,12 @@ const AuthContent = () => {
                                     </button>
                                 </div>
 
+                                {registerError && (
+                                    <div className={styles.errorMessage} style={{ color: '#e74c3c', marginBottom: '10px', fontSize: '14px' }}>
+                                        {registerError}
+                                    </div>
+                                )}
+
                                 <div className={styles.formGroup}>
                                     <label className={styles.label}>{role === 'user' ? 'Full Name' : 'Company Name'}</label>
                                     <div className={styles.inputWrapper}>
@@ -219,6 +300,9 @@ const AuthContent = () => {
                                             type="text"
                                             className={styles.input}
                                             placeholder="Enter your full name"
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                            required
                                         />
                                     </div>
                                 </div>
@@ -231,6 +315,9 @@ const AuthContent = () => {
                                             type="email"
                                             className={styles.input}
                                             placeholder="name@halalhire.com"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            required
                                         />
                                     </div>
                                 </div>
@@ -243,6 +330,9 @@ const AuthContent = () => {
                                             type={showPassword ? "text" : "password"}
                                             className={styles.input}
                                             placeholder="........"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required
                                         />
                                         <button
                                             type="button"
@@ -267,9 +357,18 @@ const AuthContent = () => {
                                     </p>
                                 </div>
 
-                                <Link href={role === 'company' ? "/company_on" : "/personal_info"} className={styles.submitBtn}>
-                                    <User size={20} /> Create New Account
-                                </Link>
+                                <button 
+                                    type="submit" 
+                                    className={styles.submitBtn}
+                                    disabled={isRegistering}
+                                    style={{ opacity: isRegistering ? 0.7 : 1 }}
+                                >
+                                    {isRegistering ? (
+                                        <><span>Creating...</span></>
+                                    ) : (
+                                        <><User size={20} /> Create New Account</>
+                                    )}
+                                </button>
                             </form>
                         </div>
                     )}
