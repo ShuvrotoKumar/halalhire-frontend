@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useRegistrationFiles } from '@/app/context/RegistrationContext';
 import { useRegisterUserMutation } from '@/redux/api/authApi';
 import { resetRegistration } from '@/redux/Slice/registrationSlice';
+import { setUser as reduxSetUser } from '@/redux/Slice/authSlice';
 import styles from './PhotosFinalize.module.css';
 
 const PhotosFinalizePage = () => {
@@ -52,7 +53,18 @@ const PhotosFinalizePage = () => {
             });
 
             console.log('Submitting registration data:', registration);
-            await registerUser(formData).unwrap();
+            const result = await registerUser(formData).unwrap();
+            
+            // Set auth user so Navbar reflects the new account
+            dispatch(reduxSetUser({
+                user: {
+                    name: registration.name,
+                    email: registration.email,
+                    role: registration.role,
+                    avatar: portrait ? URL.createObjectURL(portrait) : undefined
+                },
+                token: result?.data?.accessToken || result?.data?.token || 'temp-token'
+            }));
             
             // Clear local and global state
             dispatch(resetRegistration());

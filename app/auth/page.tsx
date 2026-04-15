@@ -19,6 +19,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
 import { useDispatch } from 'react-redux';
 import { setBasicInfo } from '@/redux/Slice/registrationSlice';
+import { useLogInMutation } from '@/redux/api/authApi';
+import { setUser as reduxSetUser } from '@/redux/Slice/authSlice';
 
 const AuthContent = () => {
     const searchParams = useSearchParams();
@@ -34,15 +36,30 @@ const AuthContent = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [registerError, setRegisterError] = useState<string | null>(null);
+    const [loginError, setLoginError] = useState<string | null>(null);
     
     const dispatch = useDispatch();
+    const [logIn, { isLoading: isLoggingIn }] = useLogInMutation();
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        // For now, trigger mock login with role
-        // TODO: Integrate with useLogInMutation when API is ready
-        login(role);
-        router.push('/');
+        setLoginError(null);
+        
+        try {
+            const result = await logIn({ email, password }).unwrap();
+            
+            // Dispatch to Redux to update Navbar and other components
+            dispatch(reduxSetUser({
+                user: result.data.user,
+                token: result.data.accessToken || result.data.token
+            }));
+            
+            router.push('/');
+        } catch (err: any) {
+            console.error('Login failed:', err);
+            const errorMessage = err.data?.message || err.message || 'Login failed. Please check your credentials.';
+            setLoginError(errorMessage);
+        }
     };
 
     const handleRegister = async (e: React.FormEvent) => {
@@ -201,8 +218,15 @@ const AuthContent = () => {
                                     </p>
                                 </div>
 
-                                <button type="submit" className={styles.submitBtn}>
-                                    <ArrowRight size={20} /> Sign In to Account
+                                {loginError && <div className={styles.errorMsg}>{loginError}</div>}
+                                
+                                <button 
+                                    type="submit" 
+                                    className={styles.submitBtn}
+                                    disabled={isLoggingIn}
+                                    style={{ opacity: isLoggingIn ? 0.7 : 1 }}
+                                >
+                                    {isLoggingIn ? 'Logging in...' : <><ArrowRight size={20} /> Sign In to Account</>}
                                 </button>
                             </form>
                         </div>
