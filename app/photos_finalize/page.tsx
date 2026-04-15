@@ -55,15 +55,23 @@ const PhotosFinalizePage = () => {
             console.log('Submitting registration data:', registration);
             const result = await registerUser(formData).unwrap();
             
+            // Standardize the user object for auto-login
+            const userData = result.data?.user || result.user || {};
+            const standardUser = {
+                name: userData.name || userData.fullName || registration.name || 'User',
+                email: userData.email || registration.email,
+                role: userData.role || registration.role || 'user',
+                avatar: portrait ? URL.createObjectURL(portrait) : (userData.avatar || userData.profileImage || userData.photo)
+            };
+
+            const token = result.data?.accessToken || result.data?.token || result.accessToken || result.token || 'temp-token';
+
+            console.log('Post-registration mapping to standardized user:', standardUser);
+
             // Set auth user so Navbar reflects the new account
             dispatch(reduxSetUser({
-                user: {
-                    name: registration.name,
-                    email: registration.email,
-                    role: registration.role,
-                    avatar: portrait ? URL.createObjectURL(portrait) : undefined
-                },
-                token: result?.data?.accessToken || result?.data?.token || 'temp-token'
+                user: standardUser,
+                token: token
             }));
             
             // Clear local and global state

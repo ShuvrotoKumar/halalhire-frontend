@@ -25,7 +25,6 @@ import { setUser as reduxSetUser } from '@/redux/Slice/authSlice';
 const AuthContent = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const { login } = useAuth();
     const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
     const [role, setRole] = useState<'user' | 'company'>('user');
     const [showPassword, setShowPassword] = useState(false);
@@ -45,18 +44,41 @@ const AuthContent = () => {
         e.preventDefault();
         setLoginError(null);
         
+        const trimmedEmail = email.trim();
+        const trimmedPassword = password.trim();
+
         try {
-            const result = await logIn({ email, password }).unwrap();
+            console.log('Attempting login for:', { email: trimmedEmail, role });
+            const result = await logIn({ 
+                email: trimmedEmail, 
+                password: trimmedPassword,
+                role 
+            }).unwrap();
             
+            console.log('Login success result:', result);
+            
+            // Standardize the user object mapping
+            const userData = result.data?.user || result.user || {};
+            const standardUser = {
+                name: userData.name || userData.fullName || userData.username || 'User',
+                email: userData.email || trimmedEmail,
+                role: userData.role || role || 'user',
+                avatar: userData.avatar || userData.profileImage || userData.image || userData.photo
+            };
+
+            const token = result.data?.accessToken || result.data?.token || result.accessToken || result.token;
+
+            console.log('Mapping to standardized user:', standardUser);
+
             // Dispatch to Redux to update Navbar and other components
             dispatch(reduxSetUser({
-                user: result.data.user,
-                token: result.data.accessToken || result.data.token
+                user: standardUser,
+                token: token
             }));
             
             router.push('/');
         } catch (err: any) {
-            console.error('Login failed:', err);
+            console.error('Login failed details:', err);
             const errorMessage = err.data?.message || err.message || 'Login failed. Please check your credentials.';
             setLoginError(errorMessage);
         }
