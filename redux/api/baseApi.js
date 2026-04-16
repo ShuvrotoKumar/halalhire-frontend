@@ -36,5 +36,6 @@ export const baseApi = createApi({
     "listings",
     "notification",
     "NDA",
+    "contact",
   ],
 });

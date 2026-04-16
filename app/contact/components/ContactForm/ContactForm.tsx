@@ -1,17 +1,42 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './ContactForm.module.css';
 import { useModal } from '@/app/context/ModalContext';
 import { useTranslation } from 'react-i18next'
+import { useCreateContactMutation } from '@/redux/api/contactApi';
 
 const ContactForm = () => {
   const { t } = useTranslation()
   const { openContactConfirmModal } = useModal();
+  const [createContact, { isLoading }] = useCreateContactMutation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: 'Job Seeker Support',
+    message: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    openContactConfirmModal();
+    try {
+      await createContact(formData).unwrap();
+      setFormData({
+        name: '',
+        email: '',
+        subject: 'Job Seeker Support',
+        message: ''
+      });
+      openContactConfirmModal();
+    } catch (err) {
+      console.error('Failed to send message:', err);
+    }
   };
 
   return (
@@ -30,22 +55,43 @@ const ContactForm = () => {
         <div className={styles.row}>
           <div className={styles.fieldGroup}>
             <label className={styles.label}>{t('fullName', 'Full Name')}</label>
-            <input type="text" className={styles.input} placeholder={t('abdullahRahman', 'Abdullah Rahman')} />
+            <input 
+              type="text" 
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className={styles.input} 
+              placeholder={t('abdullahRahman', 'Abdullah Rahman')} 
+              required
+            />
           </div>
           <div className={styles.fieldGroup}>
             <label className={styles.label}>{t('emailAddress', 'Email Address')}</label>
-            <input type="email" className={styles.input} placeholder="contact@example.com" />
+            <input 
+              type="email" 
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className={styles.input} 
+              placeholder="contact@example.com" 
+              required
+            />
           </div>
         </div>
 
         <div className={styles.fieldGroup}>
           <label className={styles.label}>{t('subjectInquiryType', 'Subject / Inquiry Type')}</label>
           <div className={styles.selectWrapper}>
-            <select className={styles.select}>
-              <option>{t('jobSeekerSupport', 'Job Seeker Support')}</option>
-              <option>{t('employerSupport', 'Employer Support')}</option>
-              <option>{t('ethicalAudits', 'Ethical Audits')}</option>
-              <option>{t('otherGeneralInquiry', 'Other / General Inquiry')}</option>
+            <select 
+              name="subject"
+              value={formData.subject}
+              onChange={handleChange}
+              className={styles.select}
+            >
+              <option value="Job Seeker Support">{t('jobSeekerSupport', 'Job Seeker Support')}</option>
+              <option value="Employer Support">{t('employerSupport', 'Employer Support')}</option>
+              <option value="Ethical Audits">{t('ethicalAudits', 'Ethical Audits')}</option>
+              <option value="Other / General Inquiry">{t('otherGeneralInquiry', 'Other / General Inquiry')}</option>
             </select>
             <div className={styles.selectIcon}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -57,7 +103,14 @@ const ContactForm = () => {
 
         <div className={styles.fieldGroup}>
           <label className={styles.label}>{t('message', 'Message')}</label>
-          <textarea className={styles.textarea} placeholder={t('howCanWeAssistYouToday', 'How can we assist you today?')}></textarea>
+          <textarea 
+            name="message"
+            value={formData.message}
+            onChange={handleChange}
+            className={styles.textarea} 
+            placeholder={t('howCanWeAssistYouToday', 'How can we assist you today?')}
+            required
+          ></textarea>
         </div>
 
         <div className={styles.privacyNote}>
@@ -70,12 +123,14 @@ const ContactForm = () => {
           <p>{t('yourDataIsHandledAccordingToEthicalPrivacyStandardsAndNeverSold', 'Your data is handled according to ethical privacy standards and never sold.')}</p>
         </div>
 
-        <button type="submit" className={styles.submitBtn}>
-          {t('sendMessage', 'Send Message')}
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="22" y1="2" x2="11" y2="13"></line>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-          </svg>
+        <button type="submit" className={styles.submitBtn} disabled={isLoading}>
+          {isLoading ? t('sending', 'Sending...') : t('sendMessage', 'Send Message')}
+          {!isLoading && (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          )}
         </button>
       </form>
     </div>
