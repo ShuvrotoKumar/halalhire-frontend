@@ -15,9 +15,10 @@ const Navbar = () => {
   const pathname = usePathname();
   const { user, logout, login } = useAuth();
   const { openProfileEditModal } = useModal();
+  const [mounted, setMounted] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedLang, setSelectedLang] = useState(i18n.language.toUpperCase() || 'EN');
+  const [selectedLang, setSelectedLang] = useState('EN');
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const langDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -29,7 +30,13 @@ const Navbar = () => {
   ];
 
   useEffect(() => {
-    setSelectedLang(i18n.language.toUpperCase());
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (i18n.language) {
+      setSelectedLang(i18n.language.toUpperCase());
+    }
   }, [i18n.language]);
 
   useEffect(() => {
@@ -64,7 +71,7 @@ const Navbar = () => {
   const isSolidPage = ['/privacy', '/terms', '/cookies', '/imprint', '/faq', '/accessibility'].includes(pathname);
 
   return (
-    <header className={`${styles.header} ${isSolidPage ? styles.solid : ''}`}>
+    <header suppressHydrationWarning className={`${styles.header} ${isSolidPage ? styles.solid : ''}`}>
       <div className={`container ${styles.navbar}`}>
         <Link href="/" className={styles.logo}>
           <Image src="/logo.png" alt={t('logo', 'Logo')} width={160} height={60} style={{ objectFit: 'contain' }} />
@@ -95,7 +102,7 @@ const Navbar = () => {
             );
           })}
           
-          {isMenuOpen && (
+          {mounted && isMenuOpen && (
             <div className={styles.mobileActions}>
               {!user ? (
                 <div className={styles.mobileAuthButtons}>
@@ -169,7 +176,7 @@ const Navbar = () => {
           </div>
 
           <div className={styles.desktopActions}>
-            {user && (
+            {mounted && user && (
               <div className={styles.roleSelect} onClick={() => login(user.role === 'user' ? 'company' : 'user')}>
                 <span>{user.role === 'user' ? 'Individual' : 'Company'}</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -178,7 +185,7 @@ const Navbar = () => {
               </div>
             )}
 
-            {!user ? (
+            {mounted && !user ? (
               <div className={styles.authButtons}>
                 <Link href="/auth?mode=login">
                   <button className={`btn ${styles.loginBtn}`}>{t('login', 'Login')}</button>
@@ -187,7 +194,7 @@ const Navbar = () => {
                   <button className={`btn ${styles.signupBtn}`} style={{ padding: '8px 24px', fontSize: '14px' }}>{t('signUp', 'Sign Up')}</button>
                 </Link>
               </div>
-            ) : (
+            ) : mounted && user ? (
               <div className={styles.profileContainer} onClick={() => setShowDropdown(!showDropdown)}>
                 {user.avatar ? (
                   <Image src={user.avatar} alt={user.name} width={36} height={36} className={styles.avatar} />
@@ -227,7 +234,7 @@ const Navbar = () => {
                   </div>
                 )}
               </div>
-            )}
+            ) : null}
           </div>
 
           <button className={styles.hamburger} onClick={() => setIsMenuOpen(true)}>
