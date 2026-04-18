@@ -9,8 +9,12 @@
 
 ✓ Starting...
 ✓ Ready in 568ms
-Persisting failed: Unable to open static sorted file referenced from 00012166.meta
+ ELIFECYCLE  Command failed.
+[?25h
+ sorted file referenced from 00012166.meta
 
 Caused by:
     0: Unable to open static sorted file 00012165.sst
     1: No such file or directory (os error 2)
+ ELIFECYCLE  Command failed.
+[?25h
