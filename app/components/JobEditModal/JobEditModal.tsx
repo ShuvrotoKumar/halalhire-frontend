@@ -3,7 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './JobEditModal.module.css';
 import { useModal } from '@/app/context/ModalContext';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
 import {
   X, 
   Briefcase, 
@@ -97,6 +99,35 @@ const JobEditModal = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [filteredTitles, setFilteredTitles] = useState(JOB_TITLES);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  const router = useRouter();
+  const user = useSelector((state: any) => state.auth?.user);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!activeJob) {
+      // Logic for posting a new job
+      // Check if user has a subscription (adjust condition based on actual user object structure)
+      const hasSubscription = user?.subscription || user?.isSubscribed || user?.plan; 
+      
+      if (!hasSubscription) {
+        // If no subscription, navigate to subscription page
+        closeJobEditModal();
+        router.push('/company_subscription');
+      } else {
+        // If has subscription, post directly
+        console.log("User has subscription, directly posting job...");
+        // TODO: Add actual API call to post job here
+        closeJobEditModal();
+      }
+    } else {
+      // Logic for updating an existing job
+      console.log("Updating existing job...");
+      // TODO: Add actual API call to update job here
+      closeJobEditModal();
+    }
+  };
 
 
   useEffect(() => {
@@ -218,7 +249,7 @@ const JobEditModal = () => {
 
   return (
     <div className={styles.overlay} onClick={handleClose}>
-      <form className={styles.modal} onSubmit={(e) => { e.preventDefault(); handleClose(); }} onClick={(e) => e.stopPropagation()}>
+      <form className={styles.modal} onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <h2>{activeJob ? t('editJobPosting', 'Edit Job Posting') : t('postANewJob', 'Post a New Job')}</h2>
           <p>{t('createAProfessionalJobListingToAttractTopTalentInTheHalalconsciousCommunity', 'Create a professional job listing to attract top talent in the halal-conscious community.')}</p>
