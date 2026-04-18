@@ -10,6 +10,7 @@ import TeamMemberModal from './components/TeamMemberModal/TeamMemberModal';
 import AcceptModal from './components/AcceptModal/AcceptModal';
 import RejectModal from './components/RejectModal/RejectModal';
 import ContactConfirmModal from './components/ContactConfirmModal/ContactConfirmModal';
+import FloatingAIChat from './components/FloatingAIChat/FloatingAIChat';
 import type { Metadata } from 'next';
 import i18next from 'i18next';
 import '../i18n';
@@ -47,6 +48,7 @@ export default async function RootLayout({
                   <AcceptModal />
                   <RejectModal />
                   <ContactConfirmModal />
+                  <FloatingAIChat />
                 </ModalProvider>
               </RegistrationProvider>
             </AuthProvider>
