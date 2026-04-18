@@ -24,13 +24,16 @@ import {
     Baby,
     Clock,
     Bell,
-    X
+    X,
+    MessageSquare
 } from 'lucide-react';
+import ChatModal from '../components/ChatModal/ChatModal';
 
 const CompanyProfile = () => {
     const { t } = useTranslation()
     const { openProfileEditModal } = useModal();
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+    const [isChatOpen, setIsChatOpen] = useState(false);
     const notifications = useMemo(() => [
         {
             id: 1,
@@ -83,6 +86,14 @@ const CompanyProfile = () => {
                             </div>
                         </div>
                         <div className={styles.headerActions}>
+                            <button
+                                className={styles.notificationBtn}
+                                onClick={() => setIsChatOpen(true)}
+                                aria-label={t('openChat', 'Open chat')}
+                                type="button"
+                            >
+                                <MessageSquare size={18} />
+                            </button>
                             <button
                                 className={styles.notificationBtn}
                                 onClick={() => setIsNotificationOpen(true)}
@@ -239,7 +250,7 @@ const CompanyProfile = () => {
                     </div>
                 </div>
             )}
-
+            <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
             <Footer />
         </div>
     );

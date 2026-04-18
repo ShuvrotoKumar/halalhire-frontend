@@ -14,14 +14,17 @@ import {
   Award, 
   CheckCircle,
   Bell,
-  X
+  X,
+  MessageSquare
 } from 'lucide-react';
+import ChatModal from '../components/ChatModal/ChatModal';
 import Footer from '../components/Footer/Footer';
 import { useTranslation } from 'react-i18next'
 
 const UserProfile = () => {
   const { t } = useTranslation()
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const skills = useMemo(() => [
     t('systemArchitecture', 'System Architecture'), t('ethicalAiFrameworks', 'Ethical AI Frameworks'), t('microservices', 'Microservices'), 
     t('fintechCompliance', 'FinTech Compliance'), t('teamLeadership', 'Team Leadership'), 
@@ -108,6 +111,14 @@ const UserProfile = () => {
             </div>
             
             <div className={styles.headerActions}>
+              <button
+                className={styles.notificationBtn}
+                onClick={() => setIsChatOpen(true)}
+                aria-label={t('openChat', 'Open chat')}
+                type="button"
+              >
+                <MessageSquare size={18} />
+              </button>
               <button
                 className={styles.notificationBtn}
                 onClick={() => setIsNotificationOpen(true)}
@@ -233,6 +244,7 @@ const UserProfile = () => {
           </div>
         </div>
       )}
+      <ChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       <Footer />    
     </div>
   );
