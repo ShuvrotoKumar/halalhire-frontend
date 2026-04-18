@@ -21,12 +21,29 @@ import {
   Clock,
   ArrowRight,
   Globe,
-  CircleDollarSign
+  CircleDollarSign,
+  Bell,
+  X
 } from 'lucide-react';
 
 const CompanyJobs = () => {
   const { t } = useTranslation()
   const { openJobEditModal, openJobDeleteModal, openProfileEditModal } = useModal();
+  const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
+  const notifications = React.useMemo(() => [
+        {
+            id: 1,
+            title: t('newCandidateAlert', 'New candidate alert'),
+            description: t('newCandidateAlertDesc', 'Three new candidates matched your Senior Product Designer opening.'),
+            time: t('notificationThirtyMinutesAgo', '30 minutes ago')
+        },
+        {
+            id: 2,
+            title: t('companyRequestReminder', 'Verification reminder'),
+            description: t('companyRequestReminderDesc', 'Your company verification request needs one final supporting document.'),
+            time: t('notificationToday', 'Today')
+        }
+    ], [t]);
   const managedJobs = [
     {
       id: 1,
@@ -91,7 +108,18 @@ const CompanyJobs = () => {
               </div>
             </div>
             
-            <button className={styles.editBtn} onClick={openProfileEditModal}>{t('editProfile', 'Edit Profile')}</button>
+            <div className={styles.headerActions}>
+              <button
+                className={styles.notificationBtn}
+                onClick={() => setIsNotificationOpen(true)}
+                aria-label={t('openNotifications', 'Open notifications')}
+                type="button"
+              >
+                <Bell size={18} />
+                <span className={styles.notificationDot}></span>
+              </button>
+              <button className={styles.editBtn} onClick={openProfileEditModal}>{t('editProfile', 'Edit Profile')}</button>
+            </div>
           </div>
           
           <div className={styles.tabs}>
@@ -151,6 +179,49 @@ const CompanyJobs = () => {
         </div>
       </main>
 
+      {isNotificationOpen && (
+                <div className={styles.modalOverlay} onClick={() => setIsNotificationOpen(false)}>
+                    <div
+                        className={styles.notificationModal}
+                        onClick={(event) => event.stopPropagation()}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label={t('notifications', 'Notifications')}
+                    >
+                        <div className={styles.modalHeader}>
+                            <div>
+                                <h2 className={styles.modalTitle}>{t('notifications', 'Notifications')}</h2>
+                                <p className={styles.modalSubtitle}>{t('notificationSubtext', 'Stay updated with profile and application activity.')}</p>
+                            </div>
+                            <button
+                                className={styles.modalCloseBtn}
+                                onClick={() => setIsNotificationOpen(false)}
+                                aria-label={t('closeNotifications', 'Close notifications')}
+                                type="button"
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
+
+                        <div className={styles.notificationList}>
+                            {notifications.map((notification) => (
+                                <div key={notification.id} className={styles.notificationItem}>
+                                    <div className={styles.notificationIcon}>
+                                        <Bell size={16} />
+                                    </div>
+                                    <div className={styles.notificationContent}>
+                                        <div className={styles.notificationItemHeader}>
+                                            <h3>{notification.title}</h3>
+                                            <span>{notification.time}</span>
+                                        </div>
+                                        <p>{notification.description}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
       <Footer />
     </div>
   );
