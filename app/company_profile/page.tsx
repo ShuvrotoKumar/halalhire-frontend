@@ -51,7 +51,7 @@ const CompanyProfile = () => {
             <Navbar />
 
             {/* Banner */}
-            <div className={styles.banner}>
+            <div className={styles.banner}> 
                 <Image
                     src="/about1.png"
                     alt={t('companyBanner', 'Company Banner')}
