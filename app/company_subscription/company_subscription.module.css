@@ -57,7 +57,7 @@
 }
 
 .highlightedCard {
-  border: 2px solid #0c8b82;
+  border: 2px solid #c5a56e;
   box-shadow: 0 16px 40px rgba(12, 139, 130, 0.1);
   transform: scale(1.03);
   z-index: 10;
@@ -73,7 +73,7 @@
   top: -14px;
   left: 50%;
   transform: translateX(-50%);
-  background: #0c8b82;
+  background: #c5a56e;
   color: white;
   padding: 6px 16px;
   border-radius: 20px;
@@ -128,7 +128,7 @@
 }
 
 .featureIcon {
-  color: #0c8b82;
+  color: #c5a56e;
   flex-shrink: 0;
 }
 
@@ -155,7 +155,7 @@
   padding: 14px;
   border-radius: 12px;
   border: none;
-  background: linear-gradient(135deg, #0c8b82 0%, #0a736c 100%);
+  background: linear-gradient(135deg, #c5a56e 100%);
   color: white;
   font-weight: 700;
   font-size: 15px;
@@ -238,7 +238,7 @@
 .totalValue {
   font-size: 24px;
   font-weight: 800;
-  color: #fe6b2e;
+  color: #c5a56e;
 }
 
 .checkoutBtn {
@@ -246,7 +246,7 @@
   padding: 18px;
   border-radius: 14px;
   border: none;
-  background: linear-gradient(135deg, #fe6b2e 0%, #e25b20 100%);
+  background: linear-gradient(135deg, #c5a56e 0%, #c5a56e 100%);
   color: white;
   font-weight: 800;
   font-size: 16px;
@@ -306,7 +306,7 @@
   width: 48px;
   height: 48px;
   background: #f1f8f7;
-  color: #0c8b82;
+  color: #c5a56e;
   border-radius: 12px;
   display: flex;
   align-items: center;

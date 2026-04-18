@@ -3,10 +3,14 @@
 import React from 'react';
 import styles from './company_subscription.module.css';
 import { Check, ArrowRight, ShieldCheck, TrendingUp, Megaphone, UserCheck, Lock } from 'lucide-react';
+import Navbar from '../components/Navbar/Navbar';
+import Footer from '../components/Footer/Footer';
 
 const CompanySubscription = () => {
   return (
-    <section className={styles.section}>
+    <>
+      <Navbar />
+      <section className={styles.section}>
       <div className="container">
         <header className={styles.header}>
           <h1 className={styles.title}>Choose Your Plan & Post Your Job</h1>
@@ -162,6 +166,8 @@ const CompanySubscription = () => {
         </div>
       </div>
     </section>
+    <Footer />
+    </>
   );
 };
 
