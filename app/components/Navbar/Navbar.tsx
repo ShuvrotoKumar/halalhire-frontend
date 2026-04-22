@@ -18,7 +18,7 @@ const Navbar = () => {
   const [mounted, setMounted] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedLang, setSelectedLang] = useState('EN');
+  const [selectedLang, setSelectedLang] = useState(i18n.language ? i18n.language.toUpperCase() : 'EN');
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const langDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -71,7 +71,8 @@ const Navbar = () => {
   const isSolidPage = ['/privacy', '/terms', '/cookies', '/imprint', '/faq', '/accessibility'].includes(pathname);
 
   return (
-    <header suppressHydrationWarning className={`${styles.header} ${isSolidPage ? styles.solid : ''}`}>
+    <div suppressHydrationWarning>
+      <header className={`${styles.header}${isSolidPage ? ` ${styles.solid}` : ''}`}>
       <div className={`container ${styles.navbar}`}>
         <Link href="/" className={styles.logo}>
           <Image src="/logo.png" alt={t('logo', 'Logo')} width={160} height={60} style={{ objectFit: 'contain' }} />
@@ -243,6 +244,7 @@ const Navbar = () => {
         </div>
       </div>
     </header>
+    </div>
   );
 };
 

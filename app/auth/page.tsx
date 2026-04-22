@@ -19,7 +19,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
 import { useDispatch } from 'react-redux';
 import { setBasicInfo } from '@/redux/Slice/registrationSlice';
-import { useLogInMutation } from '@/redux/api/authApi';
+// import { useLogInMutation } from '@/redux/api/authApi';
 import { setUser as reduxSetUser } from '@/redux/Slice/authSlice';
 
 const AuthContent = () => {
@@ -38,50 +38,29 @@ const AuthContent = () => {
     const [loginError, setLoginError] = useState<string | null>(null);
     
     const dispatch = useDispatch();
-    const [logIn, { isLoading: isLoggingIn }] = useLogInMutation();
+    // const [logIn, { isLoading: isLoggingIn }] = useLogInMutation();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoginError(null);
         
         const trimmedEmail = email.trim();
-        const trimmedPassword = password.trim();
+        
+        // Mock login logic for development
+        const standardUser = {
+            name: role === 'user' ? 'Yahya Khan' : 'Halal Tech Solutions',
+            email: trimmedEmail || (role === 'user' ? 'yahya@halalhire.com' : 'contact@halaltech.com'),
+            role: role,
+            avatar: role === 'user' ? '/g1.png' : undefined
+        };
 
-        try {
-            console.log('Attempting login for:', { email: trimmedEmail, role });
-            const result = await logIn({ 
-                email: trimmedEmail, 
-                password: trimmedPassword,
-                role 
-            }).unwrap();
-            
-            console.log('Login success result:', result);
-            
-            // Standardize the user object mapping
-            const userData = result.data?.user || result.user || {};
-            const standardUser = {
-                name: userData.name || userData.fullName || userData.username || 'User',
-                email: userData.email || trimmedEmail,
-                role: userData.role || role || 'user',
-                avatar: userData.avatar || userData.profileImage || userData.image || userData.photo
-            };
-
-            const token = result.data?.accessToken || result.data?.token || result.accessToken || result.token;
-
-            console.log('Mapping to standardized user:', standardUser);
-
-            // Dispatch to Redux to update Navbar and other components
-            dispatch(reduxSetUser({
-                user: standardUser,
-                token: token
-            }));
-            
-            router.push('/');
-        } catch (err: any) {
-            console.error('Login failed details:', err);
-            const errorMessage = err.data?.message || err.message || 'Login failed. Please check your credentials.';
-            setLoginError(errorMessage);
-        }
+        // Dispatch to Redux to update Navbar and other components
+        dispatch(reduxSetUser({
+            user: standardUser,
+            token: 'mock-token-' + Date.now()
+        }));
+        
+        router.push('/');
     };
 
     const handleRegister = async (e: React.FormEvent) => {
@@ -245,10 +224,11 @@ const AuthContent = () => {
                                 <button 
                                     type="submit" 
                                     className={styles.submitBtn}
-                                    disabled={isLoggingIn}
-                                    style={{ opacity: isLoggingIn ? 0.7 : 1 }}
+                                    // disabled={isLoggingIn}
+                                    // style={{ opacity: isLoggingIn ? 0.7 : 1 }}
                                 >
-                                    {isLoggingIn ? 'Logging in...' : <><ArrowRight size={20} /> Sign In to Account</>}
+                                    {/* {isLoggingIn ? 'Logging in...' : <><ArrowRight size={20} /> Sign In to Account</>} */}
+                                    <ArrowRight size={20} /> Sign In to Account
                                 </button>
                             </form>
                         </div>
