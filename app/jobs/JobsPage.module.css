@@ -91,4 +91,8 @@
   .layout {
     grid-template-columns: 1fr;
   }
+
+  .contentSection {
+    padding: 140px 0 60px;
+  }
 }
