@@ -66,6 +66,7 @@
 .meta {
   display: flex;
   gap: 24px;
+  flex-wrap: wrap;
   margin: 16px 0 20px;
 }
 
@@ -153,15 +154,27 @@
   .card {
     flex-direction: column;
     padding: 24px;
+    gap: 20px;
+  }
+
+  .logoContainer {
+    width: 60px;
+    height: 60px;
+    padding: 6px;
   }
 
   .actions {
     flex-direction: row;
-    justify-content: stretch;
+    gap: 12px;
     margin-top: 10px;
   }
 
-  .actions button {
+  .actions > * {
     flex: 1;
+    padding-left: 0;
+    padding-right: 0;
+    justify-content: center;
+    display: flex;
+    align-items: center;
   }
 }
