@@ -194,12 +194,3 @@ const CompanyVerification = () => {
 };
 
 export default CompanyVerification;
-
-            <footer className={styles.footer}>
-                © 2026 HalalHire, The Ethical Professional Network for the Ummah.
-            </footer>
-        </div>
-    );
-};
-
-export default CompanyVerification;
