@@ -18,7 +18,7 @@ const Navbar = () => {
   const [mounted, setMounted] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedLang, setSelectedLang] = useState(i18n.language ? i18n.language.toUpperCase() : 'EN');
+  const [selectedLang, setSelectedLang] = useState('EN');
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const langDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -145,7 +145,7 @@ const Navbar = () => {
         <div className={styles.navActions}>
           <div className={styles.languageSelectContainer} ref={langDropdownRef}>
             <div className={styles.languageSelect} onClick={() => setShowLangDropdown(!showLangDropdown)}>
-              <span>{selectedLang}</span>
+              <span>{mounted ? selectedLang : 'EN'}</span>
               <svg 
                 width="12" 
                 height="12" 
