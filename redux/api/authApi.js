@@ -48,6 +48,22 @@ const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["admin"],
     }),
+    registerCompany: builder.mutation({
+      query: (formData) => ({
+        url: "/user/register_company",
+        method: "POST",
+        body: formData,
+      }),
+      invalidatesTags: ["admin"],
+    }),
+    verifyUser: builder.mutation({
+      query: (data) => ({
+        url: "/user/user_verification",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["admin"],
+    }),
   }),
 });
 
@@ -57,6 +73,8 @@ export const {
   useVerifyEmailMutation,
   useResetPasswordMutation,
   useRegisterUserMutation,
+  useRegisterCompanyMutation,
+  useVerifyUserMutation,
 } = authApi;
 
 export default authApi;

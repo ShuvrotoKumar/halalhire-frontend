@@ -161,11 +161,18 @@ const ProfessionalProfilePage = () => {
 
     const handleContinue = (e: React.MouseEvent) => {
         e.preventDefault();
+        
+        if (!resumeFile) {
+            alert('Please upload your resume before continuing.');
+            return;
+        }
+
         dispatch(setProfessionalProfile({
             currentJobTitle: jobTitle,
             yearsOfExperience: experience === 'Fresher' ? 0 : experience === 'Junior' ? 2 : experience === 'Mid' ? 5 : 10,
             skills: skills,
-            primaryLanguage: primaryLanguage
+            primaryLanguage: primaryLanguage,
+            document: 'resume' // Placeholder to satisfy backend Zod schema
         }));
         router.push('/work_pre');
     };

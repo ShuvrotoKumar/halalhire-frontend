@@ -1,8 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { setOrganizationDetails, setBasicInfo } from '@/redux/Slice/registrationSlice';
+import { useRegistrationFiles } from '@/app/context/RegistrationContext';
 import styles from './CompanyOnboarding.module.css';
 import {
     CheckCircle2,
@@ -10,12 +14,16 @@ import {
     Plus,
     MapPin,
     Globe,
-    Building2,
     ChevronRight,
     Award
 } from 'lucide-react';
 
 const CompanyOnboarding = () => {
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const registration = useSelector((state: any) => state.registration);
+    const { companyLogo, setCompanyLogo, bannerImage, setBannerImage } = useRegistrationFiles();
+
     const [formData, setFormData] = useState({
         companyName: '',
         industry: '',
@@ -24,9 +32,51 @@ const CompanyOnboarding = () => {
         description: ''
     });
 
+    useEffect(() => {
+        if (registration) {
+            setFormData({
+                companyName: registration.name || '',
+                industry: registration.organizationDetails?.industry || '',
+                location: registration.organizationDetails?.headquartersLocation || '',
+                website: registration.organizationDetails?.websiteUrl || '',
+                description: registration.organizationDetails?.companyDescription || ''
+            });
+        }
+    }, [registration]);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'logo' | 'banner') => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (type === 'logo') setCompanyLogo(file);
+            else setBannerImage(file);
+        }
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        // Update basic info for company name
+        dispatch(setBasicInfo({ 
+            name: formData.companyName, 
+            email: registration.email, 
+            password: registration.password, 
+            role: 'company' 
+        }));
+
+        // Update organization details
+        dispatch(setOrganizationDetails({
+            industry: formData.industry,
+            headquartersLocation: formData.location,
+            websiteUrl: formData.website,
+            companyDescription: formData.description
+        }));
+
+        router.push('/company_ver');
     };
 
     return (
@@ -68,21 +118,35 @@ const CompanyOnboarding = () => {
                     <h2 className={styles.formTitle}>Organization Details</h2>
                     <p className={styles.formSubtitle}>Provide the fundamental information about your company to attract the right candidates.</p>
 
-                    <form onSubmit={(e) => e.preventDefault()}>
+                    <form onSubmit={handleSubmit}>
                         <div className={styles.uploadRow}>
                             <div className={styles.uploadGroup}>
                                 <label>Company Logo</label>
-                                <div className={`${styles.uploadBox} ${styles.logoUpload}`}>
-                                    <Plus size={24} />
-                                    <span>Upload Logo</span>
-                                </div>
+                                <label className={`${styles.uploadBox} ${styles.logoUpload}`}>
+                                    <input type="file" style={{ display: 'none' }} onChange={(e) => handleFileChange(e, 'logo')} accept="image/*" />
+                                    {companyLogo ? (
+                                        <Image src={URL.createObjectURL(companyLogo)} alt="Logo" width={48} height={48} style={{ borderRadius: '8px', objectFit: 'cover' }} />
+                                    ) : (
+                                        <>
+                                            <Plus size={24} />
+                                            <span>Upload Logo</span>
+                                        </>
+                                    )}
+                                </label>
                             </div>
                             <div className={styles.uploadGroup}>
                                 <label>Banner Image</label>
-                                <div className={styles.uploadBox}>
-                                    <ImageIcon size={24} />
-                                    <span>Upload Banner (Recommended 1200×400)</span>
-                                </div>
+                                <label className={styles.uploadBox}>
+                                    <input type="file" style={{ display: 'none' }} onChange={(e) => handleFileChange(e, 'banner')} accept="image/*" />
+                                    {bannerImage ? (
+                                        <span style={{ fontSize: '12px' }}>{bannerImage.name}</span>
+                                    ) : (
+                                        <>
+                                            <ImageIcon size={24} />
+                                            <span>Upload Banner (Recommended 1200×400)</span>
+                                        </>
+                                    )}
+                                </label>
                             </div>
                         </div>
 
@@ -96,6 +160,7 @@ const CompanyOnboarding = () => {
                                     className={styles.input}
                                     value={formData.companyName}
                                     onChange={handleChange}
+                                    required
                                 />
                             </div>
                             <div className={styles.inputGroup}>
@@ -105,12 +170,14 @@ const CompanyOnboarding = () => {
                                     className={styles.select}
                                     value={formData.industry}
                                     onChange={handleChange}
+                                    required
                                 >
                                     <option value="">Select Industry</option>
-                                    <option value="tech">Technology</option>
-                                    <option value="finance">Finance</option>
-                                    <option value="healthcare">Healthcare</option>
-                                    <option value="education">Education</option>
+                                    <option value="Technology">Technology</option>
+                                    <option value="Finance & Islamic Finance">Finance & Islamic Finance</option>
+                                    <option value="Food & Beverage">Food & Beverage</option>
+                                    <option value="Healthcare">Healthcare</option>
+                                    <option value="Education">Education</option>
                                 </select>
                             </div>
                         </div>
@@ -126,6 +193,7 @@ const CompanyOnboarding = () => {
                                     className={`${styles.input} ${styles.inputWithIcon}`}
                                     value={formData.location}
                                     onChange={handleChange}
+                                    required
                                 />
                             </div>
                         </div>
@@ -141,6 +209,7 @@ const CompanyOnboarding = () => {
                                     className={`${styles.input} ${styles.inputWithIcon}`}
                                     value={formData.website}
                                     onChange={handleChange}
+                                    required
                                 />
                             </div>
                         </div>
@@ -154,14 +223,15 @@ const CompanyOnboarding = () => {
                                 maxLength={500}
                                 value={formData.description}
                                 onChange={handleChange}
+                                required
                             ></textarea>
                             <span className={styles.charCount}>Max 500 characters</span>
                         </div>
 
                         <div className={styles.actions}>
-                            <Link href="/company_ver" className={styles.submitBtn}>
+                            <button type="submit" className={styles.submitBtn}>
                                 Save and Continue <ChevronRight size={20} />
-                            </Link>
+                            </button>
                         </div>
                     </form>
                 </div>

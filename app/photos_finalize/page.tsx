@@ -15,11 +15,11 @@ const PhotosFinalizePage = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     const registration = useSelector((state: any) => state.registration);
-    const { 
+    const {
         photo: portrait, setPhoto: setPortrait,
-        nationalId, internationalPassport, 
+        nationalId, internationalPassport,
         document: resumeFile, professionalCertificates,
-        clearFiles 
+        clearFiles
     } = useRegistrationFiles();
 
     const [registerUser, { isLoading: isRegistering }] = useRegisterUserMutation();
@@ -34,28 +34,42 @@ const PhotosFinalizePage = () => {
 
     const handleFinish = async (e: React.MouseEvent) => {
         e.preventDefault();
-        
+
         try {
+            if (!portrait || !nationalId || !internationalPassport || !resumeFile) {
+                setFinalError('Some required documents are missing. Please ensure all files are uploaded in the previous steps.');
+                return;
+            }
+
             const formData = new FormData();
-            
+
+            // Create a copy of registration to ensure document placeholder is present
+            const registrationData = {
+                ...registration,
+                professionalProfile: {
+                    ...registration.professionalProfile,
+                    document: 'resume' // Satisfies backend Zod schema
+                }
+            };
+
             // Append JSON data as requested by the API
-            formData.append('data', JSON.stringify(registration));
-            
+            formData.append('data', JSON.stringify(registrationData));
+
             // Append files from context
-            if (portrait) formData.append('photo', portrait);
-            if (nationalId) formData.append('nationalId', nationalId);
-            if (internationalPassport) formData.append('internationalPassport', internationalPassport);
-            if (resumeFile) formData.append('document', resumeFile);
-            
+            formData.append('photo', portrait);
+            formData.append('nationalId', nationalId);
+            formData.append('internationalPassport', internationalPassport);
+            formData.append('document', resumeFile);
+
             // Append certificates
             professionalCertificates.forEach((cert) => {
                 formData.append('professionalCertificates', cert);
             });
 
-            console.log('Submitting registration data:', registration);
+            console.log('Submitting registration data:', registrationData);
             const result = await registerUser(formData).unwrap();
-            
-            // Standardize the user object for auto-login
+
+            // Standardize the user object for UI purposes
             const userData = result.data?.user || result.user || {};
             const standardUser = {
                 name: userData.name || userData.fullName || registration.name || 'User',
@@ -66,19 +80,13 @@ const PhotosFinalizePage = () => {
 
             const token = result.data?.accessToken || result.data?.token || result.accessToken || result.token || 'temp-token';
 
-            console.log('Post-registration mapping to standardized user:', standardUser);
+            console.log('Registration success. Standardized user:', standardUser);
 
-            // Set auth user so Navbar reflects the new account
-            dispatch(reduxSetUser({
-                user: standardUser,
-                token: token
-            }));
-            
-            // Clear local and global state
-            dispatch(resetRegistration());
-            clearFiles();
-            
-            router.push('/completed_auth');
+            // Clear local and global state (optional, can be done after verification if preferred)
+            // dispatch(resetRegistration());
+            // clearFiles();
+
+            router.push(`/create_user_verify?email=${registration.email}`);
         } catch (err: any) {
             console.error('Registration failed:', err);
             const errorMessage = err.data?.message || err.message || 'Registration failed. Please try again.';
@@ -112,12 +120,12 @@ const PhotosFinalizePage = () => {
                             <input type="file" style={{ display: 'none' }} onChange={handleFileChange} accept="image/*" />
                             <div className={styles.uploadIcon}>
                                 {portrait ? (
-                                    <Image 
-                                        src={URL.createObjectURL(portrait)} 
-                                        alt="Preview" 
-                                        width={64} 
-                                        height={64} 
-                                        style={{ borderRadius: '12px', objectFit: 'cover' }} 
+                                    <Image
+                                        src={URL.createObjectURL(portrait)}
+                                        alt="Preview"
+                                        width={64}
+                                        height={64}
+                                        style={{ borderRadius: '12px', objectFit: 'cover' }}
                                     />
                                 ) : (
                                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -187,8 +195,8 @@ const PhotosFinalizePage = () => {
                         )}
                         <div className={styles.actions}>
                             <button onClick={handleFinish} className={styles.skipBtn}>Skip for now</button>
-                            <button 
-                                onClick={handleFinish} 
+                            <button
+                                onClick={handleFinish}
                                 className={styles.finishBtn}
                                 disabled={isRegistering}
                             >

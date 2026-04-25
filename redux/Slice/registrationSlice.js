@@ -16,13 +16,25 @@ const initialState = {
     currentJobTitle: "",
     yearsOfExperience: 0,
     skills: [],
-    primaryLanguage: ""
+    primaryLanguage: "",
+    document: ""
   },
   WorkPreferences: {
     salaryExpectations: "",
     employmentType: "",
     availableFrom: ""
-  }
+  },
+  // Company specific fields
+  organizationDetails: {
+    industry: "",
+    headquartersLocation: "",
+    websiteUrl: "",
+    companyDescription: ""
+  },
+  companyVerificationSchema: {
+    companyTaxId: ""
+  },
+  workplace: []
 };
 
 export const registrationSlice = createSlice({
@@ -45,6 +57,15 @@ export const registrationSlice = createSlice({
     setWorkPreferences: (state, action) => {
       state.WorkPreferences = { ...state.WorkPreferences, ...action.payload };
     },
+    setOrganizationDetails: (state, action) => {
+      state.organizationDetails = { ...state.organizationDetails, ...action.payload };
+    },
+    setCompanyVerification: (state, action) => {
+      state.companyVerificationSchema = { ...state.companyVerificationSchema, ...action.payload };
+    },
+    setWorkplace: (state, action) => {
+      state.workplace = action.payload;
+    },
     resetRegistration: () => initialState,
   },
 });
@@ -53,7 +74,10 @@ export const {
   setBasicInfo, 
   setPersonalInfo, 
   setProfessionalProfile, 
-  setWorkPreferences, 
+  setWorkPreferences,
+  setOrganizationDetails,
+  setCompanyVerification,
+  setWorkplace,
   resetRegistration 
 } = registrationSlice.actions;
 
