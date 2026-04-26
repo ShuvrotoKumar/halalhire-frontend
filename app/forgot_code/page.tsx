@@ -115,7 +115,7 @@ const VerifyCodePage = () => {
                             {code.map((digit, index) => (
                                 <input
                                     key={index}
-                                    ref={(el) => (inputRefs.current[index] = el)}
+                                    ref={(el) => { inputRefs.current[index] = el; }}
                                     type="text"
                                     className={styles.codeInput}
                                     value={digit}
