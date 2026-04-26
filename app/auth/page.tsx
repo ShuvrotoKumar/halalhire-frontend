@@ -19,7 +19,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
 import { useDispatch } from 'react-redux';
 import { setBasicInfo } from '@/redux/Slice/registrationSlice';
-// import { useLogInMutation } from '@/redux/api/authApi';
+import { useLogInMutation } from '@/redux/api/authApi';
 import { setUser as reduxSetUser } from '@/redux/Slice/authSlice';
 
 const AuthContent = () => {
@@ -38,29 +38,35 @@ const AuthContent = () => {
     const [loginError, setLoginError] = useState<string | null>(null);
     
     const dispatch = useDispatch();
-    // const [logIn, { isLoading: isLoggingIn }] = useLogInMutation();
+    const [logIn, { isLoading: isLoggingIn }] = useLogInMutation();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoginError(null);
         
-        const trimmedEmail = email.trim();
+        if (!email || !password) {
+            setLoginError('Please enter both email and password.');
+            return;
+        }
         
-        // Mock login logic for development
-        const standardUser = {
-            name: role === 'user' ? 'Yahya Khan' : 'Halal Tech Solutions',
-            email: trimmedEmail || (role === 'user' ? 'yahya@halalhire.com' : 'contact@halaltech.com'),
-            role: role,
-            avatar: role === 'user' ? '/g1.png' : undefined
-        };
-
-        // Dispatch to Redux to update Navbar and other components
-        dispatch(reduxSetUser({
-            user: standardUser,
-            token: 'mock-token-' + Date.now()
-        }));
-        
-        router.push('/');
+        try {
+            const response = await logIn({ email, password }).unwrap();
+            
+            // Assume response contains user and token. Adjust according to your backend's actual response structure.
+            const user = response?.data?.user || response?.user || { email, role };
+            const token = response?.data?.token || response?.token || response?.data?.accessToken;
+            
+            // Dispatch to Redux to update Navbar and other components
+            dispatch(reduxSetUser({
+                user: user,
+                token: token
+            }));
+            
+            router.push('/');
+        } catch (err: any) {
+            console.error('Login failed:', err);
+            setLoginError(err?.data?.message || 'Invalid email or password. Please try again.');
+        }
     };
 
     const handleRegister = async (e: React.FormEvent) => {
@@ -224,11 +230,10 @@ const AuthContent = () => {
                                 <button 
                                     type="submit" 
                                     className={styles.submitBtn}
-                                    // disabled={isLoggingIn}
-                                    // style={{ opacity: isLoggingIn ? 0.7 : 1 }}
+                                    disabled={isLoggingIn}
+                                    style={{ opacity: isLoggingIn ? 0.7 : 1 }}
                                 >
-                                    {/* {isLoggingIn ? 'Logging in...' : <><ArrowRight size={20} /> Sign In to Account</>} */}
-                                    <ArrowRight size={20} /> Sign In to Account
+                                    {isLoggingIn ? 'Logging in...' : <><ArrowRight size={20} /> Sign In to Account</>}
                                 </button>
                             </form>
                         </div>
