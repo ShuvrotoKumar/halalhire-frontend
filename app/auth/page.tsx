@@ -55,6 +55,14 @@ const AuthContent = () => {
             // Assume response contains user and token. Adjust according to your backend's actual response structure.
             const user = response?.data?.user || response?.user || { email, role };
             const token = response?.data?.token || response?.token || response?.data?.accessToken;
+            const refreshToken = response?.data?.refreshToken || response?.refreshToken;
+            
+            if (token) {
+                localStorage.setItem('token', token);
+            }
+            if (refreshToken) {
+                localStorage.setItem('refreshToken', refreshToken);
+            }
             
             // Dispatch to Redux to update Navbar and other components
             dispatch(reduxSetUser({

@@ -72,13 +72,10 @@ const authApi = baseApi.injectEndpoints({
       invalidatesTags: ["admin"],
     }),
     refreshToken: builder.mutation({
-      query: () => ({
+      query: (refreshToken) => ({
         url: "/auth/refresh-token",
         method: "POST",
-        body: {},
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
+        body: { refreshToken: refreshToken || (typeof window !== 'undefined' ? localStorage.getItem('refreshToken') : null) },
       }),
     }),
   }),
