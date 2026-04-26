@@ -185,7 +185,7 @@ const AuthContent = () => {
                                 <div className={styles.formGroup}>
                                     <div className={styles.labelRow}>
                                         <label className={styles.label}>Password</label>
-                                        <Link href="#" className={styles.forgotLink}>Forgot password?</Link>
+                                        <Link href="/forgot_pass" className={styles.forgotLink}>Forgot password?</Link>
                                     </div>
                                     <div className={styles.inputWrapper}>
                                         <Lock size={18} className={styles.inputIcon} />
