@@ -5,13 +5,15 @@ import styles from './ForgotCode.module.css';
 import { ShieldCheck, ArrowLeft, Timer, CheckCircle2, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useVerifyEmailMutation } from '@/redux/api/authApi';
 
 const VerifyCodePage = () => {
     const [code, setCode] = useState(['', '', '', '', '', '']);
-    const [isLoading, setIsLoading] = useState(false);
     const [timer, setTimer] = useState(59);
+    const [errorMsg, setErrorMsg] = useState('');
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
     const router = useRouter();
+    const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -41,16 +43,17 @@ const VerifyCodePage = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setErrorMsg('');
         const fullCode = code.join('');
         if (fullCode.length < 6) return;
         
-        setIsLoading(true);
-        // Simulate verification
-        setTimeout(() => {
-            setIsLoading(false);
-            // Navigate to reset password page
+        try {
+            await verifyEmail({ verificationCode: fullCode }).unwrap();
             router.push('/reset_pass');
-        }, 1500);
+        } catch (err: any) {
+            console.error('Failed to verify code:', err);
+            setErrorMsg(err?.data?.message || 'Invalid verification code. Please try again.');
+        }
     };
 
     const handleResend = () => {
@@ -94,6 +97,12 @@ const VerifyCodePage = () => {
                                 />
                             ))}
                         </div>
+
+                        {errorMsg && (
+                            <p style={{ color: '#ef4444', fontSize: '13px', marginTop: '16px', textAlign: 'center' }}>
+                                {errorMsg}
+                            </p>
+                        )}
 
                         <button 
                             type="submit" 

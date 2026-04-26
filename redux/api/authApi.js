@@ -17,14 +17,14 @@ const authApi = baseApi.injectEndpoints({
     }),
     forgotPassword: builder.mutation({
       query: (data) => ({
-        url: "auth/forget-password",
+        url: "/user/forgot_password",
         method: "POST",
         body: data,
       }),
     }),
     verifyEmail: builder.mutation({
       query: (data) => ({
-        url: "/auth/forget-password-check-otp",
+        url: "/user/verification_forgot_user",
         method: "PATCH",
         body: data,
       }),
