@@ -71,6 +71,16 @@ const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["admin"],
     }),
+    refreshToken: builder.mutation({
+      query: () => ({
+        url: "/auth/refresh-token",
+        method: "POST",
+        body: {},
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      }),
+    }),
   }),
 });
 
@@ -84,6 +94,7 @@ export const {
   useVerifyUserMutation,
   useResendCodeQuery,
   useLazyResendCodeQuery,
+  useRefreshTokenMutation,
 } = authApi;
 
 export default authApi;

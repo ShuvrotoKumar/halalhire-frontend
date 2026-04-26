@@ -123,10 +123,10 @@ const Navbar = () => {
                           <Image src={user.avatar} alt={user.name} width={40} height={40} className={styles.avatar} />
                         ) : (
                           <div className={styles.avatarPlaceholder}>
-                            {user.name.charAt(0).toUpperCase()}
+                            {(user?.name || user?.email || 'U').charAt(0).toUpperCase()}
                           </div>
                         )}
-                        <span className={styles.userName}>{user.name}</span>
+                        <span className={styles.userName}>{user?.name || user?.email || 'User'}</span>
                       </div>
                       <Link href={user.role === 'company' ? "/company_profile" : "/user_profile"} className={styles.dropdownItem} onClick={() => setIsMenuOpen(false)}>
                         <User size={18} /> {t('profile', 'Profile')}
@@ -202,10 +202,10 @@ const Navbar = () => {
                       <Image src={user.avatar} alt={user.name} width={36} height={36} className={styles.avatar} />
                     ) : (
                       <div className={styles.avatarPlaceholder}>
-                        {user.name.charAt(0).toUpperCase()}
+                        {(user?.name || user?.email || 'U').charAt(0).toUpperCase()}
                       </div>
                     )}
-                    <span className={styles.userName}>{user.name}</span>
+                    <span className={styles.userName}>{user?.name || user?.email || 'User'}</span>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M6 9l6 6 6-6" />
                     </svg>
