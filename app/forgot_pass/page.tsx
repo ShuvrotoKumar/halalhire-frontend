@@ -19,7 +19,7 @@ const ForgotPassPage = () => {
         // Simulate API call
         setTimeout(() => {
             setIsLoading(false);
-            setIsSubmitted(true);
+            router.push('/forgot_code');
         }, 1500);
     };
 
