@@ -48,8 +48,8 @@ const VerifyCodePage = () => {
         // Simulate verification
         setTimeout(() => {
             setIsLoading(false);
-            // Navigate to reset password page (to be created) or back to login
-            router.push('/auth?mode=login');
+            // Navigate to reset password page
+            router.push('/reset_pass');
         }, 1500);
     };
 
