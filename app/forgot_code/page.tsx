@@ -5,7 +5,7 @@ import styles from './ForgotCode.module.css';
 import { ShieldCheck, ArrowLeft, Timer, CheckCircle2, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useVerifyEmailMutation } from '@/redux/api/authApi';
+import { useVerifyEmailMutation, useLazyResendCodeQuery } from '@/redux/api/authApi';
 
 const VerifyCodePage = () => {
     const [code, setCode] = useState(['', '', '', '', '', '']);
@@ -14,6 +14,7 @@ const VerifyCodePage = () => {
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
     const router = useRouter();
     const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
+    const [resendCode, { isFetching: isResending }] = useLazyResendCodeQuery();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -48,7 +49,23 @@ const VerifyCodePage = () => {
         if (fullCode.length < 6) return;
         
         try {
-            await verifyEmail({ verificationCode: fullCode }).unwrap();
+            const response = await verifyEmail({ verificationCode: fullCode }).unwrap();
+            console.log("Verification Response:", response);
+            
+            // Extract token from response (handling various common backend structures)
+            const token = 
+                response?.data?.token || 
+                response?.token || 
+                response?.data?.accessToken ||
+                (typeof response?.data === 'string' ? response?.data : null);
+                
+            if (token) {
+                console.log("Token successfully captured!");
+                localStorage.setItem('resetToken', token);
+            } else {
+                console.warn("Warning: No token found in response!");
+            }
+            
             router.push('/reset_pass');
         } catch (err: any) {
             console.error('Failed to verify code:', err);
@@ -56,9 +73,22 @@ const VerifyCodePage = () => {
         }
     };
 
-    const handleResend = () => {
-        setTimer(59);
-        // Simulate resend logic
+    const handleResend = async () => {
+        const email = typeof window !== 'undefined' ? localStorage.getItem('recoveryEmail') : null;
+        if (!email) {
+            setErrorMsg('Email not found. Please go back and try again.');
+            return;
+        }
+
+        try {
+            await resendCode(email).unwrap();
+            setTimer(59);
+            setErrorMsg('');
+            // Optional: You could show a small success message like "Code resent!" here
+        } catch (err: any) {
+            console.error('Failed to resend code:', err);
+            setErrorMsg(err?.data?.message || 'Failed to resend code. Please try again later.');
+        }
     };
 
     return (
@@ -125,10 +155,10 @@ const VerifyCodePage = () => {
                         <button 
                             className={styles.resendBtn} 
                             onClick={handleResend}
-                            disabled={timer > 0}
+                            disabled={timer > 0 || isResending}
                         >
                             <RefreshCw size={14} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
-                            Resend Verification Code
+                            {isResending ? 'Resending...' : 'Resend Verification Code'}
                         </button>
                     </div>
 

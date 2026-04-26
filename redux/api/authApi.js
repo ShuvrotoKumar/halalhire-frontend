@@ -25,14 +25,14 @@ const authApi = baseApi.injectEndpoints({
     verifyEmail: builder.mutation({
       query: (data) => ({
         url: "/user/verification_forgot_user",
-        method: "PATCH",
+        method: "POST",
         body: data,
       }),
     }),
     resetPassword: builder.mutation({
       query: (data) => ({
-        url: "auth/reset-password",
-        method: "PATCH",
+        url: "/user/reset_password",
+        method: "POST",
         body: data,
         headers: {
           Authorization: localStorage.getItem("resetToken"),
@@ -64,6 +64,13 @@ const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["admin"],
     }),
+    resendCode: builder.query({
+      query: (email) => ({
+        url: `/user/resend_verification_otp/${email}`,
+        method: "GET",
+      }),
+      invalidatesTags: ["admin"],
+    }),
   }),
 });
 
@@ -75,6 +82,8 @@ export const {
   useRegisterUserMutation,
   useRegisterCompanyMutation,
   useVerifyUserMutation,
+  useResendCodeQuery,
+  useLazyResendCodeQuery,
 } = authApi;
 
 export default authApi;

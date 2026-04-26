@@ -4,30 +4,44 @@ import React, { useState, useEffect } from 'react';
 import styles from './ResetPass.module.css';
 import { Lock, Eye, EyeOff, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useResetPasswordMutation } from '@/redux/api/authApi';
 
 const ResetPasswordPage = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
     const router = useRouter();
+    const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (password !== confirmPassword) return;
+        setErrorMsg('');
+        if (password !== confirmPassword) {
+            setErrorMsg('Passwords do not match');
+            return;
+        }
         
-        setIsLoading(true);
-        // Simulate password reset
-        setTimeout(() => {
-            setIsLoading(false);
+        try {
+            // Get token from local storage (if stored there during previous steps)
+            const token = typeof window !== 'undefined' ? localStorage.getItem('resetToken') : '';
+            
+            await resetPassword({ 
+                password: password,
+                token: token
+            }).unwrap();
+            
             setShowModal(true);
             
             // Redirect after 2 seconds
             setTimeout(() => {
                 router.push('/auth?mode=login');
             }, 2000);
-        }, 1500);
+        } catch (err: any) {
+            console.error('Failed to reset password:', err);
+            setErrorMsg(err?.data?.message || 'Failed to reset password. Please try again.');
+        }
     };
 
     const requirements = [
@@ -100,6 +114,12 @@ const ResetPasswordPage = () => {
                                 </div>
                             ))}
                         </div>
+
+                        {errorMsg && (
+                            <p style={{ color: '#ef4444', fontSize: '13px', marginBottom: '16px', textAlign: 'center' }}>
+                                {errorMsg}
+                            </p>
+                        )}
 
                         <button 
                             type="submit" 

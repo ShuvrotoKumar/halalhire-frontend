@@ -19,6 +19,7 @@ const ForgotPassPage = () => {
         
         try {
             await forgotPassword({ email }).unwrap();
+            localStorage.setItem('recoveryEmail', email);
             router.push('/forgot_code');
         } catch (err: any) {
             console.error('Failed to send recovery code:', err);
