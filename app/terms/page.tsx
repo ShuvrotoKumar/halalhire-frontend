@@ -13,11 +13,17 @@ import {
   AlertCircle,
   Calendar, 
   Mail,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from 'lucide-react';
+import { useGetTermsAndConditionsQuery } from '@/redux/api/termsApi';
 
 const TermsPage = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
+  const { data: termsResponse, isLoading } = useGetTermsAndConditionsQuery({});
+  
+  const termsHtml = termsResponse?.data?.TermsConditions || '';
+
   return (
     <div className={styles.pageWrapper}>
       <Navbar />
@@ -54,71 +60,20 @@ const TermsPage = () => {
         <div className="container">
           <div className={styles.contentArea}>
             
-            {/* 1. Acceptance */}
-            <div className={styles.section}>
-              <div className={styles.iconWrapper}>
-                <UserCheck size={24} />
+            {isLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0', color: 'var(--bg-primary)' }}>
+                <Loader2 size={32} className="animate-spin" />
               </div>
-              <div className={styles.sectionBody}>
-                <h2 className={styles.sectionTitle}>{t('1AcceptanceOfTerms', '1. Acceptance of Terms')}</h2>
-                <p className={styles.sectionText}>
-                  {t('byAccessingOrUsingTheHalalhirePlatformYouAcknowledgeThatYouHaveReadUnderstoodAndAgreeToBeBoundByTheseTermsOfServiceAndOurPrivacyPolicyIfYouDoNotAgreePleaseRefrainFromUsingOurServices', 'By accessing or using the HalalHire platform, you acknowledge that you have \n                  read, understood, and agree to be bound by these Terms of Service and our \n                  Privacy Policy. If you do not agree, please refrain from using our services.')}
-                </p>
+            ) : termsHtml ? (
+              <div 
+                className={styles.apiContent}
+                dangerouslySetInnerHTML={{ __html: termsHtml }}
+              />
+            ) : (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: '#6b7280' }}>
+                {t('noTermsFound', 'No terms and conditions found.')}
               </div>
-            </div>
-
-            {/* 2. Ethical Conduct */}
-            <div className={styles.section}>
-              <div className={styles.iconWrapper}>
-                <Scale size={24} />
-              </div>
-              <div className={styles.sectionBody}>
-                <h2 className={styles.sectionTitle}>{t('2EthicalConductShariaAlignment', '2. Ethical Conduct & Sharia Alignment')}</h2>
-                <p className={styles.sectionText}>
-                  {t('halalhireIsBuiltOnIslamicPrinciplesOfHonestyTransparencyAndFairnessUsersAreExpectedTo', 'HalalHire is built on Islamic principles of honesty, transparency, and fairness. \n                  Users are expected to:')}
-                </p>
-                <div className={styles.termsList}>
-                  <div className={styles.termsItem}>
-                    <span className={styles.termsLabel}>{t('honesty', 'Honesty:')}</span>
-                    <span className={styles.termsDesc}>{t('provideAccurateInformationInProfilesAndJobListings', 'Provide accurate information in profiles and job listings.')}</span>
-                  </div>
-                  <div className={styles.termsItem}>
-                    <span className={styles.termsLabel}>{t('respect', 'Respect:')}</span>
-                    <span className={styles.termsDesc}>{t('treatAllMembersOfTheCommunityWithDignityAndProfessionalism', 'Treat all members of the community with dignity and professionalism.')}</span>
-                  </div>
-                  <div className={styles.termsItem}>
-                    <span className={styles.termsLabel}>{t('compliance', 'Compliance:')}</span>
-                    <span className={styles.termsDesc}>{t('ensureAllJobOpportunitiesAndEmploymentPracticesAreShariacompliant', 'Ensure all job opportunities and employment practices are Sharia-compliant.')}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 3. User Accounts */}
-            <div className={styles.section}>
-              <div className={styles.iconWrapper}>
-                <AlertCircle size={24} />
-              </div>
-              <div className={styles.sectionBody}>
-                <h2 className={styles.sectionTitle}>{t('3UserAccountsSecurity', '3. User Accounts & Security')}</h2>
-                <p className={styles.sectionText}>
-                  {t('youAreResponsibleForMaintainingTheConfidentialityOfYourAccountCredentialsAnyActivityOccurringUnderYourAccountIsYourResponsibilityNotifyUsImmediatelyOfAnyUnauthorizedUse', 'You are responsible for maintaining the confidentiality of your account \n                  credentials. Any activity occurring under your account is your responsibility. \n                  Notify us immediately of any unauthorized use.')}
-                </p>
-              </div>
-            </div>
-
-            {/* 4. Limitation of Liability */}
-            <div className={styles.section}>
-              <div className={styles.iconWrapper}>
-                <Scale size={24} />
-              </div>
-              <div className={styles.sectionBody}>
-                <h2 className={styles.sectionTitle}>{t('4LimitationOfLiability', '4. Limitation of Liability')}</h2>
-                <p className={styles.sectionText}>
-                  {t('halalhireProvidesAPlatformForConnectingEmployersAndCandidatesWhileWeVetPartnersForEthicalAlignmentWeAreNotLiableForTheFinalEmploymentAgreementsOrAnyDisputesArisingTherefrom', 'HalalHire provides a platform for connecting employers and candidates. \n                  While we vet partners for ethical alignment, we are not liable for the \n                  final employment agreements or any disputes arising therefrom.')}
-                </p>
-              </div>
-            </div>
+            )}
 
             {/* Contact Card */}
             <div className={styles.contactCard}>
