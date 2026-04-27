@@ -14,11 +14,23 @@ import {
   Globe, 
   Scale,
   Calendar,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from 'lucide-react';
+import { useGetImprintQuery } from '@/redux/api/privacyApi';
 
 const ImprintPage = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
+  const { data: imprintResponse, isLoading, error } = useGetImprintQuery({});
+  
+  // Extract imprint content taking into account potential API double-wrapping
+  const imprintHtml = imprintResponse?.data?.data?.imprint || imprintResponse?.data?.imprint || '';
+  
+  // Handle error state
+  if (error) {
+    console.error('Error fetching imprint policy:', error);
+  }
+  
   return (
     <div className={styles.pageWrapper}>
       <Navbar />
@@ -55,7 +67,17 @@ const ImprintPage = () => {
         <div className="container">
           <div className={styles.contentArea}>
             
-            <div className={styles.imprintGrid}>
+            {isLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0', color: 'var(--bg-primary)' }}>
+                <Loader2 size={32} className="animate-spin" />
+              </div>
+            ) : imprintHtml ? (
+              <div 
+                className={styles.apiContent}
+                dangerouslySetInnerHTML={{ __html: imprintHtml }}
+              />
+            ) : (
+              <div className={styles.imprintGrid}>
               {/* 1. Company Information */}
               <div className={styles.section}>
                 <div className={styles.iconWrapper}>
@@ -107,6 +129,7 @@ const ImprintPage = () => {
                 </div>
               </div>
             </div>
+            )}
 
             {/* Disclaimer Section */}
             <div className={styles.disclaimerSection}>
