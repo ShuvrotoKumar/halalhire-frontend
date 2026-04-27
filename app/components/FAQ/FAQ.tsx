@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import styles from './FAQ.module.css';
 import { useTranslation } from 'react-i18next';
 import { useGetAllFaqQuery } from '@/redux/api/faqApi';
@@ -10,9 +10,19 @@ const FAQ = () => {
   const { t } = useTranslation();
   const { data: faqResponse, isLoading } = useGetAllFaqQuery({});
   
-  const faqs = faqResponse?.data?.data || [];
+  // Handle different potential response structures from the API
+  const faqs = Array.isArray(faqResponse?.data?.data) 
+    ? faqResponse.data.data 
+    : (Array.isArray(faqResponse?.data) ? faqResponse.data : []);
   
   const [openId, setOpenId] = useState<string | null>(null);
+
+  // Automatically open the first FAQ when data loads
+  useEffect(() => {
+    if (faqs.length > 0 && !openId) {
+      setOpenId(faqs[0]._id || '0');
+    }
+  }, [faqs, openId]);
 
   const toggleFaq = (id: string) => {
     setOpenId(openId === id ? null : id);
