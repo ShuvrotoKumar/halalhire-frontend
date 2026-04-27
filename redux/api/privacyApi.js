@@ -1,3 +1,5 @@
+'use client';
+
 import { baseApi } from "./baseApi";
 
 const privacyApi = baseApi.injectEndpoints({

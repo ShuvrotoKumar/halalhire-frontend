@@ -20,10 +20,15 @@ import { useGetCookiesQuery } from '@/redux/api/privacyApi';
 
 const CookiePage = () => {
   const { t } = useTranslation();
-  const { data: cookieResponse, isLoading } = useGetCookiesQuery({});
+  const { data: cookieResponse, isLoading, error } = useGetCookiesQuery({});
   
   // Extract policy taking into account potential API double-wrapping
   const cookieHtml = cookieResponse?.data?.data?.cookiePolicy || cookieResponse?.data?.cookiePolicy || '';
+  
+  // Handle error state
+  if (error) {
+    console.error('Error fetching cookie policy:', error);
+  }
 
   return (
     <div className={styles.pageWrapper}>
