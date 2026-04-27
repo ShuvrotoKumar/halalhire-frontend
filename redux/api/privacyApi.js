@@ -26,7 +26,21 @@ const privacyApi = baseApi.injectEndpoints({
       }),
       providesTags: ["cookies"],
     }),
+    getAccessibility: builder.query({
+      query: () => ({
+        url: "/setting/find_by_accessibility",
+        method: "GET",
+      }),
+      providesTags: ["accessibility"],
+    }),
+    getImprint: builder.query({
+      query: () => ({
+        url: "/setting/find_by_imprints",
+        method: "GET",
+      }),
+      providesTags: ["imprint"],
+    }),
   }),
 });
 
-export const { useGetPrivacyQuery, useUpdatePrivacyMutation, useGetCookiesQuery } = privacyApi;
+export const { useGetPrivacyQuery, useUpdatePrivacyMutation, useGetCookiesQuery, useGetAccessibilityQuery, useGetImprintQuery } = privacyApi;

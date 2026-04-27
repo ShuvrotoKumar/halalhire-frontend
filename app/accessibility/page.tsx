@@ -13,11 +13,23 @@ import {
   CheckCircle,
   Calendar,
   Mail,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from 'lucide-react';
+import { useGetAccessibilityQuery } from '@/redux/api/privacyApi';
 
 const AccessibilityPage = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
+  const { data: accessibilityResponse, isLoading, error } = useGetAccessibilityQuery({});
+  
+  // Extract accessibility content taking into account potential API double-wrapping
+  const accessibilityHtml = accessibilityResponse?.data?.data?.accessibility || accessibilityResponse?.data?.accessibility || '';
+  
+  // Handle error state
+  if (error) {
+    console.error('Error fetching accessibility policy:', error);
+  }
+  
   return (
     <div className={styles.pageWrapper}>
       <Navbar />
@@ -53,62 +65,70 @@ const AccessibilityPage = () => {
         {/* Content Section */}
         <div className="container">
           <div className={styles.contentArea}>
-            <div className={styles.accessibilityGrid}>
-              
-              {/* 1. Our Commitment */}
-              <div className={styles.section}>
-                <div className={styles.iconWrapper}>
-                  <Accessibility size={24} />
-                </div>
-                <div className={styles.sectionBody}>
-                  <h2 className={styles.sectionTitle}>{t('1OurCommitment', '1. Our Commitment')}</h2>
-                  <p className={styles.sectionText}>
-                    {t('weBelieveThatAllMembersOfOurCommunityShouldBeAbleToAccessProfessionalOpportunitiesWithoutBarriersWeAimToConformToTheWebContentAccessibilityGuidelinesWcag21LevelAaStandards', 'We believe that all members of our community should be able to access \n                    professional opportunities without barriers. We aim to conform to \n                    the Web Content Accessibility Guidelines (WCAG) 2.1 level AA standards.')}
-                  </p>
-                </div>
+            
+            {isLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0', color: 'var(--bg-primary)' }}>
+                <Loader2 size={32} className="animate-spin" />
               </div>
-
-              {/* 2. Visual & Navigation */}
-              <div className={styles.section}>
-                <div className={styles.iconWrapper}>
-                  <Eye size={24} />
+            ) : accessibilityHtml ? (
+              <div 
+                className={styles.apiContent}
+                dangerouslySetInnerHTML={{ __html: accessibilityHtml }}
+              />
+            ) : (
+              <div className={styles.accessibilityGrid}>
+                {/* Fallback content if no API data */}
+                <div className={styles.section}>
+                  <div className={styles.iconWrapper}>
+                    <Accessibility size={24} />
+                  </div>
+                  <div className={styles.sectionBody}>
+                    <h2 className={styles.sectionTitle}>{t('1OurCommitment', '1. Our Commitment')}</h2>
+                    <p className={styles.sectionText}>
+                      {t('weBelieveThatAllMembersOfOurCommunityShouldBeAbleToAccessProfessionalOpportunitiesWithoutBarriersWeAimToConformToTheWebContentAccessibilityGuidelinesWcag21LevelAaStandards', 'We believe that all members of our community should be able to access \n                      professional opportunities without barriers. We aim to conform to \n                      the Web Content Accessibility Guidelines (WCAG) 2.1 level AA standards.')}
+                    </p>
+                  </div>
                 </div>
-                <div className={styles.sectionBody}>
-                  <h2 className={styles.sectionTitle}>{t('2VisualNavigationEnhancements', '2. Visual & Navigation Enhancements')}</h2>
-                  <p className={styles.sectionText}>
-                    {t('wePrioritizeHighContrastRatiosReadableTypographyAndSemanticHtmlToEnsureOurContentRemainsClearAndNavigable', 'We prioritize high contrast ratios, readable typography, and semantic HTML \n                    to ensure our content remains clear and navigable.')}
-                  </p>
-                  <div className={styles.featureList}>
-                    <div className={styles.featureItem}>
-                      <CheckCircle size={18} className={styles.checkIcon} />
-                      <span className={styles.featureLabel}>{t('highContrastComponents', 'High Contrast Components')}</span>
-                    </div>
-                    <div className={styles.featureItem}>
-                      <CheckCircle size={18} className={styles.checkIcon} />
-                      <span className={styles.featureLabel}>{t('clearFontHierarchy', 'Clear Font Hierarchy')}</span>
-                    </div>
-                    <div className={styles.featureItem}>
-                      <CheckCircle size={18} className={styles.checkIcon} />
-                      <span className={styles.featureLabel}>{t('scalableTextSizes', 'Scalable Text Sizes')}</span>
+
+                <div className={styles.section}>
+                  <div className={styles.iconWrapper}>
+                    <Eye size={24} />
+                  </div>
+                  <div className={styles.sectionBody}>
+                    <h2 className={styles.sectionTitle}>{t('2VisualNavigationEnhancements', '2. Visual & Navigation Enhancements')}</h2>
+                    <p className={styles.sectionText}>
+                      {t('wePrioritizeHighContrastRatiosReadableTypographyAndSemanticHtmlToEnsureOurContentRemainsClearAndNavigable', 'We prioritize high contrast ratios, readable typography, and semantic HTML \n                      to ensure our content remains clear and navigable.')}
+                    </p>
+                    <div className={styles.featureList}>
+                      <div className={styles.featureItem}>
+                        <CheckCircle size={18} className={styles.checkIcon} />
+                        <span className={styles.featureLabel}>{t('highContrastComponents', 'High Contrast Components')}</span>
+                      </div>
+                      <div className={styles.featureItem}>
+                        <CheckCircle size={18} className={styles.checkIcon} />
+                        <span className={styles.featureLabel}>{t('clearFontHierarchy', 'Clear Font Hierarchy')}</span>
+                      </div>
+                      <div className={styles.featureItem}>
+                        <CheckCircle size={18} className={styles.checkIcon} />
+                        <span className={styles.featureLabel}>{t('scalableTextSizes', 'Scalable Text Sizes')}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* 3. Assistive Technology */}
-              <div className={styles.section}>
-                <div className={styles.iconWrapper}>
-                  <Keyboard size={24} />
-                </div>
-                <div className={styles.sectionBody}>
-                  <h2 className={styles.sectionTitle}>{t('3AssistiveTechnologySupport', '3. Assistive Technology Support')}</h2>
-                  <p className={styles.sectionText}>
-                    {t('ourPlatformIsDesignedToBeFullyNavigableViaKeyboardAndCompatibleWithCommonScreenReadingSoftware', 'Our platform is designed to be fully navigable via keyboard and \n                    compatible with common screen reading software.')}
-                  </p>
+                <div className={styles.section}>
+                  <div className={styles.iconWrapper}>
+                    <Keyboard size={24} />
+                  </div>
+                  <div className={styles.sectionBody}>
+                    <h2 className={styles.sectionTitle}>{t('3AssistiveTechnologySupport', '3. Assistive Technology Support')}</h2>
+                    <p className={styles.sectionText}>
+                      {t('ourPlatformIsDesignedToBeFullyNavigableViaKeyboardAndCompatibleWithCommonScreenReadingSoftware', 'Our platform is designed to be fully navigable via keyboard and \n                      compatible with common screen reading software.')}
+                    </p>
+                  </div>
                 </div>
               </div>
-
-            </div>
+            )}
 
             {/* Contact Card */}
             <div className={styles.contactCard}>
