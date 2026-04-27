@@ -17,7 +17,14 @@ const privacyApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["privacy"],
     }),
+    getCookies: builder.query({
+      query: () => ({
+        url: "/setting/find_by_cookie_policy",
+        method: "GET",
+      }),
+      providesTags: ["cookies"],
+    }),
   }),
 });
 
-export const { useGetPrivacyQuery, useUpdatePrivacyMutation } = privacyApi;
+export const { useGetPrivacyQuery, useUpdatePrivacyMutation, useGetCookiesQuery } = privacyApi;

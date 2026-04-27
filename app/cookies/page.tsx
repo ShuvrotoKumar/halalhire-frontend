@@ -13,11 +13,18 @@ import {
   ShieldCheck,
   Calendar, 
   Mail,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from 'lucide-react';
+import { useGetCookiesQuery } from '@/redux/api/privacyApi';
 
 const CookiePage = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
+  const { data: cookieResponse, isLoading } = useGetCookiesQuery({});
+  
+  // Extract policy taking into account potential API double-wrapping
+  const cookieHtml = cookieResponse?.data?.data?.cookiePolicy || cookieResponse?.data?.cookiePolicy || '';
+
   return (
     <div className={styles.pageWrapper}>
       <Navbar />
@@ -54,67 +61,20 @@ const CookiePage = () => {
         <div className="container">
           <div className={styles.contentArea}>
             
-            {/* 1. What are cookies */}
-            <div className={styles.section}>
-              <div className={styles.iconWrapper}>
-                <Cookie size={24} />
+            {isLoading ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0', color: 'var(--bg-primary)' }}>
+                <Loader2 size={32} className="animate-spin" />
               </div>
-              <div className={styles.sectionBody}>
-                <h2 className={styles.sectionTitle}>{t('1WhatAreCookies', '1. What Are Cookies?')}</h2>
-                <p className={styles.sectionText}>
-                  {t('cookiesAreSmallTextFilesThatArePlacedOnYourDeviceByWebsitesThatYouVisitTheyAreWidelyUsedToMakeWebsitesWorkMoreEfficientlyAsWellAsToProvideInformationToTheOwnersOfTheSite', 'Cookies are small text files that are placed on your device by websites \n                  that you visit. They are widely used to make websites work more \n                  efficiently, as well as to provide information to the owners of the site.')}
-                </p>
+            ) : cookieHtml ? (
+              <div 
+                className={styles.apiContent}
+                dangerouslySetInnerHTML={{ __html: cookieHtml }}
+              />
+            ) : (
+              <div style={{ textAlign: 'center', padding: '40px 0', color: '#6b7280' }}>
+                {t('noCookiePolicyFound', 'No cookie policy found.')}
               </div>
-            </div>
-
-            {/* 2. How we use them */}
-            <div className={styles.section}>
-              <div className={styles.iconWrapper}>
-                <Info size={24} />
-              </div>
-              <div className={styles.sectionBody}>
-                <h2 className={styles.sectionTitle}>{t('2HowWeUseCookies', '2. How We Use Cookies')}</h2>
-                <p className={styles.sectionText}>
-                  {t('weUseCookiesForSeveralEthicalReasonsIncludingKeepingYouSignedInUnderstandingHowYouUseOurPlatformAndImprovingYourJobseekingExperience', 'We use cookies for several ethical reasons, including keeping you signed in, \n                  understanding how you use our platform, and improving your job-seeking \n                  experience.')}
-                </p>
-                
-                <table className={styles.cookieTable}>
-                  <thead>
-                    <tr>
-                      <th>{t('type', 'Type')}</th>
-                      <th>{t('purpose', 'Purpose')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{t('essential', 'Essential')}</td>
-                      <td>{t('necessaryForThePlatformToFunctionSuchAsAuthenticationAndSecurity', 'Necessary for the platform to function, such as authentication and security.')}</td>
-                    </tr>
-                    <tr>
-                      <td>{t('performance', 'Performance')}</td>
-                      <td>{t('helpUsUnderstandHowVisitorsInteractWithTheSiteByCollectingAnonymousInformation', 'Help us understand how visitors interact with the site by collecting anonymous information.')}</td>
-                    </tr>
-                    <tr>
-                      <td>{t('functional', 'Functional')}</td>
-                      <td>{t('allowTheSiteToRememberChoicesYouMakeLikeYourLanguagePreference', 'Allow the site to remember choices you make, like your language preference.')}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* 3. Your Choices */}
-            <div className={styles.section}>
-              <div className={styles.iconWrapper}>
-                <Settings size={24} />
-              </div>
-              <div className={styles.sectionBody}>
-                <h2 className={styles.sectionTitle}>{t('3YourChoices', '3. Your Choices')}</h2>
-                <p className={styles.sectionText}>
-                  {t('youHaveTheRightToDecideWhetherToAcceptOrRejectCookiesYouCanSetOrAmendYourWebBrowserControlsToAcceptOrRefuseCookiesIfYouChooseToRejectCookiesYouMayStillUseOurWebsiteThoughYourAccessToSomeFunctionalityAndAreasMayBeRestricted', 'You have the right to decide whether to accept or reject cookies. You can \n                  set or amend your web browser controls to accept or refuse cookies. If \n                  you choose to reject cookies, you may still use our website though your \n                  access to some functionality and areas may be restricted.')}
-                </p>
-              </div>
-            </div>
+            )}
 
             {/* Contact Card */}
             <div className={styles.contactCard}>
