@@ -11,36 +11,27 @@ import {
   MessageCircle, 
   User, 
   Briefcase, 
-  Shield, 
+  Shield,
   Calendar,
   Mail,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from 'lucide-react';
+import { useGetAllFaqQuery } from '@/redux/api/faqApi';
 
 const FAQPage = () => {
-  const { t } = useTranslation()
-  const faqs = useMemo(() => [
-    {
-      icon: <User size={24} />,
-      question: t('howDoesHalalhireVerifyHalalJobs', 'How does HalalHire verify \'Halal\' jobs?'),
-      answer: t('wePartnerWithEmployersWhoCommitToOurEthicalFrameworkWeManuallyReviewJobListingsAndCompanyProfilesToEnsureTheyAlignWithIslamicValuesProfessionalStandardsAndFairTreatmentOfWorkers', 'We partner with employers who commit to our ethical framework. We manually review job listings and company profiles to ensure they align with Islamic values, professional standards, and fair treatment of workers.')
-    },
-    {
-      icon: <Briefcase size={24} />,
-      question: t('isHalalhireOnlyForMuslims', 'Is HalalHire only for Muslims?'),
-      answer: t('whileOurPlatformIsBuiltOnIslamicPrinciplesAndFocusesOnShariacompliantOpportunitiesItIsOpenToAnyoneWhoValuesEthicalEmploymentProfessionalIntegrityAndARespectfulWorkplaceEnvironment', 'While our platform is built on Islamic principles and focuses on Sharia-compliant opportunities, it is open to anyone who values ethical employment, professional integrity, and a respectful workplace environment.')
-    },
-    {
-      icon: <Shield size={24} />,
-      question: t('howIsMyDataProtected', 'How is my data protected?'),
-      answer: t('weTreatYourDataWithTheUtmostDignityWeUseIndustrystandardEncryptionSecureHostingAndWeNeverSellYourPersonalInformationToThirdpartyAdvertisersYourPrivacyIsATrustAmanahWeHoldDearly', 'We treat your data with the utmost dignity. We use industry-standard encryption, secure hosting, and we NEVER sell your personal information to third-party advertisers. Your privacy is a trust (amanah) we hold dearly.')
-    },
-    {
-      icon: <MessageCircle size={24} />,
-      question: t('howCanIContactAnEmployer', 'How can I contact an employer?'),
-      answer: t('onceYouApplyForAJobAndTheEmployerExpressesInterestInYourProfileOurPlatformProvidesSecureCommunicationChannelsToFacilitateInterviewsAndDiscussions', 'Once you apply for a job and the employer expresses interest in your profile, our platform provides secure communication channels to facilitate interviews and discussions.')
-    }
-  ], [t]);
+  const { t } = useTranslation();
+  const { data: faqResponse, isLoading } = useGetAllFaqQuery({});
+  
+  const faqsData = faqResponse?.data?.data || [];
+  
+  const icons = [
+    <User size={24} key="user" />,
+    <Briefcase size={24} key="briefcase" />,
+    <Shield size={24} key="shield" />,
+    <MessageCircle size={24} key="message" />,
+    <HelpCircle size={24} key="help" />
+  ];
 
   return (
     <div className={styles.pageWrapper}>
@@ -78,17 +69,27 @@ const FAQPage = () => {
         <div className="container">
           <div className={styles.contentArea}>
             <div className={styles.faqGrid}>
-              {faqs.map((faq, index) => (
-                <div key={index} className={styles.section}>
-                  <div className={styles.iconWrapper}>
-                    {faq.icon}
-                  </div>
-                  <div className={styles.sectionBody}>
-                    <h2 className={styles.question}>{faq.question}</h2>
-                    <p className={styles.answer}>{faq.answer}</p>
-                  </div>
+              {isLoading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '40px 0', color: 'var(--bg-primary)' }}>
+                  <Loader2 size={32} className="animate-spin" />
                 </div>
-              ))}
+              ) : faqsData.length > 0 ? (
+                faqsData.map((faq: any, index: number) => (
+                  <div key={faq._id || index} className={styles.section}>
+                    <div className={styles.iconWrapper}>
+                      {icons[index % icons.length]}
+                    </div>
+                    <div className={styles.sectionBody}>
+                      <h2 className={styles.question}>{faq.question}</h2>
+                      <p className={styles.answer}>{faq.answer}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div style={{ width: '100%', textAlign: 'center', padding: '40px 0', color: '#6b7280' }}>
+                  {t('noFaqsFound', 'No FAQs found.')}
+                </div>
+              )}
             </div>
 
             {/* Contact Card */}
