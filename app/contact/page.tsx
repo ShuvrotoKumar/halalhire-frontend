@@ -23,7 +23,6 @@ export default function ContactPage() {
             {/* Right Column: Sidebar & Map */}
             <div className={styles.rightColumn}>
               <ContactSidebar />
-              {/* <ContactMap /> */}
             </div>
           </div>
         </div>

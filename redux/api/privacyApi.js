@@ -4,15 +4,15 @@ const privacyApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getPrivacy: builder.query({
       query: () => ({
-        url: "home/get-privacy-policy",
+        url: "/setting/find_by_privacy_policys",
         method: "GET",
       }),
       providesTags: ["privacy"],
     }),
     updatePrivacy: builder.mutation({
-      query: ({ requestData }) => ({
-        url: "home/update-privacy-policy",
-        method: "PATCH",
+      query: ({ id, requestData }) => ({
+        url: `/setting/privacy_policys`,
+        method: "POST",
         body: requestData,
       }),
       invalidatesTags: ["privacy"],

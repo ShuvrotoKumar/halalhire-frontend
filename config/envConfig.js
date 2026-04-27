@@ -3,9 +3,9 @@
 // export const pdfUrl = "http://10.10.20.57:8001";
 // export const imageUrl = "http://10.10.20.57:8001/uploads";
 
-export const url = "https://strengths-automotive-rebates-librarian.trycloudflare.com/api/v1";
-export const pdfUrl = "https://strengths-automotive-rebates-librarian.trycloudflare.com";
-export const imageUrl = "https://strengths-automotive-rebates-librarian.trycloudflare.com/uploads";
+export const url = "https://harold-steady-fwd-reduce.trycloudflare.com/api/v1";
+export const pdfUrl = "https://harold-steady-fwd-reduce.trycloudflare.com";
+export const imageUrl = "https://harold-steady-fwd-reduce.trycloudflare.com/uploads";
 
 export const getBaseUrl = () => {
   return url;

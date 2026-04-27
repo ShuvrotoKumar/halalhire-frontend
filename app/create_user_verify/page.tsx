@@ -76,7 +76,7 @@ const VerifyContent = () => {
                         <Image src="/logo.png" alt="HalalHire Logo" width={140} height={48} style={{ objectFit: 'contain' }} />
                     </Link>
                 </div>
-                <h1>Verify Your Account</h1>
+                     <h1>Verify Your Account</h1>   
                 <p>We&apos;ve sent a 6-digit verification code to <span style={{ color: '#193f35', fontWeight: 700 }}>{email || 'your email'}</span></p>
             </div>
 

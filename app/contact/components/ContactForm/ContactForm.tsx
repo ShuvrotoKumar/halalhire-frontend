@@ -14,7 +14,7 @@ const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subject: 'Job Seeker Support',
+    subject: '',
     message: ''
   });
 
@@ -30,7 +30,7 @@ const ContactForm = () => {
       setFormData({
         name: '',
         email: '',
-        subject: 'Job Seeker Support',
+        subject: '',
         message: ''
       });
       openContactConfirmModal();
@@ -80,25 +80,16 @@ const ContactForm = () => {
         </div>
 
         <div className={styles.fieldGroup}>
-          <label className={styles.label}>{t('subjectInquiryType', 'Subject / Inquiry Type')}</label>
-          <div className={styles.selectWrapper}>
-            <select 
-              name="subject"
-              value={formData.subject}
-              onChange={handleChange}
-              className={styles.select}
-            >
-              <option value="Job Seeker Support">{t('jobSeekerSupport', 'Job Seeker Support')}</option>
-              <option value="Employer Support">{t('employerSupport', 'Employer Support')}</option>
-              <option value="Ethical Audits">{t('ethicalAudits', 'Ethical Audits')}</option>
-              <option value="Other / General Inquiry">{t('otherGeneralInquiry', 'Other / General Inquiry')}</option>
-            </select>
-            <div className={styles.selectIcon}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </div>
-          </div>
+          <label className={styles.label}>{t('subject', 'Subject')}</label>
+          <input 
+            type="text"
+            name="subject"
+            value={formData.subject}
+            onChange={handleChange}
+            className={styles.input}
+            placeholder={t('enterSubject', 'Enter Subject')}
+            required
+          />
         </div>
 
         <div className={styles.fieldGroup}>

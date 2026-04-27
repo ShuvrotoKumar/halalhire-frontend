@@ -71,10 +71,8 @@ const Navbar = () => {
   const isSolidPage = ['/privacy', '/terms', '/cookies', '/imprint', '/faq', '/accessibility'].includes(pathname);
 
   return (
-    <div suppressHydrationWarning>
-      {mounted && (
-        <header className={`${styles.header}${isSolidPage ? ` ${styles.solid}` : ''}`}>
-          <div className={`container ${styles.navbar}`}>
+    <header className={`${styles.header}${isSolidPage ? ` ${styles.solid}` : ''}`} suppressHydrationWarning>
+      <div className={`container ${styles.navbar}`}>
             <Link href="/" className={styles.logo}>
               <Image src="/logo.png" alt={t('logo', 'Logo')} width={160} height={60} style={{ objectFit: 'contain' }} />
             </Link>
@@ -244,9 +242,7 @@ const Navbar = () => {
               </button>
             </div>
           </div>
-        </header>
-      )}
-    </div>
+    </header>
   );
 };
 
