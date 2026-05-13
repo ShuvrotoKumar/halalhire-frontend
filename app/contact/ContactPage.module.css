@@ -1,0 +1,39 @@
+.pageWrapper {
+  background-color: #193f35;
+}
+
+.mainContent {
+  padding-bottom: 100px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 40px;
+  align-items: start;
+  margin-top: 60px;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rightColumn {
+    order: -1;
+    /* Sidebar above form on smaller screens if desired, or keep default */
+    order: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    padding-bottom: 60px;
+  }
+}

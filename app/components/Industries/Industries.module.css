@@ -1,0 +1,153 @@
+.industriesSection {
+  background: #fdfbf7;
+  padding: 80px 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.title {
+  font-family: 'Inter', sans-serif;
+  font-size: 32px;
+  color: #193f35;
+  margin-bottom: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 60px;
+  }
+}
+
+.subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: #64748b;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.industryCard {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+@media (min-width: 1024px) {
+  .industryCard:nth-child(1) { grid-column: span 2; }
+  .industryCard:nth-child(2) { grid-column: span 1; }
+  .industryCard:nth-child(3) { grid-column: span 1; }
+  .industryCard:nth-child(4) { grid-column: span 1; }
+  .industryCard:nth-child(5) { grid-column: span 3; }
+}
+
+.bgImage {
+  z-index: 0;
+  transition: transform 0.5s ease;
+}
+
+.industryCard:hover .bgImage {
+  transform: scale(1.05);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(12, 27, 24, 0.8) 0%, rgba(12, 27, 24, 0.3) 100%);
+  z-index: 1;
+}
+
+.cardContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.industryName {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+.positionCount {
+  font-size: 13px;
+  color: #d1d5db;
+  margin-bottom: 12px;
+}
+
+.viewJobsWrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #f8c850;
+}
+
+.viewJobsText {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.viewJobsWrapper svg {
+  transition: transform 0.3s ease;
+}
+
+.industryCard:hover .viewJobsWrapper svg {
+  transform: translateX(4px);
+}
+
+.viewAllWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.viewAllBtn {
+  background: #193f35;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 14px 40px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.viewAllBtn:hover {
+  background: #122e26;
+}

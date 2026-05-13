@@ -1,0 +1,438 @@
+'use client';
+
+import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
+import { setProfessionalProfile } from '@/redux/Slice/registrationSlice';
+import { useRegistrationFiles } from '@/app/context/RegistrationContext';
+import styles from './ProfessionalInfo.module.css';
+
+const JOB_TITLES = [
+  // Technology
+  { id: 1, name: 'Frontend Developer' },
+  { id: 2, name: 'Backend Developer' },
+  { id: 3, name: 'Full Stack Developer' },
+  { id: 4, name: 'Software Engineer' },
+  { id: 5, name: 'UI/UX Designer' },
+  { id: 6, name: 'Mobile App Developer' },
+  { id: 7, name: 'Data Scientist' },
+  { id: 8, name: 'DevOps Engineer' },
+  { id: 9, name: 'QA Engineer' },
+  { id: 10, name: 'Cyber Security Analyst' },
+  { id: 11, name: 'Cloud Architect' },
+  // Finance & Islamic Finance
+  { id: 12, name: 'Islamic Finance Analyst' },
+  { id: 13, name: 'Sharia Auditor' },
+  { id: 14, name: 'Senior Compliance Officer' },
+  { id: 15, name: 'Financial Consultant' },
+  { id: 16, name: 'Investment Banker' },
+  { id: 17, name: 'Risk Manager' },
+  { id: 18, name: 'Accountant' },
+  { id: 19, name: 'Portfolio Manager' },
+  // Healthcare
+  { id: 20, name: 'Clinical Lead' },
+  { id: 21, name: 'Registered Nurse' },
+  { id: 22, name: 'Pharmacist' },
+  { id: 23, name: 'General Practitioner' },
+  { id: 24, name: 'Healthcare Administrator' },
+  // Education
+  { id: 25, name: 'Educational Consultant' },
+  { id: 26, name: 'Online Tutor' },
+  { id: 27, name: 'Arabic Language Teacher' },
+  { id: 28, name: 'Islamic Studies Instructor' },
+  { id: 29, name: 'Curriculum Developer' },
+  // Marketing & Sales
+  { id: 30, name: 'Marketing Manager' },
+  { id: 31, name: 'Content Strategist' },
+  { id: 32, name: 'SEO Specialist' },
+  { id: 33, name: 'Sales Representative' },
+  { id: 34, name: 'Digital Marketing Manager' },
+  { id: 35, name: 'Business Development Manager' },
+  // Operations & Logistics
+  { id: 36, name: 'Operations Manager' },
+  { id: 37, name: 'Logistics Manager' },
+  { id: 38, name: 'Supply Chain Coordinator' },
+  { id: 39, name: 'Procurement Officer' },
+  { id: 40, name: 'Project Manager' },
+  // HR & Administration
+  { id: 41, name: 'HR Manager' },
+  { id: 42, name: 'Recruiter' },
+  { id: 43, name: 'Legal Advisor' },
+  { id: 44, name: 'Office Administrator' },
+  // Creative
+  { id: 45, name: 'Graphic Designer' },
+  { id: 46, name: 'Product Designer' },
+  { id: 47, name: 'Creative Director' },
+  { id: 48, name: 'Video Editor' },
+];
+
+const ProfessionalProfilePage = () => {
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const registration = useSelector((state: any) => state.registration);
+    const { 
+        document: resumeFile, setDocument: setResumeFile,
+        professionalCertificates: certificatesFiles, addCertificate, removeCertificate 
+    } = useRegistrationFiles();
+
+    const [jobTitle, setJobTitle] = useState('Product Designer');
+    const [experience, setExperience] = useState('Junior');
+    const [skills, setSkills] = useState(['UI/UX DESIGN', 'PRODUCT STRATEGY', 'FIGMA']);
+    const [skillInput, setSkillInput] = useState('');
+    const [primaryLanguage, setPrimaryLanguage] = useState('English (Native/Professional)');
+    const [otherLanguages, setOtherLanguages] = useState('');
+
+    useEffect(() => {
+        if (registration && registration.professionalProfile) {
+            setJobTitle(registration.professionalProfile.currentJobTitle || 'Product Designer');
+            // Mapping back experience if possible, or just default
+            setSkills(registration.professionalProfile.skills || []);
+            setPrimaryLanguage(registration.professionalProfile.primaryLanguage || 'English (Native/Professional)');
+        }
+    }, []);
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [filteredTitles, setFilteredTitles] = useState(JOB_TITLES);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleJobTitleChange = (value: string) => {
+        setJobTitle(value);
+        if (value.trim()) {
+            const filtered = JOB_TITLES.filter(title =>
+                title.name.toLowerCase().includes(value.toLowerCase())
+            );
+            setFilteredTitles(filtered);
+            setIsDropdownOpen(true);
+        } else {
+            setFilteredTitles(JOB_TITLES);
+            setIsDropdownOpen(true);
+        }
+    };
+
+    const selectTitle = (title: string) => {
+        setJobTitle(title);
+        setIsDropdownOpen(false);
+    };
+
+    const handleAddSkill = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' && skillInput.trim()) {
+            e.preventDefault();
+            if (!skills.includes(skillInput.trim().toUpperCase())) {
+                setSkills([...skills, skillInput.trim().toUpperCase()]);
+            }
+            setSkillInput('');
+        }
+    };
+
+    const removeSkill = (skillToRemove: string) => {
+        setSkills(skills.filter(skill => skill !== skillToRemove));
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setResumeFile(file);
+        }
+    };
+
+    const handleCertAdd = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.onchange = (e: any) => {
+            const file = e.target.files?.[0];
+            if (file) {
+                addCertificate(file);
+            }
+        };
+        input.click();
+    };
+
+    const handleContinue = (e: React.MouseEvent) => {
+        e.preventDefault();
+        
+        if (!resumeFile) {
+            alert('Please upload your resume before continuing.');
+            return;
+        }
+
+        dispatch(setProfessionalProfile({
+            currentJobTitle: jobTitle,
+            yearsOfExperience: experience === 'Fresher' ? 0 : experience === 'Junior' ? 2 : experience === 'Mid' ? 5 : 10,
+            skills: skills,
+            primaryLanguage: primaryLanguage,
+            document: 'resume' // Placeholder to satisfy backend Zod schema
+        }));
+        router.push('/work_pre');
+    };
+
+    return (
+        <div className={styles.pageWrapper}>
+            {/* Top Bar */}
+            <header className={styles.topBar}>
+                <div className={styles.logo}>
+                    <Image src="/logo.png" alt="HalalHire Logo" width={120} height={40} style={{ objectFit: 'contain' }} />
+                </div>
+            </header>
+
+            <main className={styles.mainContent}>
+                {/* Progress Header */}
+                <header className={styles.header}>
+                    <div className={styles.stepInfo}>
+                        <span>Step 3 of 5</span>
+                        <span className={styles.percentage}>60% Complete</span>
+                    </div>
+                    <div className={styles.progressBar}>
+                        <div className={styles.progressFill}></div>
+                    </div>
+
+                    <h1 className={styles.title}>Professional Profile</h1>
+                    <p className={styles.subtitle}>
+                        Help us match you with ethical opportunities that align with your expertise
+                        and Islamic values.
+                    </p>
+                </header>
+
+                <form className={styles.formBody} onSubmit={(e) => e.preventDefault()}>
+                    {/* Experience Details */}
+                    <section className={styles.section}>
+                        <div className={styles.sectionTitle}>
+                            <svg className={styles.iconCircle} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                            </svg>
+                            Experience Details
+                        </div>
+                        <div className={styles.formGrid}>
+                            <div className={styles.formGroup} style={{ position: 'relative' }} ref={dropdownRef}>
+                                <label className={styles.label}>Current Job Title</label>
+                                <input
+                                    type="text"
+                                    className={styles.input}
+                                    value={jobTitle}
+                                    onChange={(e) => handleJobTitleChange(e.target.value)}
+                                    onFocus={() => setIsDropdownOpen(true)}
+                                    placeholder="e.g. Product Designer"
+                                />
+                                {isDropdownOpen && (
+                                    <div className={styles.dropdownMenu}>
+                                        {filteredTitles.length > 0 ? (
+                                            filteredTitles.map((title) => (
+                                                <div
+                                                    key={title.id}
+                                                    className={styles.dropdownItem}
+                                                    onClick={() => selectTitle(title.name)}
+                                                >
+                                                    {title.name}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className={styles.noResults}>No matches found</div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label className={styles.label}>Years of Experience</label>
+                                <div className={styles.selectWrapper}>
+                                    <select
+                                        className={styles.select}
+                                        value={experience}
+                                        onChange={(e) => setExperience(e.target.value)}
+                                    >
+                                        <option>Fresher</option>
+                                        <option>Junior</option>
+                                        <option>Mid</option>
+                                        <option>Senior</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Skills & Languages */}
+                    <section className={styles.section}>
+                        <div className={styles.sectionTitle}>
+                            <svg className={styles.iconCircle} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="2" y1="12" x2="22" y2="12" />
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                            </svg>
+                            Skills & Languages
+                        </div>
+                        <div className={styles.formGroup} style={{ marginBottom: '24px' }}>
+                            <label className={styles.label}>Key Professional Skills</label>
+                            <div className={styles.tagsContainer}>
+                                {skills.map((skill) => (
+                                    <div key={skill} className={styles.tag}>
+                                        {skill}
+                                        <span className={styles.removeTag} onClick={() => removeSkill(skill)}>
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                                        </span>
+                                    </div>
+                                ))}
+                                <input
+                                    type="text"
+                                    className={styles.tagInput}
+                                    placeholder="Add a skill..."
+                                    value={skillInput}
+                                    onChange={(e) => setSkillInput(e.target.value)}
+                                    onKeyDown={handleAddSkill}
+                                />
+                            </div>
+                            <p className={styles.recommended}>Recommended: Visual Design, Agile, Prototyping</p>
+                        </div>
+                        <div className={styles.formGrid}>
+                            <div className={styles.formGroup}>
+                                <label className={styles.label}>Primary Language</label>
+                                <div className={styles.selectWrapper}>
+                                    <select
+                                        className={styles.select}
+                                        value={primaryLanguage}
+                                        onChange={(e) => setPrimaryLanguage(e.target.value)}
+                                    >
+                                        <option>English (Native/Professional)</option>
+                                        <option>Arabic</option>
+                                        <option>Malay</option>
+                                        <option>Urdu</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label className={styles.label}>Other Languages</label>
+                                <input
+                                    type="text"
+                                    className={styles.input}
+                                    placeholder="e.g. Arabic, Malay"
+                                    value={otherLanguages}
+                                    onChange={(e) => setOtherLanguages(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Professional Documents */}
+                    <section className={styles.section}>
+                        <div className={styles.sectionTitle}>
+                            <svg className={styles.iconCircle} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" y1="13" x2="8" y2="13" />
+                                <line x1="16" y1="17" x2="8" y2="17" />
+                                <polyline points="10 9 9 9 8 9" />
+                            </svg>
+                            Professional Documents
+                        </div>
+
+                        <div className={styles.uploadArea}>
+                            <div className={styles.docIcon}>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                    <path d="M12 18v-6" /><polyline points="9 15 12 12 15 15" />
+                                </svg>
+                            </div>
+                            <div className={styles.fileName}>{resumeFile ? resumeFile.name : 'No file chosen'}</div>
+                            <div className={styles.fileInfo}>{resumeFile ? `${(resumeFile.size / (1024 * 1024)).toFixed(1)} MB` : 'Please upload your resume'}</div>
+                            <label className={styles.changeBtn}>Change File
+                                <input type="file" style={{ display: 'none' }} onChange={handleFileChange} />
+                            </label>
+                        </div>
+
+                        <div className={styles.successBanner}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Skills extracted successfully from your CV.
+                        </div>
+
+                        <div style={{ marginTop: '32px' }}>
+                            <div className={styles.label} style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between' }}>
+                                Professional Certificates
+                                <span style={{ fontWeight: 400, color: '#9ca3af' }}>Optional</span>
+                            </div>
+                            <div className={styles.certificatesGrid}>
+                                {certificatesFiles.map((cert, index) => (
+                                    <div key={index} className={styles.certCard}>
+                                        <div className={styles.certIcon}>
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                <circle cx="12" cy="8" r="7" />
+                                                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+                                            </svg>
+                                        </div>
+                                        <div className={styles.certDetails}>
+                                            <div className={styles.certName}>{cert.name}</div>
+                                            <div className={styles.certStatus}>Selected</div>
+                                        </div>
+                                        <div className={styles.deleteCert} onClick={() => removeCertificate(index)}>
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                <polyline points="3 6 5 6 21 6" />
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                ))}
+                                <div className={styles.addCert} onClick={handleCertAdd}>
+                                    <svg className={styles.addIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="12" y1="8" x2="12" y2="16" />
+                                        <line x1="8" y1="12" x2="16" y2="12" />
+                                    </svg>
+                                    Add another
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Navigation */}
+                    <div className={styles.navigation}>
+                        <Link href="/identity_doc" className={styles.backBtn}>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="19" y1="12" x2="5" y2="12" />
+                                <polyline points="12 19 5 12 12 5" />
+                            </svg>
+                            Back
+                        </Link>
+                        <button onClick={handleContinue} className={styles.continueBtn}>
+                            Save & Continue
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+
+                <div className={styles.docNote}>
+                    <div className={styles.securityNote}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                        ETHICAL & SECURE DATA STANDARDS
+                    </div>
+                    <p className={styles.privacyText}>
+                        Your professional information is stored securely. We only share profile details with hiring companies when you explicitly apply for a role.
+                    </p>
+                </div>
+            </main>
+
+            <footer style={{ paddingBottom: '40px', textAlign: 'center', fontSize: '12px', color: '#9ca3af' }}>
+                © 2024 HalalHire. The Ethical Professional Network for the Ummah.
+            </footer>
+        </div>
+    );
+};
+
+export default ProfessionalProfilePage;

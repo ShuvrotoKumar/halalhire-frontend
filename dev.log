@@ -1,0 +1,21 @@
+
+> halalhire@0.1.0 dev /home/betopia/projects/halalhire
+> next dev
+
+⚠ Port 3000 is in use by an unknown process, using available port 3002 instead.
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3002
+- Network:       http://10.10.20.100:3002
+
+✓ Starting...
+✓ Ready in 568ms
+ ELIFECYCLE  Command failed.
+[?25h
+ sorted file referenced from 00012166.meta
+
+Caused by:
+    0: Unable to open static sorted file 00012165.sst
+    1: No such file or directory (os error 2)
+ ELIFECYCLE  Command failed.
+[?25h
+        

@@ -1,0 +1,252 @@
+.jobsSection {
+  background: linear-gradient(135deg, #f9f7f2 0%, #f4f2ec 50%, #f0ede7 100%);
+  padding: 60px 0;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .jobsSection {
+    padding: 80px 0;
+  }
+}
+
+.jobsSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(254, 238, 150, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(228, 158, 33, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .header {
+    margin-bottom: 56px;
+  }
+}
+
+.title {
+  font-family: 'Inter', sans-serif;
+  font-size: 28px;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 44px;
+  }
+}
+
+.subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: var(--text-gray);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  justify-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: stretch;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.jobCard {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  max-width: 420px;
+}
+
+@media (min-width: 768px) {
+  .jobCard {
+    max-width: none;
+  }
+}
+
+.jobCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.logoCont {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1.5px solid rgba(254, 238, 150, 0.4);
+  border-radius: 12px;
+  background: var(--text-dark);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(25, 63, 53, 0.3);
+}
+
+.logoCont:hover {
+  border-color: rgba(254, 238, 150, 0.6);
+  background: var(--text-dark);
+  box-shadow: 0 4px 12px rgba(25, 63, 53, 0.4);
+}
+
+.featuredBadge {
+  background: #fcf0d3;
+  color: #b38822;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+}
+
+.jobTitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 20px;
+  min-height: 44px;
+}
+
+.imageWrapper {
+  width: 100%;
+  height: 160px;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.companyName {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+.jobMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-gray);
+}
+
+.cardActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.btnView {
+  background: #f1f5f9;
+  color: var(--text-dark);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 0;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  text-align: center;
+}
+
+.btnView:hover {
+  background: #f1f5f9;
+  color: var(--text-dark);
+}
+
+
+.btnApply {
+  background: var(--text-dark);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 0;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btnApply:hover {
+  background: var(--bg-secondary);
+}
+
+.viewAllWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 64px;
+  position: relative;
+  z-index: 1;
+}
+
+.btnViewAll {
+  background: var(--text-dark);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 16px 48px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btnViewAll:hover {
+  background: var(--bg-secondary);
+}

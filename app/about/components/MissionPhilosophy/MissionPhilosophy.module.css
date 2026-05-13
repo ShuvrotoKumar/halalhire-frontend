@@ -1,0 +1,105 @@
+.missionSection {
+  background-color: #f2f0e9; /* Continues from hero */
+  padding: 0 0 100px 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+/* Base Card Styles */
+.cardLight, .cardDark {
+  border-radius: 24px;
+  padding: 48px 48px 0 48px; /* Padding top and sides, image goes to bottom */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  height: 600px;
+}
+
+.iconWrapper {
+  margin-bottom: 24px;
+}
+
+.imageContainer {
+  position: relative;
+  width: calc(100% + 96px); /* Compensate for side padding (48 * 2) */
+  margin-left: -48px;
+  margin-top: auto; /* Push to bottom */
+  height: 280px; /* Fixed height for image area */
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  overflow: hidden;
+}
+
+.image {
+  /* objectFit handled in next/image style prop */
+}
+
+/* Light Card Specifics */
+.cardLight {
+  background-color: #ffffff;
+}
+
+.cardTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 16px 0;
+}
+
+.cardText {
+  font-size: 15px;
+  color: #4b5563;
+  line-height: 1.7;
+  margin: 0 0 40px 0;
+}
+
+/* Dark Card Specifics */
+.cardDark {
+  background-color: #193f35; /* Dark Green */
+}
+
+.cardTitleDark {
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+}
+
+.cardTextDark {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.7;
+  margin: 0 0 40px 0;
+}
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .cardLight, .cardDark {
+    height: auto;
+  }
+  
+  .imageContainer {
+    height: 300px;
+  }
+}
+
+@media (max-width: 600px) {
+  .cardLight, .cardDark {
+    padding: 32px 32px 0 32px;
+  }
+  
+  .imageContainer {
+    width: calc(100% + 64px);
+    margin-left: -32px;
+    height: 240px;
+  }
+}

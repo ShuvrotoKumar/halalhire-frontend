@@ -1,0 +1,148 @@
+.hero {
+  position: relative;
+  height: 320px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: 0;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding: 40px;
+  background: linear-gradient(180deg, rgba(25, 63, 53, 0) 0%, rgba(25, 63, 53, 0.8) 100%);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-gray);
+  padding: 24px 0;
+  letter-spacing: 0.2px;
+}
+
+.breadcrumb a {
+  color: var(--text-gray);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.breadcrumb a:hover {
+  color: var(--text-dark);
+}
+
+.breadcrumb span {
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.breadcrumb svg {
+  opacity: 0.5;
+}
+
+.companyInfoWrapper {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  gap: 24px;
+}
+
+.infoLeft {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.logoBox {
+  width: 120px;
+  height: 120px;
+  background: white;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.details {
+  color: white;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.followBtn {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.viewJobsBtn {
+  background: linear-gradient(90deg, #FEEE96 0%, #E49E21 100%);
+  color: var(--text-dark);
+  font-size: 13px;
+  font-weight: 800;
+  padding: 12px 24px;
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(228, 158, 33, 0.3);
+}
+
+@media (max-width: 1024px) {
+  .companyInfoWrapper {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .hero {
+    height: auto;
+    min-height: 400px;
+  }
+
+  .meta {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}

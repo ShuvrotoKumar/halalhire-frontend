@@ -1,0 +1,549 @@
+/* .pageWrapper {
+  min-height: 100vh;
+  background-color: #f7f8f6;
+  color: #193f35;
+  font-family: 'Inter', sans-serif;
+  padding-bottom: 80px;
+} */
+
+.banner {
+  height: 200px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.bannerImage {
+  object-fit: cover;
+  opacity: 0.8;
+}
+
+.headerContainer {
+  max-width: 1200px;
+  margin: -60px auto 0;
+  position: relative;
+  z-index: 10;
+  padding: 0 20px;
+}
+
+.headerCard {
+  background: white;
+  border-radius: 24px;
+  padding: 0;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e8e1;
+  overflow: hidden;
+}
+
+.topSection {
+  padding: 32px 48px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.logoContainer {
+  width: 120px;
+  height: 120px;
+  background: #0c8b82;
+  /* Teal-ish from image */
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 24px;
+}
+
+.infoContent {
+  flex: 1;
+}
+
+.companyName {
+  font-size: 32px;
+  font-weight: 800;
+  color: #193f35;
+  margin-bottom: 8px;
+}
+
+.tagline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.verifiedIcon {
+  color: #e2ab4c;
+}
+
+.metaRow {
+  display: flex;
+  gap: 24px;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.editBtn {
+  background: #0c3126;
+  border: 1px solid #e5e8e1;
+  color: white;
+  padding: 12px 28px;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.editBtn:hover {
+  background-color: #0c3126;
+  transform: translateY(-2px);
+}
+
+.headerActions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.notificationBtn {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid #dce6df;
+  background: #ffffff;
+  color: #193f35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.notificationBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(12, 49, 38, 0.12);
+}
+
+.notificationDot {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fe6b2e;
+  border: 2px solid #ffffff;
+}
+
+.tabs {
+  padding: 0 48px;
+  display: flex;
+  gap: 32px;
+  border-top: 1px solid #f1f3ef;
+}
+
+.tab {
+  padding: 24px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #94a3b8;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.activeTab {
+  color: #fe6b2e;
+  /* Orange from image */
+}
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #fe6b2e;
+}
+
+.badgeCount {
+  background: #f1f3ef;
+  color: #94a3b8;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+/* Grid Layout */
+.mainGrid {
+  max-width: 1200px;
+  margin: 32px auto 0;
+  display: grid;
+  grid-template-columns: 1.8fr 1fr;
+  gap: 32px;
+  padding: 0 20px;
+}
+
+.contentColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.sidebarColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  border: 1px solid #f1f3ef;
+  margin-bottom: 20px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.titleWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 800;
+  color: #193f35;
+}
+
+.editIcon {
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.description {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* workplace badges */
+.manageLink {
+  font-size: 13px;
+  font-weight: 800;
+  color: #fe6b2e;
+  cursor: pointer;
+}
+
+.badgesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.badgeCard {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid #f1f5f9;
+}
+
+.badgeIcon {
+  width: 48px;
+  height: 48px;
+  background: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0c3126;
+  border: 1px solid #f1f5f9;
+}
+
+.badgeInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.badgeName {
+  font-size: 15px;
+  font-weight: 800;
+  color: #193f35;
+  margin-bottom: 2px;
+}
+
+.badgeDesc {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Quick Actions */
+.quickActionsCard {
+  background: #0c3126;
+  color: white;
+  padding: 32px;
+}
+
+.qaHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.qaTitle {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.qaList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.qaItem {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.qaItem:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.qaLabel {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.chevron {
+  opacity: 0.5;
+}
+
+/* Locations */
+.locationCard {
+  padding: 24px;
+}
+
+.mapPlaceholder {
+  width: 100%;
+  height: 180px;
+  background: #f1f3ef;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e5e8e1;
+}
+
+.pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fe6b2e;
+}
+
+.locTitle {
+  font-size: 15px;
+  font-weight: 800;
+  color: #193f35;
+  margin-bottom: 4px;
+}
+
+.locAddr {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(12, 49, 38, 0.34);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.notificationModal {
+  width: min(100%, 560px);
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 30px 80px rgba(12, 49, 38, 0.24);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.modalTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #193f35;
+  margin-bottom: 6px;
+}
+
+.modalSubtitle {
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.modalCloseBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid #e5e8e1;
+  background: #ffffff;
+  color: #193f35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.notificationList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.notificationItem {
+  display: flex;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid #edf2ec;
+  background: #f9fbf8;
+}
+
+.notificationIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #fff1e8;
+  color: #fe6b2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.notificationContent {
+  flex: 1;
+}
+
+.notificationItemHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 6px;
+}
+
+.notificationItemHeader h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #193f35;
+}
+
+.notificationItemHeader span {
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.notificationContent p {
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .topSection {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+  }
+
+  .headerActions {
+    margin-left: 0;
+  }
+
+  .tabs {
+    padding: 0 24px;
+    gap: 24px;
+    overflow-x: auto;
+  }
+
+  .metaRow,
+  .modalHeader,
+  .notificationItemHeader,
+  .mainGrid {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mainGrid {
+    display: flex;
+  }
+
+  .badgesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .card,
+  .notificationModal {
+    padding: 24px;
+  }
+}

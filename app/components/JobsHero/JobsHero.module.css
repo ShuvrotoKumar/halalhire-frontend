@@ -1,0 +1,68 @@
+.hero {
+  position: relative;
+  width: 100%;
+  height: min-content;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 24px 160px;
+  background: linear-gradient(rgba(25, 63, 53, 0.7), rgba(25, 63, 53, 0.7)), url('/jobs.png');
+  background-size: cover;
+  background-position: center;
+  overflow: visible;
+}
+
+.title {
+  font-size: 64px;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.title span {
+  color: var(--accent-primary);
+}
+
+.subtitle {
+  font-size: 20px;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto 48px;
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.searchContainer {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  width: 100%;
+  max-width: 1100px;
+  padding: 0 24px;
+  z-index: 10;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 40px;
+  }
+  .subtitle {
+    font-size: 16px;
+  }
+  .hero {
+    padding: 80px 20px 120px;
+  }
+}

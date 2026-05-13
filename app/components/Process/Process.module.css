@@ -1,0 +1,127 @@
+.processSection {
+  background: #ffffff;
+  padding: 80px 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.title {
+  font-family: 'Inter', sans-serif;
+  font-size: 36px;
+  color: var(--text-dark);
+  margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 44px;
+  }
+}
+
+.subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: var(--text-gray);
+}
+
+.timelineContainer {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto 64px auto;
+}
+
+.dashedLine {
+  position: absolute;
+  top: 32px;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  border-top: 2px dashed #e2e8f0;
+  z-index: 0;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .dashedLine {
+    display: block;
+  }
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .steps {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 24px;
+  }
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  max-width: 250px;
+  margin: 0 auto;
+}
+
+.iconCircle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--text-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 24px rgba(25, 63, 53, 0.2);
+}
+
+.stepTitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+}
+
+.stepDesc {
+  font-size: 14px;
+  color: var(--text-gray);
+  line-height: 1.6;
+}
+
+.actionContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.createBtn {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  color: var(--text-dark);
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 100px;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 10px 20px rgba(248, 200, 80, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.createBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(248, 200, 80, 0.5);
+}
