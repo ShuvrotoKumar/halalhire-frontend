@@ -79,7 +79,7 @@ const FeaturedJobs = () => {
               <div className={styles.cardHeader}>
                 <div className={styles.logoCont}>
                   <Link href="/">
-                    <Image src="/logo.png" alt={t('halalhireLogo', 'HalalHire Logo')} width={80} height={24} objectFit="contain" />
+                    <Image src="/logo.png" alt={t('halalhireLogo', 'HalalHire Logo')} width={80} height={24} style={{ objectFit: 'contain' }} />
                   </Link>
                 </div>
                 <span className={styles.featuredBadge}>{t('featured', 'FEATURED')}</span>

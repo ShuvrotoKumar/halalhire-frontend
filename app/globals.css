@@ -172,7 +172,7 @@ button {
 }
 
 .blob-1 {
-  top: window-height() / 4;
+  top: 25vh;
   left: -200px;
   width: 500px;
   height: 500px;
