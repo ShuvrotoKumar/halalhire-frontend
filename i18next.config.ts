@@ -1,4 +1,4 @@
-export default {
+const config = {
   locales: [
     "en",
     "de",
@@ -14,4 +14,6 @@ export default {
   //   apiKey: "[ENCRYPTION_KEY]",
   //   referenceLanguage: "en"
   // }
-}
+};
+
+export default config;

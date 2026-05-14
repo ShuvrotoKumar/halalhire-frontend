@@ -3,14 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import styles from './TeamMemberModal.module.css';
 import { useModal } from '@/app/context/ModalContext';
-import { X, Camera, Plus, User } from 'lucide-react';
+import { X, Camera } from 'lucide-react';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next'
 
 const TeamMemberModal = () => {
   const { t } = useTranslation()
   const { isTeamMemberModalOpen, closeTeamMemberModal, activeMember } = useModal();
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(activeMember?.image || null);
 
   useEffect(() => {
     if (activeMember && activeMember.image) {
@@ -18,7 +18,7 @@ const TeamMemberModal = () => {
     } else {
       setImagePreview(null);
     }
-  }, [activeMember, isTeamMemberModalOpen]);
+  }, [activeMember]);
 
   if (!isTeamMemberModalOpen) return null;
 

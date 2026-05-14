@@ -87,15 +87,47 @@ const JOB_TITLES = [
 const JobEditModal = () => {
   const { t } = useTranslation()
   const { isJobEditModalOpen, closeJobEditModal, activeJob } = useModal();
-  const [perks, setPerks] = useState<string[]>([]);
-  const [minSalary, setMinSalary] = useState('');
-  const [maxSalary, setMaxSalary] = useState('');
+  
+  // Initialize state from activeJob data
+  const [perks, setPerks] = useState<string[]>(activeJob?.badges || []);
+  const [minSalary, setMinSalary] = useState(() => {
+    if (activeJob?.salary) {
+      const parts = activeJob.salary.split('-');
+      return parts[0]?.replace(/[^0-9]/g, '') || '';
+    }
+    return '';
+  });
+  const [maxSalary, setMaxSalary] = useState(() => {
+    if (activeJob?.salary) {
+      const parts = activeJob.salary.split('-');
+      return parts[1]?.replace(/[^0-9]/g, '') || '';
+    }
+    return '';
+  });
   const [countriesData, setCountriesData] = useState<any[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState(() => {
+    if (activeJob?.location) {
+      const parts = activeJob.location.split(',');
+      if (parts.length >= 2) {
+        return parts[1].trim();
+      }
+      return parts[0].trim();
+    }
+    return '';
+  });
+  const [selectedCity, setSelectedCity] = useState(() => {
+    if (activeJob?.location) {
+      const parts = activeJob.location.split(',');
+      if (parts.length >= 2) {
+        return parts[0].trim();
+      }
+      return '';
+    }
+    return '';
+  });
   const [availableCities, setAvailableCities] = useState<string[]>([]);
-  const [experience, setExperience] = useState('Mid');
-  const [jobTitle, setJobTitle] = useState('');
+  const [experience, setExperience] = useState(activeJob?.experience || 'Mid');
+  const [jobTitle, setJobTitle] = useState(activeJob?.title || '');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [filteredTitles, setFilteredTitles] = useState(JOB_TITLES);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -155,47 +187,6 @@ const JobEditModal = () => {
   }, [selectedCountry, countriesData]);
   
   useEffect(() => {
-    if (activeJob && activeJob.badges) {
-      setPerks(activeJob.badges);
-    } else {
-      setPerks([]);
-    }
-
-    if (activeJob && activeJob.salary) {
-      const parts = activeJob.salary.split('-');
-      setMinSalary(parts[0]?.replace(/[^0-9]/g, '') || '');
-      setMaxSalary(parts[1]?.replace(/[^0-9]/g, '') || '');
-    } else {
-      setMinSalary('');
-      setMaxSalary('');
-    }
-
-    if (activeJob?.location) {
-      const parts = activeJob.location.split(',');
-      if (parts.length >= 2) {
-        setSelectedCity(parts[0].trim());
-        setSelectedCountry(parts[1].trim());
-      } else {
-        setSelectedCountry(parts[0].trim());
-        setSelectedCity('');
-      }
-    } else {
-      setSelectedCountry('');
-      setSelectedCity('');
-    }
-
-    if (activeJob?.experience) {
-      setExperience(activeJob.experience);
-    } else {
-      setExperience('Mid');
-    }
-
-    if (activeJob?.title) {
-      setJobTitle(activeJob.title);
-    } else {
-      setJobTitle('');
-    }
-
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
@@ -203,7 +194,7 @@ const JobEditModal = () => {
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [activeJob, isJobEditModalOpen]);
+  }, []);
 
   const handleJobTitleChange = (value: string) => {
     setJobTitle(value);

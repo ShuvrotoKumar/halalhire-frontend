@@ -29,14 +29,12 @@ const WorkplacePreview = () => {
     const registration = useSelector((state: any) => state.registration);
 
     const [selectedPerks, setSelectedPerks] = useState<string[]>(['prayerRoom']);
-    const [locations, setLocations] = useState<string[]>(['Dhaka', 'Chattogram']);
+    const [locations, setLocations] = useState<string[]>(
+        registration?.workplace && registration.workplace.length > 0 
+            ? registration.workplace 
+            : ['Dhaka', 'Chattogram']
+    );
     const [locationInput, setLocationInput] = useState('');
-
-    useEffect(() => {
-        if (registration && registration.workplace && registration.workplace.length > 0) {
-            setLocations(registration.workplace);
-        }
-    }, [registration]);
 
     const perks = [
         { id: 'prayerRoom', icon: <Palmtree size={22} />, label: 'Prayer Room' },

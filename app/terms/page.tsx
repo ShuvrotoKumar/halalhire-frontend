@@ -7,11 +7,8 @@ import styles from './TermsPage.module.css';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next'
 import {
-  FileText, 
-  Scale, 
-  UserCheck, 
-  AlertCircle,
-  Calendar, 
+  FileText,
+  Calendar,
   Mail,
   ChevronRight,
   Loader2

@@ -3,7 +3,7 @@
 import React from 'react';
 import styles from './JobDeleteModal.module.css';
 import { useModal } from '@/app/context/ModalContext';
-import { Trash2, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next'
 
 const JobDeleteModal = () => {

@@ -15,20 +15,13 @@ const WorkPreferencesPage = () => {
 
     const [salaryMin, setSalaryMin] = useState(85000);
     const [salaryMax, setSalaryMax] = useState(140000);
-    const [employmentType, setEmploymentType] = useState('Full-time');
-    const [availableDate, setAvailableDate] = useState('06/01/2024');
+    const [employmentType, setEmploymentType] = useState(registration?.WorkPreferences?.employmentType || 'Full-time');
+    const [availableDate, setAvailableDate] = useState(registration?.WorkPreferences?.availableFrom || '06/01/2024');
     const [flexibility, setFlexibility] = useState({
         remote: true,
         relocate: false,
         travel: true
     });
-
-    useEffect(() => {
-        if (registration && registration.WorkPreferences) {
-            setEmploymentType(registration.WorkPreferences.employmentType || 'Full-time');
-            setAvailableDate(registration.WorkPreferences.availableFrom || '06/01/2024');
-        }
-    }, []);
 
     const toggleFlex = (key: keyof typeof flexibility) => {
         setFlexibility(prev => ({ ...prev, [key]: !prev[key] }));

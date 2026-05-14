@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './FAQ.module.css';
 import { useTranslation } from 'react-i18next';
 import { useGetAllFaqQuery } from '@/redux/api/faqApi';

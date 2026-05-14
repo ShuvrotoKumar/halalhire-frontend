@@ -19,10 +19,10 @@ const ResourcesFAQ = () => {
 
   // Default to first open
   React.useEffect(() => {
-    if (faqs.length > 0 && !openIndex) {
+    if (faqs.length > 0 && openIndex === null) {
       setOpenIndex(faqs[0]._id || '0');
     }
-  }, [faqs, openIndex]);
+  }, [faqs]);
 
   return (
     <section className={styles.faqSection}>

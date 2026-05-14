@@ -25,24 +25,12 @@ const CompanyOnboarding = () => {
     const { companyLogo, setCompanyLogo, bannerImage, setBannerImage } = useRegistrationFiles();
 
     const [formData, setFormData] = useState({
-        companyName: '',
-        industry: '',
-        location: '',
-        website: '',
-        description: ''
+        companyName: registration?.name || '',
+        industry: registration?.organizationDetails?.industry || '',
+        location: registration?.organizationDetails?.headquartersLocation || '',
+        website: registration?.organizationDetails?.websiteUrl || '',
+        description: registration?.organizationDetails?.companyDescription || ''
     });
-
-    useEffect(() => {
-        if (registration) {
-            setFormData({
-                companyName: registration.name || '',
-                industry: registration.organizationDetails?.industry || '',
-                location: registration.organizationDetails?.headquartersLocation || '',
-                website: registration.organizationDetails?.websiteUrl || '',
-                description: registration.organizationDetails?.companyDescription || ''
-            });
-        }
-    }, [registration]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;

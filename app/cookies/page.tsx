@@ -7,11 +7,8 @@ import styles from './CookiePage.module.css';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next'
 import {
-  Cookie, 
-  Info, 
-  Settings, 
   ShieldCheck,
-  Calendar, 
+  Calendar,
   Mail,
   ChevronRight,
   Loader2

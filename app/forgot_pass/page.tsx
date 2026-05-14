@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import styles from './ForgotPass.module.css';
-import { Mail, ArrowLeft, KeyRound, CheckCircle2, Send } from 'lucide-react';
+import { Mail, ArrowLeft, KeyRound, Send } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForgotPasswordMutation } from '@/redux/api/authApi';

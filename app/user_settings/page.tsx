@@ -5,7 +5,7 @@ import styles from './UserSettings.module.css';
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
 import Link from 'next/link';
-import { User, Shield, Bell, ChevronRight } from 'lucide-react';
+import { User, Shield, Bell } from 'lucide-react';
 import { useTranslation } from 'react-i18next'
 
 const UserSettings = () => {

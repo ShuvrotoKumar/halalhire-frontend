@@ -26,6 +26,7 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 };
 
+
 export const metadata: Metadata = {
   title: i18next.t('halalhireTheUmmahsTrustedJobNetwork', 'HalalHire - The Ummah\'s Trusted Job Network'),
   description: i18next.t('halalverifiedJobsPrayerOpportunitiesIslamicEthicBasedStandards', 'Halal-Verified Jobs, Prayer Opportunities, Islamic Ethic Based Standards'),
