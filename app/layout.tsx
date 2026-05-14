@@ -43,26 +43,28 @@ export default async function RootLayout({
   return (
     <html lang={lng} suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <ReduxProvider>
-          <I18nProvider initialLocale={lng}>
-            <AuthProvider>
-              <RegistrationProvider>
-                <ModalProvider>
-                  {children}
-                  <ApplyModal />
-                  <ProfileEditModal />
-                  <JobEditModal />
-                  <JobDeleteModal />
-                  <TeamMemberModal />
-                  <AcceptModal />
-                  <RejectModal />
-                  <ContactConfirmModal />
-                  <FloatingAIChat />
-                </ModalProvider>
-              </RegistrationProvider>
-            </AuthProvider>
-          </I18nProvider>
-        </ReduxProvider>
+        <div id="app-root">
+          <ReduxProvider>
+            <I18nProvider initialLocale={lng}>
+              <AuthProvider>
+                <RegistrationProvider>
+                  <ModalProvider>
+                    {children}
+                    <ApplyModal />
+                    <ProfileEditModal />
+                    <JobEditModal />
+                    <JobDeleteModal />
+                    <TeamMemberModal />
+                    <AcceptModal />
+                    <RejectModal />
+                    <ContactConfirmModal />
+                    <FloatingAIChat />
+                  </ModalProvider>
+                </RegistrationProvider>
+              </AuthProvider>
+            </I18nProvider>
+          </ReduxProvider>
+        </div>
       </body>
     </html>
   );

@@ -79,7 +79,7 @@ const FeaturedJobs = () => {
               <div className={styles.cardHeader}>
                 <div className={styles.logoCont}>
                   <Link href="/">
-                    <Image src="/logo.png" alt={t('halalhireLogo', 'HalalHire Logo')} width={80} height={24} style={{ objectFit: 'contain' }} />
+                    <Image src="/logo.png" alt={t('halalhireLogo', 'HalalHire Logo')} width={80} height={20} style={{ objectFit: 'contain' }} />
                   </Link>
                 </div>
                 <span className={styles.featuredBadge}>{t('featured', 'FEATURED')}</span>
@@ -87,13 +87,13 @@ const FeaturedJobs = () => {
 
               <div className={styles.mainContent}>
                 <h3 className={styles.jobTitle}>{job.title}</h3>
-                
+
                 <div className={styles.imageWrapper}>
-                  <Image src={job.image} alt={job.title} fill style={{objectFit: 'cover'}} />
+                  <Image src={job.image} alt={job.title} fill style={{ objectFit: 'cover' }} />
                 </div>
-                
+
                 <h4 className={styles.companyName}>{job.company}</h4>
-                
+
                 <div className={styles.jobMeta}>
                   <div className={styles.metaItem}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -114,8 +114,8 @@ const FeaturedJobs = () => {
 
               <div className={styles.cardActions}>
                 <Link href={`/jobs/${job.id}`} className={styles.btnView}>{t('viewDetails', 'View Details')}</Link>
-                <button 
-                  onClick={() => openApplyModal({ ...job, logo: '/logo.png' })} 
+                <button
+                  onClick={() => openApplyModal({ ...job, logo: '/logo.png' })}
                   className={styles.btnApply}
                 >
                   {t('applyNow', 'Apply Now')}

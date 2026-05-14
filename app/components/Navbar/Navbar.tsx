@@ -18,7 +18,7 @@ const Navbar = () => {
   const [mounted, setMounted] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedLang, setSelectedLang] = useState(i18n.language?.toUpperCase() || 'EN');
+  const [selectedLang, setSelectedLang] = useState('EN');
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const langDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -31,7 +31,8 @@ const Navbar = () => {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    setSelectedLang(i18n.language?.toUpperCase() || 'EN');
+  }, [i18n.language]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
