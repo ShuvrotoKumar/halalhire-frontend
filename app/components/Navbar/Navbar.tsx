@@ -49,6 +49,7 @@ const Navbar = () => {
     { name: t('jobs', 'Jobs'), path: '/jobs' },
     { name: t('industries', 'Industries'), path: '/industries' },
     { name: t('companies', 'Companies'), path: '/companies' },
+    { name: t('subscription', 'Subscription'), path: '/company_subscription' },
     { name: t('about', 'About'), path: '/about' },
     { name: t('resources', 'Resources'), path: '/resources' },
     { name: t('contactUs', 'Contact Us'), path: '/contact' },
