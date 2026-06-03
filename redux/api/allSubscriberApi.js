@@ -2,17 +2,35 @@ import { baseApi } from "./baseApi";
 
 export const allSubscriberApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAllSubscriber: builder.query({
+    createSubscription: builder.mutation({
       query: (params) => ({
-        url: "subscriber/retrieve-subscriber",
-        method: "GET",
-        params: {
+        url: "/subscription/create_subscription",
+        method: "POST",
+        body: {
           ...params,
         },
       }),
       providesTags: ["subscriber"],
     }),
+    getSubscription: builder.query({
+      query: () => {
+        return {
+          url: "/subscription/get_subscription",
+          method: "GET",
+        };
+      },
+      providesTags: ["subscriber"],
+    }),
+    getSubscriptionById: builder.query({
+      query: (id) => {
+        return {
+          url: `/subscription/get_subscription/${id}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["subscriber"],
+    }),
   }),
 });
 
-export const { useGetAllSubscriberQuery } = allSubscriberApi;
+export const { useCreateSubscriptionMutation, useGetSubscriptionQuery, useGetSubscriptionByIdQuery } = allSubscriberApi;

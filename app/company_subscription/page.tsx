@@ -2,29 +2,60 @@
 
 import React, { useState } from 'react';
 import styles from './company_subscription.module.css';
-import { Check, ArrowRight, ShieldCheck, Lock, Star, Sparkles, Briefcase, Zap } from 'lucide-react';
+import { Check, ArrowRight, ShieldCheck, Lock, Star, Sparkles, Briefcase, Zap, Loader2, AlertCircle } from 'lucide-react';
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
 import { useTranslation } from 'react-i18next';
+import { useCreateSubscriptionMutation } from '@/redux/api/allSubscriberApi';
+
+interface PlanOption {
+  label: any;
+  price: number;
+  period: any;
+  value: string;
+}
+
+interface Plan {
+  id: string;
+  name: any;
+  badge?: any;
+  icon: React.ReactNode;
+  description: any;
+  priceDisplay: (billing: string) => any;
+  periodDisplay: (billing: string) => any;
+  billingText: (billing: string) => any;
+  features: any[];
+  options: PlanOption[];
+}
 
 const CompanySubscription = () => {
-  const { t } = useTranslation();
+  const { t: translate } = useTranslation();
+  
+  // Custom t wrapper to bypass react-i18next type conflicts in Next.js JSX
+  const t = (key: string, defaultValue?: string): any => {
+    return defaultValue === undefined ? translate(key) as any : translate(key, defaultValue) as any;
+  };
+
   const [selectedPlanId, setSelectedPlanId] = useState('business');
   const [billingOptions, setBillingOptions] = useState<Record<string, string>>({
     business: 'monthly',
     business_plus: 'monthly',
   });
 
-  const plans = [
+  const [createSubscription, { isLoading }] = useCreateSubscriptionMutation();
+  const [localError, setLocalError] = useState<string | null>(null);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const plans: Plan[] = [
     {
       id: 'free',
       name: 'Free',
       badge: t('starter', 'Starter'),
       icon: <Star size={28} style={{ color: '#94a3b8' }} />,
       description: t('freeDesc', 'Ideal for job seekers starting out.'),
-      priceDisplay: () => '0.00',
-      periodDisplay: () => t('periodMo', '/mo'),
-      billingText: t('freeForever', 'Free Forever'),
+      priceDisplay: (billing: string) => '0.00',
+      periodDisplay: (billing: string) => t('periodMo', '/mo'),
+      billingText: (billing: string) => t('freeForever', 'Free Forever'),
       features: [
         t('createCv', 'Create CV'),
         t('applyTo2JobPostingsDaily', 'Apply to 2 job postings daily'),
@@ -40,9 +71,9 @@ const CompanySubscription = () => {
       badge: t('individualPro', 'Individual Pro'),
       icon: <Sparkles size={28} style={{ color: '#c5a56e' }} />,
       description: t('premiumDesc', 'For job seekers wanting max visibility.'),
-      priceDisplay: () => '1.99',
-      periodDisplay: () => t('periodMo', '/mo'),
-      billingText: '$1.99 billed monthly',
+      priceDisplay: (billing: string) => '1.99',
+      periodDisplay: (billing: string) => t('periodMo', '/mo'),
+      billingText: (billing: string) => '$1.99 billed monthly',
       features: [
         t('createCv', 'Create CV'),
         t('applyTo10JobsPostingsDaily', 'Apply to 10 jobs postings daily'),
@@ -133,10 +164,105 @@ const CompanySubscription = () => {
     currentPlan.id === 'business' ? (activeBilling === 'quarterly' ? 79.99 : activeBilling === 'annual' ? 279.99 : 29.99) :
     (activeBilling === 'quarterly' ? 99.99 : activeBilling === 'annual' ? 359.99 : 39.99);
 
-  const billingLabel = currentPlan.id === 'free' ? t('freeForever', 'Free Forever') :
+  const billingLabel: any = currentPlan.id === 'free' ? t('freeForever', 'Free Forever') :
     currentPlan.id === 'premium' ? t('monthlyLabel', 'Monthly') :
     activeBilling === 'quarterly' ? t('threeMonthsLabel', '3 Months') :
     activeBilling === 'annual' ? t('annualPlanLabel', 'Annual Plan') : t('monthlyLabel', 'Monthly');
+
+  const handleCheckout = async () => {
+    setLocalError(null);
+    setIsSuccess(false);
+
+    try {
+      const payload = {
+        userPlans: {
+          free: {
+            id: "FREE",
+            name: "Free Plan",
+            price: {
+              monthly: 0,
+              quarterly: 0,
+              yearly: 0,
+              currency: "USD"
+            },
+            features: [
+              { title: "Create CV" },
+              { title: "Apply to 2 job postings daily" },
+              { title: "Browse job postings for free" }
+            ]
+          },
+          premium: {
+            id: "PREMIUM",
+            name: "Premium Plan",
+            price: {
+              monthly: 1.99,
+              quarterly: 4.99,
+              yearly: 19.99,
+              currency: "USD"
+            },
+            features: [
+              { title: "Create CV" },
+              { title: "Apply to 10 job postings daily" },
+              { title: "Browse job postings for free" },
+              { title: "Receive job notifications based on saved or previously applied jobs" },
+              { title: "Featured profile badge for increased employer visibility" },
+              { title: "See which companies viewed your profile" }
+            ]
+          }
+        },
+        companyPlans: {
+          business: {
+            id: "BUSINESS",
+            name: "Business Plan",
+            price: {
+              monthly: 29.99,
+              quarterly: 79.99,
+              yearly: 279.99,
+              currency: "USD"
+            },
+            features: [
+              { title: "Post up to 5 job listings monthly" },
+              { title: "View up to 30 CVs" },
+              { title: "Basic candidate filtering" },
+              { title: "Highlight 2 job postings (3 days)" }
+            ]
+          },
+          businessPlus: {
+            id: "BUSINESS_PLUS",
+            name: "Business Plus Plan",
+            price: {
+              monthly: 39.99,
+              quarterly: 99.99,
+              yearly: 359.99,
+              currency: "USD"
+            },
+            features: [
+              { title: "Post up to 10 job listings monthly" },
+              { title: "View up to 50 CVs" },
+              { title: "Advanced candidate filtering" },
+              { title: "Dashboard management" },
+              { title: "Highlight up to 5 job postings (3 days)" }
+            ]
+          }
+        },
+        isDelete: false
+      };
+
+      console.log('Sending subscription payload:', payload);
+      const response = await createSubscription(payload).unwrap();
+      console.log('Subscription response:', response);
+
+      setIsSuccess(true);
+
+      const redirectUrl = response?.url || response?.data?.url;
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
+      }
+    } catch (err: any) {
+      console.error('Subscription creation failed:', err);
+      setLocalError(err?.data?.message || err?.message || 'Subscription processing failed. Please try again.');
+    }
+  };
 
   return (
     <>
@@ -183,7 +309,7 @@ const CompanySubscription = () => {
                         <select
                           className={styles.selectDropdown}
                           value={billing}
-                          onChange={(e) => {
+                          onChange={(e: any) => {
                             setBillingOptions({
                               ...billingOptions,
                               [plan.id]: e.target.value
@@ -231,6 +357,20 @@ const CompanySubscription = () => {
                 <h3 className={styles.summaryTitle}>{t('orderSummary', 'Order Summary')}</h3>
               </div>
               <div className={styles.summaryBody}>
+                {localError && (
+                  <div style={{ backgroundColor: '#fef2f2', border: '1px solid #f87171', color: '#b91c1c', padding: '12px', borderRadius: '8px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px' }}>
+                    <AlertCircle size={18} />
+                    <span>{localError as any}</span>
+                  </div>
+                )}
+                
+                {isSuccess && (
+                  <div style={{ backgroundColor: '#ecfdf5', border: '1px solid #34d399', color: '#065f46', padding: '12px', borderRadius: '8px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px' }}>
+                    <Check size={18} />
+                    <span>{t('subscriptionSuccess', 'Subscription initialized successfully!')}</span>
+                  </div>
+                )}
+
                 <div className={styles.summaryItem}>
                   <span className={styles.summaryItemLabel}>{t('selectedPlanLabelText', 'Selected Plan')}</span>
                   <span className={styles.summaryItemValue}>{currentPlan.name} ({billingLabel})</span>
@@ -239,7 +379,7 @@ const CompanySubscription = () => {
                 {currentPlan.id !== 'free' && (
                   <div className={styles.summaryItem}>
                     <span className={styles.summaryItemLabel}>{t('basePrice', 'Base Price')}</span>
-                    <span className={styles.summaryItemValue}>${itemPrice.toFixed(2)}</span>
+                    <span className={styles.summaryItemValue}>${itemPrice.toFixed(2) as any}</span>
                   </div>
                 )}
                 
@@ -257,11 +397,24 @@ const CompanySubscription = () => {
 
                 <div className={styles.summaryItem}>
                   <span className={styles.totalLabel}>{t('totalPayable', 'Total Payable')}</span>
-                  <span className={styles.totalValue}>${itemPrice.toFixed(2)}</span>
+                  <span className={styles.totalValue}>${itemPrice.toFixed(2) as any}</span>
                 </div>
 
-                <button className={styles.checkoutBtn}>
-                  {currentPlan.id === 'free' ? t('startFreeAccount', 'Start Free Account') : t('continueToPayment', 'Continue to Payment')} <ArrowRight size={20} />
+                <button 
+                  className={styles.checkoutBtn} 
+                  onClick={handleCheckout} 
+                  disabled={isLoading}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: isLoading ? 'not-allowed' : 'pointer' }}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 size={20} className="animate-spin" /> {t('processing', 'Processing...')}
+                    </>
+                  ) : (
+                    <>
+                      {currentPlan.id === 'free' ? t('startFreeAccount', 'Start Free Account') : t('continueToPayment', 'Continue to Payment')} <ArrowRight size={20} />
+                    </>
+                  )}
                 </button>
                 
                 <p className={styles.secureText}>{t('safeSecureCheckout', 'SAFE & SECURE CHECKOUT PROCESSING')}</p>
