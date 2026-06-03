@@ -6,7 +6,7 @@ import { Check, ArrowRight, ShieldCheck, Lock, Star, Sparkles, Briefcase, Zap, L
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
 import { useTranslation } from 'react-i18next';
-import { useCreateSubscriptionMutation, useGetSubscriptionQuery, useLazyGetFreeSubscriberQuery } from '@/redux/api/allSubscriberApi';
+import { useCreateSubscriptionMutation, useGetSubscriptionQuery, useGetFreeSubscriberQuery, useLazyGetFreeSubscriberQuery } from '@/redux/api/allSubscriberApi';
 import { useSelector } from 'react-redux';
 
 interface PlanOption {
@@ -49,6 +49,30 @@ const CompanySubscription = () => {
   const [getFreeSubscriber, { isLoading: isFreeLoading }] = useLazyGetFreeSubscriberQuery();
   const { data: subscriptionResponse, isLoading: isFetchingSubscription } = useGetSubscriptionQuery(undefined);
   
+  // Fetch existing subscriber status automatically on mount
+  const userId = user?._id || user?.id || user?.userId;
+  const { data: freeSubscriberResponse } = useGetFreeSubscriberQuery(
+    userId ? { user_id: userId } : undefined,
+    { skip: !userId }
+  );
+
+  // Auto-sync subscriber token when available
+  React.useEffect(() => {
+    if (freeSubscriberResponse) {
+      const response = freeSubscriberResponse?.data || freeSubscriberResponse;
+      const token = response?.token || response?.data?.token;
+      const subscriberId = response?.subscriberId || response?.data?.subscriberId || response?.data?._id;
+      if (token) {
+        localStorage.setItem('subscriberToken', token);
+        localStorage.setItem('subscribeToken', token);
+        console.log('[CompanySubscription] Auto-synced subscriber token.');
+      }
+      if (subscriberId) {
+        localStorage.setItem('subscriberId', subscriberId);
+      }
+    }
+  }, [freeSubscriberResponse]);
+
   // The API returns nested data arrays depending on the wrapper structure
   const apiPlans = subscriptionResponse?.data?.data?.[0] || subscriptionResponse?.data?.[0] || subscriptionResponse?.[0];
 

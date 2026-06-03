@@ -34,6 +34,16 @@ export const allSubscriberApi = baseApi.injectEndpoints({
       },
       providesTags: ["subscriber"],
     }),
+    getFreeSubscriber: builder.query({
+      query: (params) => {
+        return {
+          url: `/current_subscriber/get_current_subscriber_by_user`,
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["subscriber"],
+    }),
   }),
 });
 

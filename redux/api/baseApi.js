@@ -88,7 +88,7 @@ const isUserAuthTokenMissing = (state) => {
 
 const baseQuery = fetchBaseQuery({
   baseUrl: getBaseUrl(),
-  prepareHeaders: (headers, { getState }) => {
+  prepareHeaders: (headers, { getState, endpoint }) => {
     const state = getState();
     const token = getValidUserToken(state);
 
@@ -105,8 +105,12 @@ const baseQuery = fetchBaseQuery({
       console.warn('[baseApi] Is Redux token subscriber?', reduxRaw ? decodeJwtPayload(reduxRaw) : 'N/A');
     }
 
+    // Do NOT send the subscriberToken header for subscription/subscriber creation endpoints.
+    // A stale/expired subscriberToken from localStorage would trigger a 401 on the backend.
+    const isSubscriptionCreation = endpoint === 'createFreeSubscriber' || endpoint === 'createSubscription';
+
     // Forward subscriber token header if present (some endpoints need it)
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && !isSubscriptionCreation) {
       const subToken =
         localStorage.getItem('subscriberToken') ||
         localStorage.getItem('subscribeToken');
@@ -126,19 +130,11 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
   if (result.error && result.error.status === 401) {
     const state = api.getState();
-
-    if (!isUserAuthTokenMissing(state)) {
-      // A valid user token exists — this 401 is a backend permission/role rejection,
-      // NOT an authentication failure. Do NOT log the user out.
-      console.warn('[baseApi] Got 401 but user token is present. Backend rejected the request (role/permission issue). NOT logging out.');
-      return result;
-    }
-
-    // No valid user token at all — attempt token refresh first
     const refreshToken =
       typeof window !== 'undefined' ? localStorage.getItem('refreshToken') : null;
 
     if (refreshToken) {
+      console.log('[baseApi] Got 401, attempting token refresh...');
       const refreshResult = await baseQuery(
         { url: '/auth/refresh-token', method: 'POST', body: { refreshToken } },
         api,
@@ -151,16 +147,31 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         refreshResult.data?.accessToken;
 
       if (newToken && isUserAuthToken(newToken)) {
+        console.log('[baseApi] Token refresh succeeded! Retrying request...');
         if (typeof window !== 'undefined') {
           localStorage.setItem('token', newToken);
         }
         api.dispatch(setUser({ user: api.getState().auth.user, token: newToken }));
+        // Retry the original request
         result = await baseQuery(args, api, extraOptions);
+
+        if (result.error && result.error.status === 401) {
+          console.warn('[baseApi] Retried request still returned 401. Keeping user session.');
+        }
       } else {
-        api.dispatch(logout());
+        console.warn('[baseApi] Token refresh failed.');
+        // Only log out if the user token is actually missing/expired on the client
+        if (isUserAuthTokenMissing(state)) {
+          console.warn('[baseApi] User token is expired/missing, logging out.');
+          api.dispatch(logout());
+        }
       }
     } else {
-      api.dispatch(logout());
+      // No refresh token available. Only log out if user token is actually missing/expired
+      if (isUserAuthTokenMissing(state)) {
+        console.warn('[baseApi] No refresh token and user token is missing/expired, logging out.');
+        api.dispatch(logout());
+      }
     }
   }
 
