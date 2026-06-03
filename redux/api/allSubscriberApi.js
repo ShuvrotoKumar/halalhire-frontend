@@ -22,12 +22,13 @@ export const allSubscriberApi = baseApi.injectEndpoints({
       providesTags: ["subscriber"],
     }),
     createFreeSubscriber: builder.mutation({
-      query: () => {
+      query: (data) => {
         return {
           url: `/current_subscriber/create_current_subscriber`,
           method: "POST",
           body: {
             user_type: "user",
+            ...data
           },
         };
       },

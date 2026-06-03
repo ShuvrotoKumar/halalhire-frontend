@@ -6,7 +6,7 @@ import { Check, ArrowRight, ShieldCheck, Lock, Star, Sparkles, Briefcase, Zap, L
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
 import { useTranslation } from 'react-i18next';
-import { useCreateSubscriptionMutation, useGetSubscriptionQuery } from '@/redux/api/allSubscriberApi';
+import { useCreateSubscriptionMutation, useGetSubscriptionQuery, useCreateFreeSubscriberMutation } from '@/redux/api/allSubscriberApi';
 
 interface PlanOption {
   label: any;
@@ -43,6 +43,7 @@ const CompanySubscription = () => {
   });
 
   const [createSubscription, { isLoading }] = useCreateSubscriptionMutation();
+  const [createFreeSubscriber, { isLoading: isFreeLoading }] = useCreateFreeSubscriberMutation();
   const { data: subscriptionResponse, isLoading: isFetchingSubscription } = useGetSubscriptionQuery(undefined);
   
   // The API returns nested data arrays depending on the wrapper structure
@@ -179,89 +180,130 @@ const CompanySubscription = () => {
     setIsSuccess(false);
 
     try {
-      const payload = {
-        userPlans: {
-          free: {
-            id: "FREE",
-            name: "Free Plan",
-            price: {
-              monthly: 0,
-              quarterly: 0,
-              yearly: 0,
-              currency: "USD"
-            },
-            features: [
-              { title: "Create CV" },
-              { title: "Apply to 2 job postings daily" },
-              { title: "Browse job postings for free" }
-            ]
-          },
-          premium: {
-            id: "PREMIUM",
-            name: "Premium Plan",
-            price: {
-              monthly: 1.99,
-              quarterly: 4.99,
-              yearly: 19.99,
-              currency: "USD"
-            },
-            features: [
-              { title: "Create CV" },
-              { title: "Apply to 10 job postings daily" },
-              { title: "Browse job postings for free" },
-              { title: "Receive job notifications based on saved or previously applied jobs" },
-              { title: "Featured profile badge for increased employer visibility" },
-              { title: "See which companies viewed your profile" }
-            ]
+      if (currentPlan.id === 'free') {
+        const freeSubscriptionId = apiPlans?.userPlans?.free?._id || "6a1dd49e4726acc5db960be0";
+        const payload = { subscriptionId: freeSubscriptionId };
+
+        console.log('Sending free subscription payload:', payload);
+        const response = await createFreeSubscriber(payload).unwrap();
+        console.log('Free Subscription response:', response);
+
+        if (response?.data?.success === false) {
+          setLocalError(response?.data?.message || response?.message || 'User already has an active subscription');
+          
+          // Even if they already have one, the API might return the token for it, so we can save it
+          const fallbackToken = response?.data?.token || response?.token;
+          const fallbackSubscriberId = response?.data?.subscriberId || response?.data?.currentSubscriberId || response?.subscriberId;
+          
+          if (fallbackToken) {
+            localStorage.setItem('subscriberToken', fallbackToken);
           }
-        },
-        companyPlans: {
-          business: {
-            id: "BUSINESS",
-            name: "Business Plan",
-            price: {
-              monthly: 29.99,
-              quarterly: 79.99,
-              yearly: 279.99,
-              currency: "USD"
-            },
-            features: [
-              { title: "Post up to 5 job listings monthly" },
-              { title: "View up to 30 CVs" },
-              { title: "Basic candidate filtering" },
-              { title: "Highlight 2 job postings (3 days)" }
-            ]
-          },
-          businessPlus: {
-            id: "BUSINESS_PLUS",
-            name: "Business Plus Plan",
-            price: {
-              monthly: 39.99,
-              quarterly: 99.99,
-              yearly: 359.99,
-              currency: "USD"
-            },
-            features: [
-              { title: "Post up to 10 job listings monthly" },
-              { title: "View up to 50 CVs" },
-              { title: "Advanced candidate filtering" },
-              { title: "Dashboard management" },
-              { title: "Highlight up to 5 job postings (3 days)" }
-            ]
+          if (fallbackSubscriberId) {
+            localStorage.setItem('subscriberId', fallbackSubscriberId);
           }
-        },
-        isDelete: false
-      };
+          return;
+        }
 
-      console.log('Sending subscription payload:', payload);
-      const response = await createSubscription(payload).unwrap();
-      console.log('Subscription response:', response);
+        const newToken = response?.data?.token || response?.token;
+        const subscriberId = response?.data?.subscriberId || response?.data?.currentSubscriberId || response?.subscriberId;
+        
+        if (newToken) {
+          localStorage.setItem('subscriberToken', newToken);
+        }
+        if (subscriberId) {
+          localStorage.setItem('subscriberId', subscriberId);
+        }
 
-      setIsSuccess(true);
+        setIsSuccess(true);
+        const redirectUrl = response?.url || response?.data?.url;
+        if (redirectUrl) {
+          window.location.href = redirectUrl;
+        }
+      } else {
+        const payload = {
+          userPlans: {
+            free: {
+              id: "FREE",
+              name: "Free Plan",
+              price: {
+                monthly: 0,
+                quarterly: 0,
+                yearly: 0,
+                currency: "USD"
+              },
+              features: [
+                { title: "Create CV" },
+                { title: "Apply to 2 job postings daily" },
+                { title: "Browse job postings for free" }
+              ]
+            },
+            premium: {
+              id: "PREMIUM",
+              name: "Premium Plan",
+              price: {
+                monthly: 1.99,
+                quarterly: 4.99,
+                yearly: 19.99,
+                currency: "USD"
+              },
+              features: [
+                { title: "Create CV" },
+                { title: "Apply to 10 job postings daily" },
+                { title: "Browse job postings for free" },
+                { title: "Receive job notifications based on saved or previously applied jobs" },
+                { title: "Featured profile badge for increased employer visibility" },
+                { title: "See which companies viewed your profile" }
+              ]
+            }
+          },
+          companyPlans: {
+            business: {
+              id: "BUSINESS",
+              name: "Business Plan",
+              price: {
+                monthly: 29.99,
+                quarterly: 79.99,
+                yearly: 279.99,
+                currency: "USD"
+              },
+              features: [
+                { title: "Post up to 5 job listings monthly" },
+                { title: "View up to 30 CVs" },
+                { title: "Basic candidate filtering" },
+                { title: "Highlight 2 job postings (3 days)" }
+              ]
+            },
+            businessPlus: {
+              id: "BUSINESS_PLUS",
+              name: "Business Plus Plan",
+              price: {
+                monthly: 39.99,
+                quarterly: 99.99,
+                yearly: 359.99,
+                currency: "USD"
+              },
+              features: [
+                { title: "Post up to 10 job listings monthly" },
+                { title: "View up to 50 CVs" },
+                { title: "Advanced candidate filtering" },
+                { title: "Dashboard management" },
+                { title: "Highlight up to 5 job postings (3 days)" }
+              ]
+            }
+          },
+          isDelete: false
+        };
 
-      const redirectUrl = response?.url || response?.data?.url;
-      if (redirectUrl) {
-        window.location.href = redirectUrl;
+        console.log('Sending subscription payload:', payload);
+        const response = await createSubscription(payload).unwrap();
+        console.log('Subscription response:', response);
+
+        setIsSuccess(true);
+
+        const redirectUrl = response?.url || response?.data?.url;
+        if (redirectUrl) {
+          window.location.href = redirectUrl;
+        }
       }
     } catch (err: any) {
       console.error('Subscription creation failed:', err);
@@ -408,10 +450,10 @@ const CompanySubscription = () => {
                 <button 
                   className={styles.checkoutBtn} 
                   onClick={handleCheckout} 
-                  disabled={isLoading}
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: isLoading ? 'not-allowed' : 'pointer' }}
+                  disabled={isLoading || isFreeLoading}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: (isLoading || isFreeLoading) ? 'not-allowed' : 'pointer' }}
                 >
-                  {isLoading ? (
+                  {(isLoading || isFreeLoading) ? (
                     <>
                       <Loader2 size={20} className="animate-spin" /> {t('processing', 'Processing...')}
                     </>
