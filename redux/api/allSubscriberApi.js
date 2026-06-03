@@ -37,4 +37,4 @@ export const allSubscriberApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useCreateSubscriptionMutation, useGetSubscriptionQuery, useCreateFreeSubscriberMutation } = allSubscriberApi;
+export const { useCreateSubscriptionMutation, useGetSubscriptionQuery, useCreateFreeSubscriberMutation, useGetFreeSubscriberQuery, useLazyGetFreeSubscriberQuery } = allSubscriberApi;

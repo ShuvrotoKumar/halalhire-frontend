@@ -6,7 +6,8 @@ import { Check, ArrowRight, ShieldCheck, Lock, Star, Sparkles, Briefcase, Zap, L
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
 import { useTranslation } from 'react-i18next';
-import { useCreateSubscriptionMutation, useGetSubscriptionQuery, useCreateFreeSubscriberMutation } from '@/redux/api/allSubscriberApi';
+import { useCreateSubscriptionMutation, useGetSubscriptionQuery, useLazyGetFreeSubscriberQuery } from '@/redux/api/allSubscriberApi';
+import { useSelector } from 'react-redux';
 
 interface PlanOption {
   label: any;
@@ -31,6 +32,8 @@ interface Plan {
 const CompanySubscription = () => {
   const { t: translate } = useTranslation();
   
+  const user = useSelector((state: any) => state.auth.user);
+  
   // Custom t wrapper to bypass react-i18next type conflicts in Next.js JSX
   const t = (key: string, defaultValue?: string): any => {
     return defaultValue === undefined ? translate(key) as any : translate(key, defaultValue) as any;
@@ -43,7 +46,7 @@ const CompanySubscription = () => {
   });
 
   const [createSubscription, { isLoading }] = useCreateSubscriptionMutation();
-  const [createFreeSubscriber, { isLoading: isFreeLoading }] = useCreateFreeSubscriberMutation();
+  const [getFreeSubscriber, { isLoading: isFreeLoading }] = useLazyGetFreeSubscriberQuery();
   const { data: subscriptionResponse, isLoading: isFetchingSubscription } = useGetSubscriptionQuery(undefined);
   
   // The API returns nested data arrays depending on the wrapper structure
@@ -181,40 +184,49 @@ const CompanySubscription = () => {
 
     try {
       if (currentPlan.id === 'free') {
-        const freeSubscriptionId = apiPlans?.userPlans?.free?._id || "6a1dd49e4726acc5db960be0";
-        const payload = { subscriptionId: freeSubscriptionId };
-
-        console.log('Sending free subscription payload:', payload);
-        const response = await createFreeSubscriber(payload).unwrap();
-        console.log('Free Subscription response:', response);
-
-        if (response?.data?.success === false) {
-          setLocalError(response?.data?.message || response?.message || 'User already has an active subscription');
-          
-          // Even if they already have one, the API might return the token for it, so we can save it
-          const fallbackToken = response?.data?.token || response?.token;
-          const fallbackSubscriberId = response?.data?.subscriberId || response?.data?.currentSubscriberId || response?.subscriberId;
-          
-          if (fallbackToken) {
-            localStorage.setItem('subscriberToken', fallbackToken);
-          }
-          if (fallbackSubscriberId) {
-            localStorage.setItem('subscriberId', fallbackSubscriberId);
-          }
+        // Use the GET query to fetch/create the free subscriber by user ID
+        const userId = user?._id || user?.id || user?.userId;
+        if (!userId) {
+          setLocalError('User information not found. Please log in again.');
           return;
         }
 
+        console.log('Fetching free subscriber for user_id:', userId);
+        const result = await getFreeSubscriber({ user_id: userId });
+        const response = result?.data;
+        console.log('Free Subscriber GET response:', response);
+
+        if (result?.error) {
+          const errMsg = (result.error as any)?.data?.message || (result.error as any)?.message || 'Failed to activate free account. Please try again.';
+          setLocalError(errMsg);
+          return;
+        }
+
+        // Extract token and subscriber ID from response
         const newToken = response?.data?.token || response?.token;
-        const subscriberId = response?.data?.subscriberId || response?.data?.currentSubscriberId || response?.subscriberId;
-        
+        const subscriberId =
+          response?.data?.currentSubscriberId ||
+          response?.data?.subscriberId ||
+          response?.data?._id ||
+          response?.subscriberId;
+
         if (newToken) {
           localStorage.setItem('subscriberToken', newToken);
+          localStorage.setItem('subscribeToken', newToken);
+          console.log('Free subscriber token saved.');
         }
         if (subscriberId) {
           localStorage.setItem('subscriberId', subscriberId);
         }
 
-        setIsSuccess(true);
+        // Show success or informational message
+        const msg = response?.data?.message || response?.message || '';
+        if (msg && msg.toLowerCase().includes('already')) {
+          setLocalError(msg); // show "already has subscription" as info
+        } else {
+          setIsSuccess(true);
+        }
+
         const redirectUrl = response?.url || response?.data?.url;
         if (redirectUrl) {
           window.location.href = redirectUrl;
