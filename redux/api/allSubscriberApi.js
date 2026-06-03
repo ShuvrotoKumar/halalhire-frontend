@@ -15,17 +15,20 @@ export const allSubscriberApi = baseApi.injectEndpoints({
     getSubscription: builder.query({
       query: () => {
         return {
-          url: "/subscription/get_subscription",
+          url: "/subscription/find_subscription",
           method: "GET",
         };
       },
       providesTags: ["subscriber"],
     }),
-    getSubscriptionById: builder.query({
-      query: (id) => {
+    createFreeSubscriber: builder.mutation({
+      query: () => {
         return {
-          url: `/subscription/get_subscription/${id}`,
-          method: "GET",
+          url: `/current_subscriber/create_current_subscriber`,
+          method: "POST",
+          body: {
+            user_type: "user",
+          },
         };
       },
       providesTags: ["subscriber"],
@@ -33,4 +36,4 @@ export const allSubscriberApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useCreateSubscriptionMutation, useGetSubscriptionQuery, useGetSubscriptionByIdQuery } = allSubscriberApi;
+export const { useCreateSubscriptionMutation, useGetSubscriptionQuery, useCreateFreeSubscriberMutation } = allSubscriberApi;
