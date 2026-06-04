@@ -35,11 +35,14 @@ export const allSubscriberApi = baseApi.injectEndpoints({
       providesTags: ["subscriber"],
     }),
     getFreeSubscriber: builder.query({
-      query: (params) => {
+      query: (data) => {
         return {
-          url: `/current_subscriber/get_current_subscriber_by_user`,
+          url: `/current_subscriber/get_current_subscriber`,
           method: "GET",
-          params,
+          body: {
+            user_type: "user",
+            ...data
+          },
         };
       },
       providesTags: ["subscriber"],
@@ -47,4 +50,4 @@ export const allSubscriberApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useCreateSubscriptionMutation, useGetSubscriptionQuery, useCreateFreeSubscriberMutation, useGetFreeSubscriberQuery, useLazyGetFreeSubscriberQuery } = allSubscriberApi;
+export const { useCreateSubscriptionMutation, useGetSubscriptionQuery, useGetFreeSubscriberQuery, useCreateFreeSubscriberMutation } = allSubscriberApi;

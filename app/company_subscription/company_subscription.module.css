@@ -42,6 +42,11 @@
   align-items: stretch;
 }
 
+.twoCardsGrid {
+  grid-template-columns: repeat(2, minmax(300px, 360px));
+  justify-content: center;
+}
+
 .card {
   background: white;
   border-radius: 20px;
@@ -419,7 +424,7 @@
 }
 
 @media (max-width: 1200px) {
-  .pricingGrid {
+  .pricingGrid, .twoCardsGrid {
     grid-template-columns: repeat(2, 1fr);
     max-width: 800px;
     margin: 0 auto;
@@ -427,7 +432,7 @@
 }
 
 @media (max-width: 768px) {
-  .pricingGrid {
+  .pricingGrid, .twoCardsGrid {
     grid-template-columns: 1fr;
     max-width: 400px;
   }
