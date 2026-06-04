@@ -3,9 +3,9 @@
 // export const pdfUrl = "http://10.10.20.57:8001";
 // export const imageUrl = "http://10.10.20.57:8001/uploads";
 
-export const url = "https://grew-cindy-commissioners-dozens.trycloudflare.com/api/v1";
-export const pdfUrl = "https://grew-cindy-commissioners-dozens.trycloudflare.com";
-export const imageUrl = "https://grew-cindy-commissioners-dozens.trycloudflare.com/uploads";
+export const url = "https://beer-managers-uses-doctor.trycloudflare.com/api/v1";
+export const pdfUrl = "https://beer-managers-uses-doctor.trycloudflare.com";
+export const imageUrl = "https://beer-managers-uses-doctor.trycloudflare.com/uploads";
 
 export const getBaseUrl = () => {
   return url;

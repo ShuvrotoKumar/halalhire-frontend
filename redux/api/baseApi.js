@@ -24,12 +24,17 @@ const decodeJwtPayload = (token) => {
  * Returns true for any valid JWT that is NOT a subscriber-only token.
  * Subscriber-only tokens contain 'currentSubscriberId' but NO user identity fields.
  */
-const isUserAuthToken = (token) => {
-  if (!token || typeof token !== 'string') return false;
+const isUserAuthToken = (rawToken) => {
+  if (!rawToken || typeof rawToken !== 'string') return false;
+  let token = rawToken;
+  if (token.startsWith('"') && token.endsWith('"')) {
+    token = token.slice(1, -1);
+  }
+  if (token === 'undefined' || token === 'null') return false;
   if (token.startsWith('mock-') || token.startsWith('mock_') || token === 'mock') return true;
-  if (token.split('.').length !== 3) return true;
+  if (token.split('.').length !== 3) return false;
   const payload = decodeJwtPayload(token);
-  if (!payload) return true;
+  if (!payload) return false;
 
   // If it's a subscriber-only token (only has currentSubscriberId and no user info), reject it.
   if (payload.currentSubscriberId) {
@@ -66,8 +71,15 @@ const getValidUserToken = (state) => {
     typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null,
     state?.auth?.token,
   ];
-  for (const t of candidates) {
-    if (t && typeof t === 'string' && t.trim() !== '') return t;
+  for (let t of candidates) {
+    if (t && typeof t === 'string' && t.trim() !== '' && t !== 'undefined' && t !== 'null') {
+      if (t.startsWith('"') && t.endsWith('"')) {
+        t = t.slice(1, -1);
+      }
+      if (isUserAuthToken(t)) {
+        return t;
+      }
+    }
   }
   return null;
 };
@@ -101,19 +113,11 @@ const baseQuery = fetchBaseQuery({
     const token = getValidUserToken(state);
 
     if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
       headers.set('authorization', `Bearer ${token}`);
       headers.set('token', token);
       headers.set('accessToken', token);
-      // DEBUG LOG — shows which token is being sent so you can verify in the browser console
+      // DEBUG LOG ?" shows which token is being sent so you can verify in the browser console
       console.log('[baseApi] Using token (first 40 chars):', token.substring(0, 40));
-    } else {
-      console.warn('[baseApi] ⚠️ NO valid user auth token found!');
-      const reduxRaw = state?.auth?.token;
-      const lsRaw = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-      console.warn('[baseApi] Redux token:', reduxRaw ? reduxRaw.substring(0, 40) : 'null');
-      console.warn('[baseApi] localStorage[token]:', lsRaw ? lsRaw.substring(0, 40) : 'null');
-      console.warn('[baseApi] Is Redux token subscriber?', reduxRaw ? decodeJwtPayload(reduxRaw) : 'N/A');
     }
 
     // Do NOT send the subscriberToken header for subscription/subscriber creation endpoints.

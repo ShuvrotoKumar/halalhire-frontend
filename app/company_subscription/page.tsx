@@ -40,8 +40,16 @@ interface PlanPrice {
 }
 
 interface ApiPlanDetails {
-  price?: PlanPrice;
-  features?: PlanFeature[];
+  id: string;
+  _id?: string;
+  name: string;
+  price: {
+    monthly: number;
+    quarterly: number;
+    yearly: number;
+    currency: string;
+  };
+  features: { title: string }[];
 }
 
 interface ApiPlans {
@@ -150,8 +158,11 @@ const CompanySubscription = () => {
   // Extract user ID from real JWT token if available in localStorage to guarantee it matches the Bearer token exactly.
   const getUserIdFromLocalStorage = () => {
     if (typeof window === 'undefined') return undefined;
-    const token = localStorage.getItem('token') || localStorage.getItem('accessToken');
+    let token = localStorage.getItem('token') || localStorage.getItem('accessToken');
     if (token) {
+      if (token.startsWith('"') && token.endsWith('"')) {
+        token = token.slice(1, -1);
+      }
       const payload = decodeJwtPayload(token);
       return (
         payload?.user?._id ||
@@ -358,7 +369,8 @@ const CompanySubscription = () => {
         console.log('Creating free subscriber with subscriptionId:', subscriptionId);
         
         const result = await createFreeSubscriber({
-          subscriptionId: subscriptionId
+          subscriptionId: subscriptionId,
+          user_id: getUserIdFromLocalStorage() || getUserIdFromRedux()
         });
         
         const response = result?.data as FreeSubscriberResponse | undefined;
@@ -375,7 +387,7 @@ const CompanySubscription = () => {
             if (currentToken && currentToken.startsWith('mock-')) {
               errMsg = 'Mock login is active. Please log in with a real registered account on the login page to subscribe.';
             } else {
-              errMsg = 'Unauthorized. Please make sure you are logged in with a real registered account on the login page.';
+              errMsg = errorData.data?.message || errorData.message || 'Unauthorized. Please make sure you are logged in with a real registered account on the login page.';
             }
           }
           
