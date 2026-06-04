@@ -23,21 +23,16 @@ export const allSubscriberApi = baseApi.injectEndpoints({
     }),
     createFreeSubscriber: builder.mutation({
       query: (data) => {
-        const token = typeof window !== 'undefined' ? (localStorage.getItem('token') || localStorage.getItem('accessToken')) : null;
         return {
           url: `/current_subscriber/create_current_subscriber`,
           method: "POST",
           body: data,
-          headers: token ? {
-            authorization: `Bearer ${token.replace(/"/g, "")}`
-          } : undefined
         };
       },
       providesTags: ["subscriber"],
     }),
     getFreeSubscriber: builder.query({
       query: (data) => {
-        const token = typeof window !== 'undefined' ? (localStorage.getItem('token') || localStorage.getItem('accessToken')) : null;
         return {
           url: `/current_subscriber/get_current_subscriber`,
           method: "GET",
@@ -45,9 +40,6 @@ export const allSubscriberApi = baseApi.injectEndpoints({
             user_type: "user",
             ...data
           },
-          headers: token ? {
-            authorization: `Bearer ${token.replace(/"/g, "")}`
-          } : undefined
         };
       },
       providesTags: ["subscriber"],
