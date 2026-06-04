@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import styles from "./success.module.css";
 
@@ -8,10 +8,35 @@ const SuccessContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const sessionId = searchParams?.get("sessionId") || "";
-  const amount    = searchParams?.get("amount") || "0";
-  const plan      = searchParams?.get("plan") || "Subscription";
-  const billing   = searchParams?.get("billing") || "";
+  const sessionId = searchParams?.get("sessionId") || searchParams?.get("session_id") || "";
+  
+  const [amount, setAmount] = useState("0");
+  const [plan, setPlan] = useState("Subscription");
+  const [billing, setBilling] = useState("");
+
+  useEffect(() => {
+    let amt = searchParams?.get("amount");
+    let pln = searchParams?.get("plan");
+    let bln = searchParams?.get("billing");
+
+    if (!amt || amt === "0") {
+      try {
+        const pendingStr = localStorage.getItem("pendingPayment");
+        if (pendingStr) {
+          const pending = JSON.parse(pendingStr);
+          if (pending.amount !== undefined) amt = pending.amount.toString();
+          if (pending.plan) pln = pending.plan;
+          if (pending.billing) bln = pending.billing;
+        }
+      } catch (e) {
+        console.error("Error reading pending payment", e);
+      }
+    }
+
+    setAmount(amt || "0");
+    setPlan(pln || "Subscription");
+    setBilling(bln || "");
+  }, [searchParams]);
 
   const orderNumber = sessionId
     ? `#${sessionId.slice(-8).toUpperCase()}`

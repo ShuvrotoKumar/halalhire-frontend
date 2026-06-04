@@ -211,8 +211,8 @@ const CompanySubscription = () => {
       (user as any)?._id ||
       (user as any)?.id ||
       (user as any)?.userId ||
-      (user as any)?.[user?.role]?._id ||
-      (user as any)?.[user?.role]?.id
+      (user as any)?.[user?.role as string]?._id ||
+      (user as any)?.[user?.role as string]?.id
     );
   };
 
@@ -466,6 +466,18 @@ const CompanySubscription = () => {
                               (apiPlans?.companyPlans?.businessPlus?._id || "6a1dd49e4726acc5db960be3");
 
         const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+
+        // Save payment info to localStorage BEFORE redirecting so success page can read it
+        // even if backend overrides success_url and doesn't pass URL params
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('pendingPayment', JSON.stringify({
+            amount: itemPrice,
+            plan: currentPlan.name,
+            billing: billingLabel,
+            timestamp: Date.now(),
+          }));
+        }
+
         const payload = {
           subscriptionId: subscriptionId,
           price: itemPrice,
