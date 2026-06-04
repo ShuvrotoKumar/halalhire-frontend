@@ -113,7 +113,7 @@ const baseQuery = fetchBaseQuery({
     const token = getValidUserToken(state);
 
     if (token) {
-      headers.set('authorization', `Bearer ${token}`);
+      headers.set('authorization', token);
       headers.set('token', token);
       headers.set('accessToken', token);
       // DEBUG LOG ?" shows which token is being sent so you can verify in the browser console
