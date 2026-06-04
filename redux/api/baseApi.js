@@ -143,7 +143,10 @@ const baseQuery = fetchBaseQuery({
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
-  if (result.error && result.error.status === 401) {
+  const urlPath = typeof args === 'string' ? args : args?.url;
+  const isAuthRequest = urlPath && (urlPath.includes('/auth/login_user') || urlPath.includes('/auth/refresh-token'));
+
+  if (result.error && result.error.status === 401 && !isAuthRequest) {
     // If we have subscriber tokens in localStorage, they might be stale/expired and causing the 401.
     // Clear them and retry the request once.
     if (typeof window !== 'undefined' && (localStorage.getItem('subscriberToken') || localStorage.getItem('subscribeToken'))) {
