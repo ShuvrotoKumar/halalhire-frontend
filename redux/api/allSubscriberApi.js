@@ -41,7 +41,7 @@ export const allSubscriberApi = baseApi.injectEndpoints({
         return {
           url: `/current_subscriber/get_current_subscriber`,
           method: "GET",
-          body: {
+          params: {
             user_type: "user",
             ...data
           },
