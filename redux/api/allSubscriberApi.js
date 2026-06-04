@@ -34,7 +34,7 @@ export const allSubscriberApi = baseApi.injectEndpoints({
     getFreeSubscriber: builder.query({
       query: (data) => {
         return {
-          url: `/current_subscriber/get_current_subscriber`,
+          url: `/current_subscriber/get_current_subscriber_by_user`,
           method: "GET",
           params: {
             user_type: "user",
