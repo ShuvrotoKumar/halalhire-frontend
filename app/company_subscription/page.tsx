@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import styles from './company_subscription.module.css';
-import { Check, ArrowRight, ShieldCheck, Lock, Star, Sparkles, Briefcase, Zap, Loader2, AlertCircle } from 'lucide-react';
+import { Check, ArrowRight, ShieldCheck, Lock, Star, Sparkles, Briefcase, Zap, Loader2, AlertCircle, CheckCircle2, X, PartyPopper } from 'lucide-react';
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
 import { useTranslation } from 'react-i18next';
@@ -127,6 +128,7 @@ const decodeJwtPayload = (token: string) => {
 
 const CompanySubscription = () => {
   const { t: translate } = useTranslation();
+  const searchParams = useSearchParams();
   
   const user = useSelector((state: UserState) => state.auth.user);
   
@@ -150,6 +152,32 @@ const CompanySubscription = () => {
     business: 'monthly',
     business_plus: 'monthly',
   });
+
+  // Payment success state – set when Stripe redirects back with ?success=true
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [paymentSessionId, setPaymentSessionId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const success = searchParams?.get('success');
+    const sessionId = searchParams?.get('session_id');
+    const canceled = searchParams?.get('canceled');
+    if (success === 'true') {
+      setPaymentSuccess(true);
+      setPaymentSessionId(sessionId || null);
+      // Clean the URL so a refresh doesn't re-trigger the banner
+      const url = new URL(window.location.href);
+      url.searchParams.delete('success');
+      url.searchParams.delete('session_id');
+      url.searchParams.delete('canceled');
+      window.history.replaceState({}, '', url.toString());
+    } else if (canceled === 'true') {
+      setLocalErrorExternal('Payment was cancelled. You can try again anytime.');
+      const url = new URL(window.location.href);
+      url.searchParams.delete('canceled');
+      window.history.replaceState({}, '', url.toString());
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const [createCheckoutSession, { isLoading: isCheckoutLoading }] = useCreateCheckoutSessionMutation();
   const [createFreeSubscriber, { isLoading: isFreeLoading }] = useCreateFreeSubscriberMutation();
@@ -223,6 +251,9 @@ const CompanySubscription = () => {
 
   const [localError, setLocalError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // helper used by the canceled-payment useEffect above (declared after useState is ready)
+  const setLocalErrorExternal = (msg: string) => setLocalError(msg);
 
   const plans: Plan[] = [
     {
@@ -434,10 +465,13 @@ const CompanySubscription = () => {
                               currentPlan.id === 'business' ? (apiPlans?.companyPlans?.business?._id || "6a1dd49e4726acc5db960be2") :
                               (apiPlans?.companyPlans?.businessPlus?._id || "6a1dd49e4726acc5db960be3");
 
+        const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
         const payload = {
           subscriptionId: subscriptionId,
           price: itemPrice,
-          description: `${currentPlan.name} Plan - ${billingLabel} Subscription`
+          description: `${currentPlan.name} Plan - ${billingLabel} Subscription`,
+          success_url: `${baseUrl}/success?sessionId={CHECKOUT_SESSION_ID}&amount=${itemPrice}&plan=${encodeURIComponent(currentPlan.name)}&billing=${encodeURIComponent(billingLabel)}`,
+          cancel_url: `${baseUrl}/cancel`,
         };
 
         console.log('Creating checkout session with payload:', payload);
@@ -461,6 +495,111 @@ const CompanySubscription = () => {
   return (
     <>
       <Navbar />
+
+      {/* ✅ Payment Success Banner */}
+      {paymentSuccess && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 9999,
+          backgroundColor: 'rgba(0,0,0,0.6)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '16px',
+          backdropFilter: 'blur(4px)',
+        }}>
+          <div style={{
+            background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%)',
+            border: '1px solid rgba(52, 211, 153, 0.4)',
+            borderRadius: '24px',
+            padding: '48px 40px',
+            maxWidth: '480px',
+            width: '100%',
+            textAlign: 'center',
+            boxShadow: '0 25px 50px rgba(0,0,0,0.5), 0 0 80px rgba(52,211,153,0.15)',
+            position: 'relative',
+          }}>
+            {/* Close button */}
+            <button
+              onClick={() => setPaymentSuccess(false)}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                background: 'rgba(255,255,255,0.1)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: '#94a3b8',
+              }}
+            >
+              <X size={16} />
+            </button>
+
+            {/* Success Icon */}
+            <div style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #059669, #34d399)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 24px',
+              boxShadow: '0 0 30px rgba(52, 211, 153, 0.5)',
+            }}>
+              <CheckCircle2 size={40} color="#fff" />
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '8px' }}>
+              <PartyPopper size={22} color="#fbbf24" />
+              <h2 style={{ color: '#34d399', fontSize: '26px', fontWeight: 700, margin: 0 }}>
+                Payment Successful!
+              </h2>
+              <PartyPopper size={22} color="#fbbf24" />
+            </div>
+
+            <p style={{ color: '#94a3b8', fontSize: '15px', lineHeight: 1.6, marginBottom: '24px' }}>
+              Your subscription has been activated. You now have access to all premium features. Welcome aboard!
+            </p>
+
+            {paymentSessionId && (
+              <p style={{ color: '#475569', fontSize: '12px', marginBottom: '24px', fontFamily: 'monospace' }}>
+                Session: {paymentSessionId.slice(0, 32)}...
+              </p>
+            )}
+
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => setPaymentSuccess(false)}
+                style={{
+                  background: 'linear-gradient(135deg, #059669, #10b981)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '12px',
+                  padding: '12px 28px',
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 15px rgba(52, 211, 153, 0.4)',
+                }}
+              >
+                Explore Features
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <section className={styles.section}>
         <div className="container">
           <header className={styles.header}>
@@ -648,4 +787,10 @@ const CompanySubscription = () => {
   );
 };
 
-export default CompanySubscription;
+const CompanySubscriptionPage = () => (
+  <React.Suspense fallback={null}>
+    <CompanySubscription />
+  </React.Suspense>
+);
+
+export default CompanySubscriptionPage;
