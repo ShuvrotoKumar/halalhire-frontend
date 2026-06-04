@@ -6,7 +6,7 @@ import { Check, ArrowRight, ShieldCheck, Lock, Star, Sparkles, Briefcase, Zap, L
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
 import { useTranslation } from 'react-i18next';
-import { useCreateSubscriptionMutation, useGetSubscriptionQuery, useGetFreeSubscriberQuery, useCreateFreeSubscriberMutation } from '@/redux/api/allSubscriberApi';
+import { useCreateSubscriptionMutation, useGetSubscriptionQuery, useGetFreeSubscriberQuery, useCreateFreeSubscriberMutation, useGetPremiumPlanQuery, useCreateCheckoutSessionMutation } from '@/redux/api/allSubscriberApi';
 import { useSelector } from 'react-redux';
 
 interface PlanOption {
@@ -151,7 +151,7 @@ const CompanySubscription = () => {
     business_plus: 'monthly',
   });
 
-  const [createSubscription, { isLoading }] = useCreateSubscriptionMutation();
+  const [createCheckoutSession, { isLoading: isCheckoutLoading }] = useCreateCheckoutSessionMutation();
   const [createFreeSubscriber, { isLoading: isFreeLoading }] = useCreateFreeSubscriberMutation();
   const { data: subscriptionResponse } = useGetSubscriptionQuery(undefined);
   
@@ -183,17 +183,22 @@ const CompanySubscription = () => {
       (user as any)?._id ||
       (user as any)?.id ||
       (user as any)?.userId ||
-      (user as any)?.user?._id ||
-      (user as any)?.user?.id ||
-      (user as any)?.user?.userId
+      (user as any)?.[user?.role]?._id ||
+      (user as any)?.[user?.role]?.id
     );
   };
 
   // Fetch existing subscriber status automatically on mount
   const userId = getUserIdFromLocalStorage() || getUserIdFromRedux() || (user ? "664a78b5e4b0c5d2e3f4a5b6" : undefined);
   const { data: freeSubscriberResponse } = useGetFreeSubscriberQuery(
-    userId ? { user_id: userId } : undefined,
+    userId ? { user_id: userId, user_type: user?.role } : undefined,
     { skip: !userId }
+  );
+
+  // Fetch premium onboarding link if user role is 'user'
+  const { data: premiumPlanResponse } = useGetPremiumPlanQuery(
+    userId,
+    { skip: !userId || user?.role !== 'user' }
   );
 
   // Auto-sync subscriber token when available
@@ -425,89 +430,25 @@ const CompanySubscription = () => {
           window.location.href = redirectUrl;
         }
       } else {
+        const subscriptionId = currentPlan.id === 'premium' ? (apiPlans?.userPlans?.premium?._id || "6a1dd49e4726acc5db960be1") :
+                              currentPlan.id === 'business' ? (apiPlans?.companyPlans?.business?._id || "6a1dd49e4726acc5db960be2") :
+                              (apiPlans?.companyPlans?.businessPlus?._id || "6a1dd49e4726acc5db960be3");
+
         const payload = {
-          userPlans: {
-            free: {
-              id: "FREE",
-              name: "Free Plan",
-              price: {
-                monthly: 0,
-                quarterly: 0,
-                yearly: 0,
-                currency: "USD"
-              },
-              features: [
-                { title: "Create CV" },
-                { title: "Apply to 2 job postings daily" },
-                { title: "Browse job postings for free" }
-              ]
-            },
-            premium: {
-              id: "PREMIUM",
-              name: "Premium Plan",
-              price: {
-                monthly: 1.99,
-                quarterly: 4.99,
-                yearly: 19.99,
-                currency: "USD"
-              },
-              features: [
-                { title: "Create CV" },
-                { title: "Apply to 10 job postings daily" },
-                { title: "Browse job postings for free" },
-                { title: "Receive job notifications based on saved or previously applied jobs" },
-                { title: "Featured profile badge for increased employer visibility" },
-                { title: "See which companies viewed your profile" }
-              ]
-            }
-          },
-          companyPlans: {
-            business: {
-              id: "BUSINESS",
-              name: "Business Plan",
-              price: {
-                monthly: 29.99,
-                quarterly: 79.99,
-                yearly: 279.99,
-                currency: "USD"
-              },
-              features: [
-                { title: "Post up to 5 job listings monthly" },
-                { title: "View up to 30 CVs" },
-                { title: "Basic candidate filtering" },
-                { title: "Highlight 2 job postings (3 days)" }
-              ]
-            },
-            businessPlus: {
-              id: "BUSINESS_PLUS",
-              name: "Business Plus Plan",
-              price: {
-                monthly: 39.99,
-                quarterly: 99.99,
-                yearly: 359.99,
-                currency: "USD"
-              },
-              features: [
-                { title: "Post up to 10 job listings monthly" },
-                { title: "View up to 50 CVs" },
-                { title: "Advanced candidate filtering" },
-                { title: "Dashboard management" },
-                { title: "Highlight up to 5 job postings (3 days)" }
-              ]
-            }
-          },
-          isDelete: false
+          subscriptionId: subscriptionId,
+          price: itemPrice,
+          description: `${currentPlan.name} Plan - ${billingLabel} Subscription`
         };
 
-        console.log('Sending subscription payload:', payload);
-        const response = await createSubscription(payload).unwrap() as SubscriptionCreateResponse;
-        console.log('Subscription response:', response);
+        console.log('Creating checkout session with payload:', payload);
+        const result = await createCheckoutSession(payload).unwrap();
+        console.log('Checkout session response:', result);
 
-        setIsSuccess(true);
-
-        const redirectUrl = response?.url || response?.data?.url;
+        const redirectUrl = result?.data?.checkoutUrl || result?.checkoutUrl || result?.data;
         if (redirectUrl) {
           window.location.href = redirectUrl;
+        } else {
+          setIsSuccess(true);
         }
       }
     } catch (err: unknown) {
@@ -656,10 +597,10 @@ const CompanySubscription = () => {
                 <button 
                   className={styles.checkoutBtn} 
                   onClick={handleCheckout} 
-                  disabled={isLoading || isFreeLoading}
-                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: (isLoading || isFreeLoading) ? 'not-allowed' : 'pointer' }}
+                  disabled={isCheckoutLoading || isFreeLoading}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: (isCheckoutLoading || isFreeLoading) ? 'not-allowed' : 'pointer' }}
                 >
-                  {(isLoading || isFreeLoading) ? (
+                  {(isCheckoutLoading || isFreeLoading) ? (
                     <>
                       <Loader2 size={20} className="animate-spin" /> {t('processing', 'Processing...')}
                     </>

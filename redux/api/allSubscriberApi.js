@@ -60,11 +60,8 @@ export const allSubscriberApi = baseApi.injectEndpoints({
       query: (params) => ({
         url: "/payment_gateway/create-checkout-session",
         method: "POST",
-        body: {
-          ...params,
-        },
+        body: params,
       }),
-      providesTags: ["subscriber"],
     }),
   }),
 });
