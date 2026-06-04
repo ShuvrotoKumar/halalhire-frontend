@@ -44,7 +44,29 @@ export const allSubscriberApi = baseApi.injectEndpoints({
       },
       providesTags: ["subscriber"],
     }),
+    getPremiumPlan: builder.query({
+      query: (id) => {
+        return {
+          url: `/payment_gateway/create-onboarding-link`,
+          method: "GET",
+          params: {
+            user_id: id
+          }
+        };
+      },
+      providesTags: ["subscriber"],
+    }),
+    createCheckoutSession: builder.mutation({
+      query: (params) => ({
+        url: "/payment_gateway/create-checkout-session",
+        method: "POST",
+        body: {
+          ...params,
+        },
+      }),
+      providesTags: ["subscriber"],
+    }),
   }),
 });
 
-export const { useCreateSubscriptionMutation, useGetSubscriptionQuery, useGetFreeSubscriberQuery, useCreateFreeSubscriberMutation } = allSubscriberApi;
+export const { useCreateSubscriptionMutation, useGetSubscriptionQuery, useGetFreeSubscriberQuery, useCreateFreeSubscriberMutation, useGetPremiumPlanQuery, useCreateCheckoutSessionMutation } = allSubscriberApi;
