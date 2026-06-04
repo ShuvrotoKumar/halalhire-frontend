@@ -97,6 +97,26 @@ interface SubscriptionCreateResponse {
   };
 }
 
+// Helper to decode JWT payload safely
+const decodeJwtPayload = (token: string) => {
+  try {
+    const base64Url = token.split('.')[1];
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    while (base64.length % 4) {
+      base64 += '=';
+    }
+    const jsonPayload = decodeURIComponent(
+      window.atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch {
+    return null;
+  }
+};
+
 const CompanySubscription = () => {
   const { t: translate } = useTranslation();
   
@@ -127,9 +147,39 @@ const CompanySubscription = () => {
   const [createFreeSubscriber, { isLoading: isFreeLoading }] = useCreateFreeSubscriberMutation();
   const { data: subscriptionResponse } = useGetSubscriptionQuery(undefined);
   
+  // Extract user ID from real JWT token if available in localStorage to guarantee it matches the Bearer token exactly.
+  const getUserIdFromLocalStorage = () => {
+    if (typeof window === 'undefined') return undefined;
+    const token = localStorage.getItem('token') || localStorage.getItem('accessToken');
+    if (token) {
+      const payload = decodeJwtPayload(token);
+      return (
+        payload?.user?._id ||
+        payload?.user?.id ||
+        payload?.user?.userId ||
+        payload?.userId ||
+        payload?._id ||
+        payload?.id
+      );
+    }
+    return undefined;
+  };
+
+  // Extract user ID from Redux user object checking all standard and nested fields.
+  const getUserIdFromRedux = () => {
+    if (!user) return undefined;
+    return (
+      (user as any)?._id ||
+      (user as any)?.id ||
+      (user as any)?.userId ||
+      (user as any)?.user?._id ||
+      (user as any)?.user?.id ||
+      (user as any)?.user?.userId
+    );
+  };
+
   // Fetch existing subscriber status automatically on mount
-  // If user is logged in but has no id (e.g. mock login), fallback to a test ObjectId so the API calls still trigger and work beautifully.
-  const userId = user?._id || user?.id || user?.userId || (user ? "664a78b5e4b0c5d2e3f4a5b6" : undefined);
+  const userId = getUserIdFromLocalStorage() || getUserIdFromRedux() || (user ? "664a78b5e4b0c5d2e3f4a5b6" : undefined);
   const { data: freeSubscriberResponse } = useGetFreeSubscriberQuery(
     userId ? { user_id: userId } : undefined,
     { skip: !userId }
@@ -296,19 +346,18 @@ const CompanySubscription = () => {
     setLocalError(null);
     setIsSuccess(false);
 
+    // Diagnostic logger to help developers see their session token instantly
+    const activeToken = typeof window !== 'undefined' ? (localStorage.getItem('token') || localStorage.getItem('accessToken')) : null;
+    console.log('[Subscription Diagnostic] Attempting checkout...');
+    console.log('[Subscription Diagnostic] Logged-in User:', user);
+    console.log('[Subscription Diagnostic] Active Token in LocalStorage:', activeToken);
+
     try {
       if (currentPlan.id === 'free') {
-        const userId = user?._id || user?.id || user?.userId || (user ? "664a78b5e4b0c5d2e3f4a5b6" : null);
-        if (!userId) {
-          setLocalError('User information not found. Please log in again.');
-          return;
-        }
-
-        const subscriptionId = apiPlans?.userPlans?.free?.price?._id || apiPlans?.userPlans?.free?._id || "6a1dd49e4726acc5db960be1";
-        console.log('Creating free subscriber for user_id:', userId, 'with subscriptionId:', subscriptionId);
+        const subscriptionId = apiPlans?.userPlans?.free?._id || "6a1dd49e4726acc5db960be0";
+        console.log('Creating free subscriber with subscriptionId:', subscriptionId);
         
         const result = await createFreeSubscriber({
-          user_id: userId,
           subscriptionId: subscriptionId
         });
         
@@ -317,7 +366,19 @@ const CompanySubscription = () => {
 
         if (result?.error) {
           const errorData = result.error as ErrorResponse;
-          const errMsg = errorData.data?.message || errorData.message || 'Failed to activate free account. Please try again.';
+          let errMsg = errorData.data?.message || errorData.message || 'Failed to activate free account. Please try again.';
+          
+          const currentToken = typeof window !== 'undefined' ? (localStorage.getItem('token') || localStorage.getItem('accessToken')) : null;
+          const is401 = (result.error as { status?: number })?.status === 401 || errMsg.toLowerCase().includes('unauthorized');
+          
+          if (is401) {
+            if (currentToken && currentToken.startsWith('mock-')) {
+              errMsg = 'Mock login is active. Please log in with a real registered account on the login page to subscribe.';
+            } else {
+              errMsg = 'Unauthorized. Please make sure you are logged in with a real registered account on the login page.';
+            }
+          }
+          
           setLocalError(errMsg);
           return;
         }

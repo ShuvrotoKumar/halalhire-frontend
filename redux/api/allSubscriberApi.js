@@ -26,10 +26,7 @@ export const allSubscriberApi = baseApi.injectEndpoints({
         return {
           url: `/current_subscriber/create_current_subscriber`,
           method: "POST",
-          body: {
-            user_type: "user",
-            ...data
-          },
+          body: data,
         };
       },
       providesTags: ["subscriber"],
