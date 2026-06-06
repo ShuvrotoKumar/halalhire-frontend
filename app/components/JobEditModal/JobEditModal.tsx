@@ -6,6 +6,7 @@ import { useModal } from '@/app/context/ModalContext';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
+import { useCreateJobPostMutation, useUpdateJobPostMutation } from '@/redux/api/jobApi';
 import {
   X, 
   Briefcase, 
@@ -89,8 +90,9 @@ const JobEditModal = () => {
   const { isJobEditModalOpen, closeJobEditModal, activeJob } = useModal();
   
   // Initialize state from activeJob data
-  const [perks, setPerks] = useState<string[]>(activeJob?.badges || []);
+  const [perks, setPerks] = useState<string[]>(activeJob?.workplace || activeJob?.badges || []);
   const [minSalary, setMinSalary] = useState(() => {
+    if (activeJob?.minimum !== undefined) return activeJob.minimum.toString();
     if (activeJob?.salary) {
       const parts = activeJob.salary.split('-');
       return parts[0]?.replace(/[^0-9]/g, '') || '';
@@ -98,6 +100,7 @@ const JobEditModal = () => {
     return '';
   });
   const [maxSalary, setMaxSalary] = useState(() => {
+    if (activeJob?.maximum !== undefined) return activeJob.maximum.toString();
     if (activeJob?.salary) {
       const parts = activeJob.salary.split('-');
       return parts[1]?.replace(/[^0-9]/g, '') || '';
@@ -106,6 +109,7 @@ const JobEditModal = () => {
   });
   const [countriesData, setCountriesData] = useState<any[]>([]);
   const [selectedCountry, setSelectedCountry] = useState(() => {
+    if (activeJob?.country) return activeJob.country;
     if (activeJob?.location) {
       const parts = activeJob.location.split(',');
       if (parts.length >= 2) {
@@ -116,6 +120,7 @@ const JobEditModal = () => {
     return '';
   });
   const [selectedCity, setSelectedCity] = useState(() => {
+    if (activeJob?.city) return activeJob.city;
     if (activeJob?.location) {
       const parts = activeJob.location.split(',');
       if (parts.length >= 2) {
@@ -126,38 +131,66 @@ const JobEditModal = () => {
     return '';
   });
   const [availableCities, setAvailableCities] = useState<string[]>([]);
-  const [experience, setExperience] = useState(activeJob?.experience || 'Mid');
-  const [jobTitle, setJobTitle] = useState(activeJob?.title || '');
+  const [experience, setExperience] = useState(activeJob?.experienceLevel ? (activeJob.experienceLevel.charAt(0).toUpperCase() + activeJob.experienceLevel.slice(1)) : (activeJob?.experience || 'Mid'));
+  const [jobTitle, setJobTitle] = useState(activeJob?.jobTitle || activeJob?.title || '');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [filteredTitles, setFilteredTitles] = useState(JOB_TITLES);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   const router = useRouter();
   const user = useSelector((state: any) => state.auth?.user);
+  
+  const [createJobPost, { isLoading: isCreating }] = useCreateJobPostMutation();
+  const [updateJobPost, { isLoading: isUpdating }] = useUpdateJobPostMutation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const getStoredId = () => {
+    if (typeof window === 'undefined') return null;
+    let id = localStorage.getItem('subscriberId'); 
+    if (id) id = id.replace(/^"|"$/g, '');
+    return (id === 'null' || id === 'undefined' || id === undefined) ? null : id;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Format data to match postman body
+    const jobData = {
+        jobTitle: jobTitle,
+        currentSubscriberId: getStoredId() || "6a1e0c91a2520b44b543f561",
+        department: (e.currentTarget.querySelector('select[name="department"]') as HTMLSelectElement)?.value || "IT",
+        employmentType: (e.currentTarget.querySelector('select[name="employmentType"]') as HTMLSelectElement)?.value || "Full-time",
+        country: selectedCountry || "Bangladesh",
+        city: selectedCity || "Barishal",
+        address: (e.currentTarget.querySelector('input[name="address"]') as HTMLInputElement)?.value || "123 Main St",
+        jobRequirements: (e.currentTarget.querySelector('textarea[name="jobRequirements"]') as HTMLTextAreaElement)?.value || "Customer Support, Troubleshooting",
+        experienceLevel: experience.toLowerCase(),
+        maximum: maxSalary ? Number(maxSalary) : 0,
+        minimum: minSalary ? Number(minSalary) : 0,
+        amount: (!minSalary && !maxSalary) ? "negotiable" : undefined,
+        workplace: perks.length > 0 ? perks : ["Office Room"],
+        // Basic deadline fallback for demo (30 days from now)
+        applicationDeadline: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0]
+    };
+    
     if (!activeJob) {
-      // Logic for posting a new job
-      // Check if user has a subscription (adjust condition based on actual user object structure)
-      const hasSubscription = user?.subscription || user?.isSubscribed || user?.plan; 
-      
-      if (!hasSubscription) {
-        // If no subscription, navigate to subscription page
+      try {
+        const result = await createJobPost(jobData).unwrap();
+        console.log("Job created successfully:", result);
         closeJobEditModal();
-        router.push('/company_subscription');
-      } else {
-        // If has subscription, post directly
-        console.log("User has subscription, directly posting job...");
-        // TODO: Add actual API call to post job here
-        closeJobEditModal();
+      } catch (error) {
+        console.error("Failed to create job:", error);
+        alert("Failed to post job. Please try again.");
       }
     } else {
       // Logic for updating an existing job
-      console.log("Updating existing job...");
-      // TODO: Add actual API call to update job here
-      closeJobEditModal();
+      try {
+        const result = await updateJobPost({ id: activeJob._id, data: jobData }).unwrap();
+        console.log("Job updated successfully:", result);
+        closeJobEditModal();
+      } catch (error) {
+        console.error("Failed to update job:", error);
+        alert("Failed to update job. Please try again.");
+      }
     }
   };
 
@@ -288,20 +321,24 @@ const JobEditModal = () => {
               
               <div className={styles.inputGroup}>
                 <label className={styles.label}>{t('department', 'Department')}</label>
-                <select className={styles.select}>
-                  <option>{t('engineering', 'Engineering')}</option>
-                  <option>{t('marketing', 'Marketing')}</option>
-                  <option>{t('finance', 'Finance')}</option>
-                  <option>{t('humanResources', 'Human Resources')}</option>
+                <select className={styles.select} name="department" defaultValue={activeJob?.department || "Engineering"}>
+                  <option value="Engineering">{t('engineering', 'Engineering')}</option>
+                  <option value="IT">IT</option>
+                  <option value="Marketing">{t('marketing', 'Marketing')}</option>
+                  <option value="Finance">{t('finance', 'Finance')}</option>
+                  <option value="Human Resources">{t('humanResources', 'Human Resources')}</option>
+                  <option value="Support">Support</option>
+                  <option value="Security">Security</option>
+                  <option value="Data">Data</option>
                 </select>
               </div>
 
               <div className={styles.inputGroup}>
                 <label className={styles.label}>{t('employmentType', 'Employment Type')}</label>
-                <select className={styles.select}>
-                  <option>{t('fulltime', 'Full-time')}</option>
-                  <option>{t('contract', 'Contract')}</option>
-                  <option>{t('parttime', 'Part-time')}</option>
+                <select className={styles.select} name="employmentType" defaultValue={activeJob?.employmentType || "Full-time"}>
+                  <option value="Full-time">{t('fulltime', 'Full-time')}</option>
+                  <option value="Contract">{t('contract', 'Contract')}</option>
+                  <option value="Part-time">{t('parttime', 'Part-time')}</option>
                 </select>
               </div>
 
@@ -358,10 +395,11 @@ const JobEditModal = () => {
                 <div className={styles.locationInputWrapper}>
                   <Map size={18} className={styles.locationIcon} />
                   <input 
+                    name="address"
                     type="text" 
                     placeholder={t('fullAddressPlaceholder', 'e.g. 123 Main St, Suite 100')} 
                     className={`${styles.input} ${styles.locationInput}`}
-                    defaultValue={activeJob?.fullAddress || ''}
+                    defaultValue={activeJob?.address || activeJob?.fullAddress || ''}
                     required
                   />
                 </div>
@@ -416,9 +454,11 @@ const JobEditModal = () => {
                   <LinkIcon size={16} className={styles.controlBtn} />
                 </div>
                 <textarea 
+                  name="jobRequirements"
                   placeholder={t('describeTheRoleResponsibilitiesAndKeyRequirements', 'Describe the role, responsibilities, and key requirements...')} 
                   className={styles.textarea}
                   style={{ borderRadius: '0 0 12px 12px' }}
+                  defaultValue={activeJob?.jobRequirements || ''}
                 />
               </div>
             </div>
@@ -458,9 +498,9 @@ const JobEditModal = () => {
         </div>
 
         <div className={styles.footer}>
-          <button type="button" className={styles.cancelBtn} onClick={handleClose}>{t('cancel', 'Cancel')}</button>
-          <button type="submit" className={styles.submitBtn}>
-            {activeJob ? t('updatePosting', 'Update Posting') : t('postJob', 'Post Job')}
+          <button type="button" className={styles.cancelBtn} onClick={handleClose} disabled={isCreating || isUpdating}>{t('cancel', 'Cancel')}</button>
+          <button type="submit" className={styles.submitBtn} disabled={isCreating || isUpdating}>
+            {isCreating || isUpdating ? (activeJob ? 'Updating...' : 'Posting...') : (activeJob ? t('updatePosting', 'Update Posting') : t('postJob', 'Post Job'))}
           </button>
         </div>
       </form>

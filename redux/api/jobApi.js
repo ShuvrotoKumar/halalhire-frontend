@@ -22,7 +22,26 @@ const jobApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ["job"],
         }),
+        updateJobPost: builder.mutation({
+            query: ({id, data}) => {
+                return {
+                    url: `/employee/update_job_post/${id}`,
+                    method: "PATCH",
+                    body: data,
+                };
+            },
+            invalidatesTags: ["job"],
+        }),
+        deleteJobPost: builder.mutation({
+            query: ({id}) => {
+                return {
+                    url: `/employee/delete_job_post/${id}`,
+                    method: "DELETE",
+                };
+            },
+            invalidatesTags: ["job"],
+        }),
     }),
 });
 
-export const { useGetJobQuery, useCreateJobPostMutation } = jobApi;
+export const { useGetJobQuery, useCreateJobPostMutation, useUpdateJobPostMutation, useDeleteJobPostMutation } = jobApi;

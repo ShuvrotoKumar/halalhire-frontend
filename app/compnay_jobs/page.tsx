@@ -70,9 +70,9 @@ const CompanyJobs = () => {
   let jobsData = jobRes?.data?.data?.allMyJobs || jobRes?.data?.allMyJobs || jobRes?.allMyJobs || [];
   let meta = jobRes?.data?.data?.meta || jobRes?.data?.meta || jobRes?.meta || { page: 1, limit: 5, total: 0, totalPage: 1 };
   
-  // Fallback to provided dummy data if API returns empty, just to easily show the design as requested
-  if (jobsData.length === 0 && !isJobsLoading) {
-      jobsData = [
+  // Combine API jobs with provided dummy data so previous demo jobs always show
+  if (!isJobsLoading) {
+      const dummyJobs = [
           {
               "_id": "69dd07ab223181a86f21b435",
               "jobTitle": "Full Stack Developer",
@@ -141,7 +141,17 @@ const CompanyJobs = () => {
               "experienceLevel": "senior"
           }
       ];
-      meta = { page: 1, limit: 5, total: 12, totalPage: 3 };
+      
+      const apiJobIds = new Set(jobsData.map((j: any) => j._id));
+      const missingDummyJobs = dummyJobs.filter(j => !apiJobIds.has(j._id));
+      
+      jobsData = [...jobsData, ...missingDummyJobs];
+      meta = { 
+          page: meta.page || 1, 
+          limit: meta.limit || 5, 
+          total: (meta.total || 0) + missingDummyJobs.length, 
+          totalPage: Math.max(meta.totalPage || 1, Math.ceil(((meta.total || 0) + missingDummyJobs.length) / 5)) 
+      };
   }
   const notifications = React.useMemo(() => [
         {
