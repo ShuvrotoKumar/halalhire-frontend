@@ -7,7 +7,10 @@ import Link from 'next/link';
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
 import { useModal } from '@/app/context/ModalContext';
-import { useTranslation, Trans } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next';
+import { useGetJobQuery } from '@/redux/api/jobApi';
+import { useGetCompanyQuery } from '@/redux/api/companyApi';
+import { imageUrl } from '@/Utils/server';
 import {
   CheckCircle, 
   MapPin, 
@@ -27,9 +30,119 @@ import {
 } from 'lucide-react';
 
 const CompanyJobs = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { openJobEditModal, openJobDeleteModal, openProfileEditModal } = useModal();
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
+  const [currentPage, setCurrentPage] = React.useState(1);
+
+  // Fetch company data for the banner
+  const { data: companyRes } = useGetCompanyQuery(undefined);
+  const companyData = companyRes?.data?.data || companyRes?.data || {};
+  const orgDetails = companyData.organizationDetails || {};
+  const companyName = companyData.companyName || t('ethicalWealthManagement', 'Ethical Wealth Management');
+  const industry = orgDetails.industry || t('shariacompliantFinancialServices', 'Sharia-Compliant Financial Services');
+  const location = orgDetails.headquartersLocation || (companyData.workplace && companyData.workplace[0]) || t('londonUk', 'London, UK');
+  const bannerImg = orgDetails.bannerImage ? imageUrl(orgDetails.bannerImage) : "/about1.png";
+  const logoImg = orgDetails.companyLogo ? imageUrl(orgDetails.companyLogo) : (companyData.photo ? imageUrl(companyData.photo) : null);
+  const websiteUrl = orgDetails.websiteUrl || '';
+
+  // Use company ID directly from the company API response if possible,
+  // otherwise fallback to localStorage
+  const getStoredId = () => {
+    if (typeof window === 'undefined') return null;
+    let id = localStorage.getItem('subscriberId'); // Must use subscriberId specifically as per backend requirement
+    if (id) id = id.replace(/^"|"$/g, '');
+    return (id === 'null' || id === 'undefined' || id === undefined) ? null : id;
+  };
+
+  // The backend specifically requires the subscriber ID to fetch the jobs
+  const finalId = getStoredId() || "6a1e0c91a2520b44b543f561";
+
+  // Fetch jobs data
+  const { data: jobRes, isLoading: isJobsLoading, isError, error } = useGetJobQuery(
+    { id: finalId, page: currentPage, limit: 5 },
+    { skip: !finalId }
+  );
+
+  console.log("jobRes in CompanyJobs:", jobRes, "error:", error);
+
+  // Handle potential nested data structures from different environments/interceptors
+  let jobsData = jobRes?.data?.data?.allMyJobs || jobRes?.data?.allMyJobs || jobRes?.allMyJobs || [];
+  let meta = jobRes?.data?.data?.meta || jobRes?.data?.meta || jobRes?.meta || { page: 1, limit: 5, total: 0, totalPage: 1 };
+  
+  // Fallback to provided dummy data if API returns empty, just to easily show the design as requested
+  if (jobsData.length === 0 && !isJobsLoading) {
+      jobsData = [
+          {
+              "_id": "69dd07ab223181a86f21b435",
+              "jobTitle": "Full Stack Developer",
+              "department": "IT",
+              "employmentType": "Full-time",
+              "country": "Bangladesh",
+              "city": "Barishal",
+              "minimum": 0,
+              "maximum": 0,
+              "amount": "negotiable",
+              "workplace": ["Office Room"],
+              "applicationDeadline": "2026-05-22T00:00:00.000Z",
+              "experienceLevel": "senior"
+          },
+          {
+              "_id": "69da9c29aa6ecd3818732586",
+              "jobTitle": "Backen Engineer",
+              "department": "IT",
+              "employmentType": "Full-time",
+              "country": "Bangladesh",
+              "city": "Barishal",
+              "minimum": 0,
+              "maximum": 0,
+              "amount": "negotiable",
+              "workplace": ["Office Room"],
+              "applicationDeadline": "2026-05-22T00:00:00.000Z",
+              "experienceLevel": "mid"
+          },
+          {
+              "_id": "69da8aae32d5d0748f79bcf9",
+              "jobTitle": "Technical Support Engineer",
+              "department": "Support",
+              "employmentType": "Full-time",
+              "country": "Bangladesh",
+              "city": "Barishal",
+              "minimum": 15000,
+              "maximum": 40000,
+              "workplace": ["Office Room"],
+              "applicationDeadline": "2026-05-22T00:00:00.000Z",
+              "experienceLevel": "junior"
+          },
+          {
+              "_id": "69da8aa032d5d0748f79bcf7",
+              "jobTitle": "Cyber Security Specialist",
+              "department": "Security",
+              "employmentType": "Full-time",
+              "country": "Bangladesh",
+              "city": "Dhaka",
+              "minimum": 45000,
+              "maximum": 110000,
+              "workplace": ["On-site"],
+              "applicationDeadline": "2026-06-12T00:00:00.000Z",
+              "experienceLevel": "fresher"
+          },
+          {
+              "_id": "69da8a8832d5d0748f79bcf5",
+              "jobTitle": "Software Engineer",
+              "department": "Data",
+              "employmentType": "Part-time",
+              "country": "Bangladesh",
+              "city": "Dhaka",
+              "minimum": 25000,
+              "maximum": 70000,
+              "workplace": ["Remote"],
+              "applicationDeadline": "2026-06-05T00:00:00.000Z",
+              "experienceLevel": "senior"
+          }
+      ];
+      meta = { page: 1, limit: 5, total: 12, totalPage: 3 };
+  }
   const notifications = React.useMemo(() => [
         {
             id: 1,
@@ -44,32 +157,12 @@ const CompanyJobs = () => {
             time: t('notificationToday', 'Today')
         }
     ], [t]);
-  const managedJobs = [
-    {
-      id: 1,
-      title: t('leadBackendDeveloper', 'Lead Backend Developer'),
-      company: t('ethicaDigitalSolutions', 'Ethica Digital Solutions'),
-      location: t('remoteDubaiUaeBase', 'Remote (Dubai, UAE Base)'),
-      salary: t('90000110000', '$90,000 - $110,000'),
-      badges: ['Prayer Room', 'Halal Food', 'Nursery Room']
-    },
-    {
-      id: 2,
-      title: t('leadBackendDeveloper', 'Lead Backend Developer'),
-      company: t('ethicaDigitalSolutions', 'Ethica Digital Solutions'),
-      location: t('remoteDubaiUaeBase', 'Remote (Dubai, UAE Base)'),
-      salary: t('90000110000', '$90,000 - $110,000'),
-      badges: ['Halal Food', t('motherFriendlyHours', 'Mother Friendly Hours')]
-    },
-    {
-      id: 3,
-      title: t('operationsManager', 'Operations Manager'),
-      company: t('crescentHealthSystems', 'Crescent Health Systems'),
-      location: 'Manchester, UK',
-      salary: t('4500055000', '£45,000 - £55,000'),
-      badges: ['Prayer Room', 'Halal Food', 'Nursery Room']
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= meta.totalPage) {
+      setCurrentPage(newPage);
     }
-  ];
+  };
 
   return (
     <div className={styles.pageWrapper}>
@@ -78,7 +171,7 @@ const CompanyJobs = () => {
       {/* Shared Header Section */}
       <div className={styles.banner}>
         <Image 
-          src="/about1.png" 
+          src={bannerImg} 
           alt={t('companyBanner', 'Company Banner')} 
           fill 
           className={styles.bannerImage}
@@ -88,23 +181,32 @@ const CompanyJobs = () => {
       <div className={styles.headerContainer}>
         <div className={styles.headerCard}>
           <div className={styles.topSection}>
-            <div className={styles.logoContainer}>
-              <Briefcase size={48} color="white" />
+            <div className={styles.logoContainer} style={{ overflow: 'hidden', position: 'relative' }}>
+              {logoImg ? (
+                  <Image src={logoImg} alt={companyName} fill style={{ objectFit: 'cover' }} />
+              ) : (
+                  <Briefcase size={48} color="white" />
+              )}
             </div>
             
             <div className={styles.infoContent}>
-              <h1 className={styles.companyName}>{t('ethicalWealthManagement', 'Ethical Wealth Management')}</h1>
+              <h1 className={styles.companyName}>{companyName}</h1>
               <div className={styles.tagline}>
                 <CheckCircle size={16} className={styles.verifiedIcon} />
-                {t('shariacompliantFinancialServices', 'Sharia-Compliant Financial Services')}
+                {industry}
               </div>
               <div className={styles.metaRow}>
                 <div className={styles.metaItem}>
-                  <MapPin size={14} /> {t('londonUk', 'London, UK')}
+                  <MapPin size={14} /> {location}
                 </div>
-                <div className={styles.metaItem}>
-                  <Users size={14} /> {t('50200Employees', '50-200 Employees')}
-                </div>
+                {websiteUrl && (
+                  <div className={styles.metaItem}>
+                    <Globe size={14} /> 
+                    <a href={websiteUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                        {websiteUrl.replace(/^https?:\/\//, '')}
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
             
@@ -124,7 +226,7 @@ const CompanyJobs = () => {
           
           <div className={styles.tabs}>
             <Link href="/company_profile" className={styles.tab}>{t('overview', 'Overview')}</Link>
-            <Link href="/compnay_jobs" className={`${styles.tab} ${styles.activeTab}`}><Trans i18nKey="jobsSpanClassnamestylesbadgecount12span">Jobs <span className={styles.badgeCount}>12</span></Trans></Link>
+            <Link href="/compnay_jobs" className={`${styles.tab} ${styles.activeTab}`}><Trans i18nKey="jobsSpanClassnamestylesbadgecount12span">Jobs <span className={styles.badgeCount}>{meta.total}</span></Trans></Link>
             <Link href="/company_team" className={styles.tab}>{t('team', 'Team')}</Link>
             <Link href="/company_req" className={styles.tab}>{t('requests', 'Requests')}</Link>
           </div>
@@ -144,39 +246,83 @@ const CompanyJobs = () => {
         </div>
 
         <div className={styles.jobsList}>
-          {managedJobs.map((job) => (
-            <div key={job.id} className={styles.jobCard}>
-              <div className={styles.jobMainInfo}>
-                <h3 className={styles.jobTitle}>{job.title}</h3>
-                <div className={styles.companyRow}>{job.company}</div>
-                <div className={styles.metaRow}>
-                  <div className={styles.metaItem}>
-                    <Globe size={14} /> {job.location}
-                  </div>
-                  <div className={styles.metaItem}>
-                    <CircleDollarSign size={14} /> {job.salary}
-                  </div>
-                </div>
-                <div className={styles.halalBadges}>
-                  {job.badges.map((badge, idx) => (
-                    <div key={idx} className={styles.halalBadge}>
-                      {badge === 'Prayer Room' && <Compass size={12} />}
-                      {badge === 'Halal Food' && <UtensilsCrossed size={12} />}
-                      {badge === 'Nursery Room' && <Baby size={12} />}
-                      {badge === t('motherFriendlyHours', 'Mother Friendly Hours') && <Clock size={12} />}
-                      {badge}
+          {isJobsLoading ? (
+            <div style={{ textAlign: 'center', padding: '40px' }}>Loading jobs...</div>
+          ) : isError ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: 'red' }}>Error loading jobs: {JSON.stringify(error)}</div>
+          ) : jobsData.length > 0 ? (
+            jobsData.map((job: any) => (
+              <div key={job._id} className={styles.jobCard}>
+                <div className={styles.jobMainInfo}>
+                  <h3 className={styles.jobTitle}>{job.jobTitle}</h3>
+                  <div className={styles.companyRow}>{companyName}</div>
+                  <div className={styles.metaRow}>
+                    <div className={styles.metaItem}>
+                      <Globe size={14} /> {job.city ? `${job.city}, ${job.country}` : job.country || 'Remote'}
                     </div>
-                  ))}
+                    <div className={styles.metaItem}>
+                      <CircleDollarSign size={14} /> {job.amount === 'negotiable' || (!job.minimum && !job.maximum) ? 'Negotiable' : `$${job.minimum} - $${job.maximum}`}
+                    </div>
+                    <div className={styles.metaItem}>
+                      <Briefcase size={14} /> {job.employmentType}
+                    </div>
+                    {job.applicationDeadline && (
+                      <div className={styles.metaItem}>
+                        <Clock size={14} /> {new Date(job.applicationDeadline).toLocaleDateString()}
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.halalBadges}>
+                    {job.department && (
+                      <div className={styles.halalBadge}>
+                        {job.department}
+                      </div>
+                    )}
+                    {job.workplace && job.workplace.map((wp: string, idx: number) => (
+                      <div key={idx} className={styles.halalBadge}>
+                        {wp}
+                      </div>
+                    ))}
+                    {job.experienceLevel && (
+                      <div className={styles.halalBadge} style={{ textTransform: 'capitalize' }}>
+                        {job.experienceLevel}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div className={styles.cardActions}>
+                  <button className={styles.editJobBtn} onClick={() => openJobEditModal(job)}>{t('editJob', 'Edit Job')}</button>
+                  <button className={styles.deleteJobBtn} onClick={() => openJobDeleteModal(job)}>{t('deleteJob', 'Delete Job')}</button>
                 </div>
               </div>
-              
-              <div className={styles.cardActions}>
-                <button className={styles.editJobBtn} onClick={() => openJobEditModal(job)}>{t('editJob', 'Edit Job')}</button>
-                <button className={styles.deleteJobBtn} onClick={() => openJobDeleteModal(job)}>{t('deleteJob', 'Delete Job')}</button>
-              </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#94a3b8' }}>No job postings found.</div>
+          )}
         </div>
+
+        {meta.totalPage > 1 && (
+          <div className={styles.pagination}>
+            <button 
+              disabled={currentPage === 1} 
+              onClick={() => handlePageChange(currentPage - 1)}
+              className={styles.pageBtn}
+            >
+              Previous
+            </button>
+            <span className={styles.pageInfo}>
+              Page {meta.page} of {meta.totalPage}
+            </span>
+            <button 
+              disabled={currentPage === meta.totalPage} 
+              onClick={() => handlePageChange(currentPage + 1)}
+              className={styles.pageBtn}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </main>
 
       {isNotificationOpen && (
