@@ -19,6 +19,20 @@ import {
 } from 'lucide-react';
 import { useGetAllFaqQuery } from '@/redux/api/faqApi';
 
+const stripHtmlTags = (str: string) => {
+  if (!str) return '';
+  // First, decode basic HTML entities if they exist
+  const decodedStr = str
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
+    
+  // Then remove all HTML tags
+  return decodedStr.replace(/<[^>]*>?/gm, '');
+};
+
 const FAQPage = () => {
   const { t } = useTranslation();
   const { data: faqResponse, isLoading } = useGetAllFaqQuery({});
@@ -81,7 +95,7 @@ const FAQPage = () => {
                     </div>
                     <div className={styles.sectionBody}>
                       <h2 className={styles.question}>{faq.question}</h2>
-                      <p className={styles.answer}>{faq.answer}</p>
+                      <p className={styles.answer}>{stripHtmlTags(faq.answer)}</p>
                     </div>
                   </div>
                 ))
