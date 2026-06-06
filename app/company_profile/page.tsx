@@ -45,6 +45,7 @@ const CompanyProfile = () => {
     const companyName = companyData.companyName || t('ethicalWealthManagement', 'Ethical Wealth Management');
     const industry = orgDetails.industry || t('shariacompliantFinancialServices', 'Sharia-Compliant Financial Services');
     const location = orgDetails.headquartersLocation || (companyData.workplace && companyData.workplace[0]) || t('londonUk', 'London, UK');
+    const websiteUrl = orgDetails.websiteUrl || 'https://halalhire.com';
     const description = orgDetails.companyDescription || t('ethicalWealthManagementIsALeadingFinancialServicesFirm...', 'Ethical Wealth Management is a leading financial services firm dedicated to Shariah-compliant investment strategies and sustainable growth.');
     
     const bannerImg = orgDetails.bannerImage ? imageUrl(orgDetails.bannerImage) : "/about1.png";
@@ -101,7 +102,10 @@ const CompanyProfile = () => {
                                     <MapPin size={14} /> {location}
                                 </div>
                                 <div className={styles.metaItem}>
-                                    <Users size={14} /> {t('50200Employees', '50-200 Employees')}
+                                    <Globe size={14} /> 
+                                    <a href={websiteUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                                        {websiteUrl.replace(/^https?:\/\//, '')}
+                                    </a>
                                 </div>
                             </div>
                         </div>

@@ -1,4 +1,4 @@
-import { baseApi } from "./baseApi";
+﻿import { baseApi } from "./baseApi";
 
 const companyApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -25,3 +25,4 @@ const companyApi = baseApi.injectEndpoints({
 });
 
 export const { useGetCompanyQuery, useUpdateCompanyMutation } = companyApi;
+
