@@ -41,7 +41,17 @@ const jobApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ["job"],
         }),
+        getRequest: builder.query({
+            query: ({ id, accepted = false, page = 1, limit = 10 }) => {
+                return {
+                    url: `/apply/find_by_specific_company_applied_candidate/${id}`,
+                    method: "GET",
+                    params: { accepted, page, limit },
+                };
+            },
+            providesTags: ["job"],
+        }),
     }),
 });
 
-export const { useGetJobQuery, useCreateJobPostMutation, useUpdateJobPostMutation, useDeleteJobPostMutation } = jobApi;
+export const { useGetJobQuery, useCreateJobPostMutation, useUpdateJobPostMutation, useDeleteJobPostMutation, useGetRequestQuery } = jobApi;

@@ -8,6 +8,9 @@ import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
 import { useModal } from '@/app/context/ModalContext';
 import { useTranslation, Trans } from 'react-i18next'
+import { useGetRequestQuery } from '@/redux/api/jobApi';
+import { useGetCompanyQuery } from '@/redux/api/companyApi';
+import { imageUrl } from '@/Utils/server';
 import {
   CheckCircle,
   MapPin,
@@ -15,16 +18,46 @@ import {
   Briefcase,
   ChevronLeft,
   ChevronRight,
-  Search,
   Bell,
-  X
+  X,
+  Globe
 } from 'lucide-react';
 
 const CompanyReq = () => {
   const { t } = useTranslation();
   const { openProfileEditModal, openAcceptModal, openRejectModal } = useModal();
-  const [searchTerm, setSearchTerm] = useState('');
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Fetch company data for the banner
+  const { data: companyRes } = useGetCompanyQuery(undefined);
+  
+  const companyData = companyRes?.data?.data || companyRes?.data || {};
+  const orgDetails = companyData.organizationDetails || {};
+  const companyName = companyData.companyName || t('ethicalWealthManagement', 'Ethical Wealth Management');
+  const industry = orgDetails.industry || t('shariacompliantFinancialServices', 'Sharia-Compliant Financial Services');
+  const location = orgDetails.headquartersLocation || (companyData.workplace && companyData.workplace[0]) || t('londonUk', 'London, UK');
+  const bannerImg = orgDetails.bannerImage ? (orgDetails.bannerImage.startsWith('http') ? orgDetails.bannerImage : `https://beer-managers-uses-doctor.trycloudflare.com/${orgDetails.bannerImage.replace(/^\/+/, '')}`) : "/about1.png";
+  const logoImg = orgDetails.companyLogo ? (orgDetails.companyLogo.startsWith('http') ? orgDetails.companyLogo : `https://beer-managers-uses-doctor.trycloudflare.com/${orgDetails.companyLogo.replace(/^\/+/, '')}`) : (companyData.photo ? (companyData.photo.startsWith('http') ? companyData.photo : `https://beer-managers-uses-doctor.trycloudflare.com/${companyData.photo.replace(/^\/+/, '')}`) : null);
+  const websiteUrl = orgDetails.websiteUrl || '';
+
+  // Get current subscriber ID
+  const getStoredId = () => {
+    if (typeof window === 'undefined') return null;
+    let id = localStorage.getItem('subscriberId') || localStorage.getItem('subscriptionId'); 
+    if (id) id = id.replace(/^"|"$/g, '');
+    return (id === 'null' || id === 'undefined' || id === undefined) ? null : id;
+  };
+
+  const finalId = "6a1e0c91a2520b44b543f561"; // Hardcoded to match Postman request
+
+  // Fetch requests data
+  const { data: requestRes, isLoading: isRequestsLoading, isError, error } = useGetRequestQuery(
+    { id: finalId, accepted: false, page: currentPage, limit: 10 },
+    { skip: !finalId }
+  );
+
+  console.log("requestRes:", requestRes, "error:", error);
   
   const notifications = useMemo(() => [
         {
@@ -41,57 +74,49 @@ const CompanyReq = () => {
         }
     ], [t]);
   
-  const jobRequests = useMemo(() => [
-    {
-      id: "fatima-zahra",
-      name: t('fatimaZahra', 'Fatima Zahra'),
-      email: 'fatima.z@example.com',
-      avatar: '/b1.png',
-      position: t('seniorSoftwareEngineer', 'Senior Software Engineer'),
-      department: t('engineering', 'Engineering'),
-      type: t('fulltime', 'Full-time'),
-      appliedDate: t('oct242023', 'Oct 24, 2023')
-    },
-    {
-      id: "omar-siddiqui",
-      name: t('omarSiddiqui', 'Omar Siddiqui'),
-      email: 'o.sid@work.com',
-      avatar: '/b2.png',
-      position: t('fullstackDeveloper', 'Full-stack Developer'),
-      department: t('engineering', 'Engineering'),
-      type: t('remote', 'Remote'),
-      appliedDate: t('oct232023', 'Oct 23, 2023')
-    },
-    {
-      id: "aisha-mahmood",
-      name: t('aishaMahmood', 'Aisha Mahmood'),
-      email: 'aisha.m@tech.io',
-      avatar: '/b3.png',
-      position: t('qaEngineer', 'QA Engineer'),
-      department: t('engineering', 'Engineering'),
-      type: t('onsite', 'On-site'),
-      appliedDate: t('oct222023', 'Oct 22, 2023')
-    },
-    {
-      id: "yusuf-khalil",
-      name: t('yusufKhalil', 'Yusuf Khalil'),
-      email: 'yusuf.k@startup.com',
-      avatar: '/b1.png',
-      position: t('devopsEngineer', 'DevOps Engineer'),
-      department: t('engineering', 'Engineering'),
-      type: t('hybrid', 'Hybrid'),
-      appliedDate: t('oct202023', 'Oct 20, 2023')
+  const jobRequests = useMemo(() => {
+    // Safely extract requests directly from data property
+    let apiRequests: any[] = [];
+    if (Array.isArray(requestRes)) {
+      apiRequests = requestRes;
+    } else if (requestRes?.data?.data?.all_my_jobs && Array.isArray(requestRes.data.data.all_my_jobs)) {
+      apiRequests = requestRes.data.data.all_my_jobs;
+    } else if (requestRes?.data?.all_my_jobs && Array.isArray(requestRes.data.all_my_jobs)) {
+      apiRequests = requestRes.data.all_my_jobs;
+    } else if (requestRes?.all_my_jobs && Array.isArray(requestRes.all_my_jobs)) {
+      apiRequests = requestRes.all_my_jobs;
+    } else if (requestRes?.data && Array.isArray(requestRes.data)) {
+      apiRequests = requestRes.data;
+    } else if (requestRes?.data?.data && Array.isArray(requestRes.data.data)) {
+      apiRequests = requestRes.data.data;
+    } else if (requestRes?.data?.appliedCandidates && Array.isArray(requestRes.data.appliedCandidates)) {
+      apiRequests = requestRes.data.appliedCandidates;
+    } else if (requestRes?.appliedCandidates && Array.isArray(requestRes.appliedCandidates)) {
+      apiRequests = requestRes.appliedCandidates;
     }
-  ], [t]);
 
-  const filteredRequests = useMemo(() => {
-    return jobRequests.filter(req => 
-      req.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      req.department.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [jobRequests, searchTerm]);
+    return apiRequests.map((req: any) => ({
+      id: req._id,
+      name: req.candidate?.name || req.name || 'Unknown Candidate',
+      email: req.candidate?.email || req.email || 'No email provided',
+      avatar: req.candidate?.photo ? imageUrl(req.candidate.photo) : (req.photo ? imageUrl(req.photo) : '/b1.png'),
+      position: req.job?.jobTitle || 'Unknown Position',
+      department: req.job?.department || 'N/A',
+      type: req.job?.employmentType || 'N/A',
+      appliedDate: req.createdAt ? new Date(req.createdAt).toLocaleDateString() : 'Unknown Date',
+      yearsOfExperience: req.candidate?.professionalProfile?.yearsOfExperience || 0,
+      originalData: req
+    }));
+  }, [requestRes]);
+
+  // Extract meta for pagination
+  const meta = requestRes?.data?.meta || requestRes?.meta || { page: 1, limit: 10, total: 0, totalPage: 1 };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= meta.totalPage) {
+      setCurrentPage(newPage);
+    }
+  };
 
   return (
     <div className={styles.pageWrapper}>
@@ -100,7 +125,7 @@ const CompanyReq = () => {
       {/* Shared Header Section */}
       <div className={styles.banner}>
         <Image 
-          src="/about1.png" 
+          src={bannerImg} 
           alt={t('companyBanner', 'Company Banner')} 
           fill 
           className={styles.bannerImage}
@@ -110,23 +135,32 @@ const CompanyReq = () => {
       <div className={styles.headerContainer}>
         <div className={styles.headerCard}>
           <div className={styles.topSection}>
-            <div className={styles.logoContainer}>
-              <Briefcase size={48} color="white" />
+            <div className={styles.logoContainer} style={{ overflow: 'hidden', position: 'relative' }}>
+              {logoImg ? (
+                  <Image src={logoImg} alt={companyName} fill style={{ objectFit: 'cover' }} />
+              ) : (
+                  <Briefcase size={48} color="white" />
+              )}
             </div>
             
             <div className={styles.infoContent}>
-              <h1 className={styles.companyName}>{t('ethicalWealthManagement', 'Ethical Wealth Management')}</h1>
+              <h1 className={styles.companyName}>{companyName}</h1>
               <div className={styles.tagline}>
                 <CheckCircle size={16} className={styles.verifiedIcon} />
-                {t('shariacompliantFinancialServices', 'Sharia-Compliant Financial Services')}
+                {industry}
               </div>
               <div className={styles.metaRow}>
                 <div className={styles.metaItem}>
-                  <MapPin size={14} /> {t('londonUk', 'London, UK')}
+                  <MapPin size={14} /> {location}
                 </div>
-                <div className={styles.metaItem}>
-                  <Users size={14} /> {t('50200Employees', '50-200 Employees')}
-                </div>
+                {websiteUrl && (
+                  <div className={styles.metaItem}>
+                    <Globe size={14} /> 
+                    <a href={websiteUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                        {websiteUrl.replace(/^https?:\/\//, '')}
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
             
@@ -160,22 +194,16 @@ const CompanyReq = () => {
               <h2>{t('jobRequests', 'Job Requests')}</h2>
               <p className={styles.subtitle}>{t('reviewAndManageCandidatesApplyingThroughHalalhire', 'Review and manage candidates applying through HalalHire.')}</p>
             </div>
-            <div className={styles.searchWrapper}>
-              <Search className={styles.searchIcon} size={18} />
-              <input 
-                type="text" 
-                placeholder={t('searchByNamePositionEmail', 'Search by name, position, email...')}
-                className={styles.searchInput}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
           </div>
         </div>
 
         <div className={styles.requestsGrid}>
-          {filteredRequests.length > 0 ? (
-            filteredRequests.map((req) => (
+          {isError ? (
+            <div className={styles.noResults} style={{ color: 'red' }}>Error loading requests: {JSON.stringify(error)}</div>
+          ) : isRequestsLoading ? (
+            <div className={styles.noResults}>Loading...</div>
+          ) : jobRequests.length > 0 ? (
+            jobRequests.map((req: any) => (
             <div key={req.id} className={styles.requestCard}>
               <div className={styles.cardHeader}>
                 <div className={styles.avatar}>
@@ -213,13 +241,29 @@ const CompanyReq = () => {
           )}
         </div>
 
-        <div className={styles.pagination}>
-          <span className={styles.paginationText}>{t('showing14Of24Applications', 'Showing 1-4 of 24 applications')}</span>
-          <div className={styles.pageActions}>
-            <div className={styles.pageBtn}><ChevronLeft size={18} /></div>
-            <div className={styles.pageBtn}><ChevronRight size={18} /></div>
+        {meta.totalPage > 1 && (
+          <div className={styles.pagination}>
+            <span className={styles.paginationText}>
+              {t('showingPageOfTotal', `Showing page ${meta.page} of ${meta.totalPage} (${meta.total} applications)`)}
+            </span>
+            <div className={styles.pageActions}>
+              <div 
+                className={`${styles.pageBtn} ${currentPage === 1 ? styles.disabledBtn : ''}`}
+                onClick={() => handlePageChange(currentPage - 1)}
+                style={{ cursor: currentPage === 1 ? 'not-allowed' : 'pointer', opacity: currentPage === 1 ? 0.5 : 1 }}
+              >
+                <ChevronLeft size={18} />
+              </div>
+              <div 
+                className={`${styles.pageBtn} ${currentPage === meta.totalPage ? styles.disabledBtn : ''}`}
+                onClick={() => handlePageChange(currentPage + 1)}
+                style={{ cursor: currentPage === meta.totalPage ? 'not-allowed' : 'pointer', opacity: currentPage === meta.totalPage ? 0.5 : 1 }}
+              >
+                <ChevronRight size={18} />
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </main>
 
       {isNotificationOpen && (

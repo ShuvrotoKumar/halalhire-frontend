@@ -30,7 +30,19 @@ const teamApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ["team"],
         }),
+        getRequest: builder.query({
+            query: ({id}) => {
+                return {
+                    url: `/apply/find_by_specific_company_applied_candidate/${id}`,
+                    method: "GET",
+                    params: {
+                        accepted: false
+                    }
+                };
+            },
+            providesTags: ["team"],
+        }),
     }),
 });
 
-export const { useGetTeamQuery, useCreateTeamMutation, useDeleteTeamMutation } = teamApi;
+export const { useGetTeamQuery, useCreateTeamMutation, useDeleteTeamMutation, useGetRequestQuery } = teamApi;
