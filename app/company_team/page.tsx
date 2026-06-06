@@ -7,20 +7,40 @@ import Link from 'next/link';
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
 import { useModal } from '@/app/context/ModalContext';
-import { useTranslation, Trans } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next';
+import { useGetTeamQuery } from '@/redux/api/teamApi';
+import { useGetCompanyQuery } from '@/redux/api/companyApi';
+import { imageUrl } from '@/Utils/server';
 import {
   CheckCircle, 
   MapPin, 
   Users, 
   Briefcase,
   Bell,
-  X
+  X,
+  Globe
 } from 'lucide-react';
 
 const CompanyTeam = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { openProfileEditModal, openTeamMemberModal } = useModal();
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
+
+  // Fetch company data for the banner
+  const { data: companyRes } = useGetCompanyQuery(undefined);
+  const companyData = companyRes?.data?.data || companyRes?.data || {};
+  const orgDetails = companyData.organizationDetails || {};
+  const companyName = companyData.companyName || t('ethicalWealthManagement', 'Ethical Wealth Management');
+  const industry = orgDetails.industry || t('shariacompliantFinancialServices', 'Sharia-Compliant Financial Services');
+  const location = orgDetails.headquartersLocation || (companyData.workplace && companyData.workplace[0]) || t('londonUk', 'London, UK');
+  const bannerImg = orgDetails.bannerImage ? imageUrl(orgDetails.bannerImage) : "/about1.png";
+  const logoImg = orgDetails.companyLogo ? imageUrl(orgDetails.companyLogo) : (companyData.photo ? imageUrl(companyData.photo) : null);
+  const websiteUrl = orgDetails.websiteUrl || '';
+
+  // Fetch team data
+  const { data: teamRes, isLoading: isTeamLoading } = useGetTeamQuery(undefined);
+  let apiTeamMembers = teamRes?.data?.myTeams || [];
+
   const notifications = React.useMemo(() => [
         {
             id: 1,
@@ -36,26 +56,36 @@ const CompanyTeam = () => {
         }
     ], [t]);
   
-  const teamMembers = [
-    {
-      id: 1,
-      name: t('ahmedAlsayed', 'Ahmed Al-Sayed'),
-      role: t('chiefExecutiveOfficer', 'Chief Executive Officer'),
-      image: '/b1.png'
-    },
-    {
-      id: 2,
-      name: t('sarahJenkins', 'Sarah Jenkins'),
-      role: t('headOfIslamicCompliance', 'Head of Islamic Compliance'),
-      image: '/b2.png'
-    },
-    {
-      id: 3,
-      name: t('marcusThorne', 'Marcus Thorne'),
-      role: t('investmentDirector', 'Investment Director'),
-      image: '/b3.png'
-    }
-  ];
+  let teamMembers = apiTeamMembers.map((member: any) => ({
+    id: member._id,
+    name: member.name,
+    role: member.designation,
+    image: member.photo ? imageUrl(member.photo) : '/b1.png'
+  }));
+
+  // Fallback to dummy data if API returns empty, just to easily show the design as requested
+  if (teamMembers.length === 0 && !isTeamLoading) {
+    teamMembers = [
+      {
+        id: 1,
+        name: t('ahmedAlsayed', 'Ahmed Al-Sayed'),
+        role: t('chiefExecutiveOfficer', 'Chief Executive Officer'),
+        image: '/b1.png'
+      },
+      {
+        id: 2,
+        name: t('sarahJenkins', 'Sarah Jenkins'),
+        role: t('headOfIslamicCompliance', 'Head of Islamic Compliance'),
+        image: '/b2.png'
+      },
+      {
+        id: 3,
+        name: t('marcusThorne', 'Marcus Thorne'),
+        role: t('investmentDirector', 'Investment Director'),
+        image: '/b3.png'
+      }
+    ];
+  }
 
   return (
     <div className={styles.pageWrapper}>
@@ -64,7 +94,7 @@ const CompanyTeam = () => {
       {/* Shared Header Section */}
       <div className={styles.banner}>
         <Image 
-          src="/about1.png" 
+          src={bannerImg} 
           alt={t('companyBanner', 'Company Banner')} 
           fill 
           className={styles.bannerImage}
@@ -74,23 +104,32 @@ const CompanyTeam = () => {
       <div className={styles.headerContainer}>
         <div className={styles.headerCard}>
           <div className={styles.topSection}>
-            <div className={styles.logoContainer}>
-              <Briefcase size={48} color="white" />
+            <div className={styles.logoContainer} style={{ overflow: 'hidden', position: 'relative' }}>
+              {logoImg ? (
+                  <Image src={logoImg} alt={companyName} fill style={{ objectFit: 'cover' }} />
+              ) : (
+                  <Briefcase size={48} color="white" />
+              )}
             </div>
             
             <div className={styles.infoContent}>
-              <h1 className={styles.companyName}>{t('ethicalWealthManagement', 'Ethical Wealth Management')}</h1>
+              <h1 className={styles.companyName}>{companyName}</h1>
               <div className={styles.tagline}>
                 <CheckCircle size={16} className={styles.verifiedIcon} />
-                {t('shariacompliantFinancialServices', 'Sharia-Compliant Financial Services')}
+                {industry}
               </div>
               <div className={styles.metaRow}>
                 <div className={styles.metaItem}>
-                  <MapPin size={14} /> {t('londonUk', 'London, UK')}
+                  <MapPin size={14} /> {location}
                 </div>
-                <div className={styles.metaItem}>
-                  <Users size={14} /> {t('50200Employees', '50-200 Employees')}
-                </div>
+                {websiteUrl && (
+                  <div className={styles.metaItem}>
+                    <Globe size={14} /> 
+                    <a href={websiteUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                        {websiteUrl.replace(/^https?:\/\//, '')}
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
             
@@ -124,7 +163,7 @@ const CompanyTeam = () => {
         </div>
 
         <div className={styles.teamGrid}>
-          {teamMembers.map((member) => (
+          {teamMembers.map((member: any) => (
             <div key={member.id} className={styles.memberCard}>
               <div className={styles.imageContainer}>
                 <Image 
