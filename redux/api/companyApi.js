@@ -11,7 +11,17 @@ const companyApi = baseApi.injectEndpoints({
             },
             providesTags: ["company"],
         }),
+        updateCompany: builder.mutation({
+            query: (data) => {
+                return {
+                    url: "/user/update_overview",
+                    method: "PATCH",
+                    body: data,
+                };
+            },
+            invalidatesTags: ["company"],
+        }),
     }),
 });
 
-export const { useGetCompanyQuery } = companyApi;
+export const { useGetCompanyQuery, useUpdateCompanyMutation } = companyApi;

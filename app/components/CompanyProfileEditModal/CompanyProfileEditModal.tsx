@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './CompanyProfileEditModal.module.css';
 import { useModal } from '@/app/context/ModalContext';
 import { useTranslation, Trans } from 'react-i18next'
+import { useGetCompanyQuery, useUpdateCompanyMutation } from '@/redux/api/companyApi';
 import {
   Info, 
   Palette, 
@@ -26,12 +27,71 @@ const CompanyProfileEditModal = () => {
   const { t } = useTranslation()
   const { isProfileEditModalOpen, closeProfileEditModal } = useModal();
   const [selectedPerks, setSelectedPerks] = useState<string[]>(['Prayer Room', 'Halal Food', 'Jumu\'ah Flex']);
+  
+  const { data: companyRes } = useGetCompanyQuery(undefined, { skip: !isProfileEditModalOpen });
+  const [updateCompany, { isLoading }] = useUpdateCompanyMutation();
 
-  // We should ideally check the user role here to render the right content,
-  // but since the user specifically asked for this modal to show when clicking 
-  // "edit profile" on company pages, we'll assume the context is handled by a separate modal 
-  // or a role-based check in the parent. 
-  // For now, let's create this specifically as a Company modal.
+  const companyData = companyRes?.data || {};
+  const orgDetails = companyData.organizationDetails || {};
+
+  // Form state
+  const [formData, setFormData] = useState({
+    companyName: '',
+    industry: '',
+    websiteUrl: '',
+    headquartersLocation: '',
+    companyDescription: '',
+    email: '',
+  });
+
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (companyData) {
+      setFormData({
+        companyName: companyData.companyName || '',
+        industry: orgDetails.industry || '',
+        websiteUrl: orgDetails.websiteUrl || '',
+        headquartersLocation: orgDetails.headquartersLocation || (companyData.workplace && companyData.workplace[0]) || '',
+        companyDescription: orgDetails.companyDescription || '',
+        email: companyData.email || '',
+      });
+    }
+  }, [companyData, orgDetails]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = async () => {
+    try {
+      const payload = {
+        companyName: formData.companyName,
+        email: formData.email,
+        organizationDetails: {
+          ...orgDetails,
+          industry: formData.industry,
+          websiteUrl: formData.websiteUrl,
+          headquartersLocation: formData.headquartersLocation,
+          companyDescription: formData.companyDescription,
+        }
+      };
+
+      const submitData = new FormData();
+      submitData.append('data', JSON.stringify(payload));
+      if (logoFile) submitData.append('companyLogo', logoFile);
+      if (bannerFile) submitData.append('bannerImage', bannerFile);
+
+      await updateCompany(submitData).unwrap();
+      alert('Company profile updated successfully!');
+      closeProfileEditModal();
+    } catch (error: any) {
+      console.error('Failed to update company:', error);
+      alert(error?.data?.message || 'Failed to update company profile');
+    }
+  };
 
   if (!isProfileEditModalOpen) return null;
 
@@ -68,7 +128,7 @@ const CompanyProfileEditModal = () => {
             <div className={styles.grid}>
               <div className={styles.inputGroup}>
                 <label className={styles.label}>{t('companyName', 'Company Name')}</label>
-                <input type="text" defaultValue="TechSalam Solutions" className={styles.input} />
+                <input type="text" name="companyName" value={formData.companyName} onChange={handleInputChange} className={styles.input} />
               </div>
               <div className={styles.inputGroup}>
                 <label className={styles.label}>Tagline/Motto</label>
@@ -76,15 +136,17 @@ const CompanyProfileEditModal = () => {
               </div>
               <div className={styles.inputGroup}>
                 <label className={styles.label}>{t('industry', 'Industry')}</label>
-                <select className={styles.select}>
-                  <option>{t('technologyIt', 'Technology & IT')}</option>
-                  <option>{t('finance', 'Finance')}</option>
-                  <option>{t('healthcare', 'Healthcare')}</option>
+                <select name="industry" value={formData.industry} onChange={handleInputChange} className={styles.select}>
+                  <option value="Technology & IT">{t('technologyIt', 'Technology & IT')}</option>
+                  <option value="Finance">{t('finance', 'Finance')}</option>
+                  <option value="Healthcare">{t('healthcare', 'Healthcare')}</option>
+                  <option value="Food & Beverage">Food & Beverage</option>
+                  <option value={formData.industry}>{formData.industry}</option>
                 </select>
               </div>
               <div className={styles.inputGroup}>
                 <label className={styles.label}>{t('websiteUrl', 'Website URL')}</label>
-                <input type="text" defaultValue="https://techsalam.io" className={styles.input} />
+                <input type="text" name="websiteUrl" value={formData.websiteUrl} onChange={handleInputChange} className={styles.input} />
               </div>
               <div className={styles.inputGroup}>
                 <label className={styles.label}>{t('foundedYear', 'Founded Year')}</label>
@@ -100,22 +162,41 @@ const CompanyProfileEditModal = () => {
               {t('branding', 'Branding')}
             </h3>
             <div className={styles.logoUpload}>
-              <div className={styles.logoPreview}>
-                <ImageIcon size={32} />
+              <div className={styles.logoPreview} style={{ overflow: 'hidden' }}>
+                {logoFile ? (
+                  <img src={URL.createObjectURL(logoFile)} alt="Logo Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (orgDetails.companyLogo || companyData.photo) ? (
+                  <img src={(orgDetails.companyLogo || companyData.photo).startsWith('http') ? (orgDetails.companyLogo || companyData.photo) : `https://beer-managers-uses-doctor.trycloudflare.com${orgDetails.companyLogo || companyData.photo}`} alt="Current Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <ImageIcon size={32} />
+                )}
               </div>
               <div>
-                <button className={styles.uploadBtn}>{t('uploadNewLogo', 'Upload New Logo')}</button>
+                <label className={styles.uploadBtn} style={{ cursor: 'pointer', display: 'inline-block' }}>
+                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => { if (e.target.files?.[0]) setLogoFile(e.target.files[0]) }} />
+                  {t('uploadNewLogo', 'Upload New Logo')}
+                </label>
                 <p className={styles.uploadInfo}>{t('recommendedSize650x650pxJpgOrPng', 'Recommended size: 650x650px. JPG or PNG.')}</p>
               </div>
             </div>
             
             <div className={styles.bannerUpload}>
               <label className={styles.label}>{t('bannerImage', 'Banner Image')}</label>
-              <div className={styles.bannerDropzone}>
-                <ImageIcon size={32} color="#94a3b8" />
-                <p className={styles.dropzoneText}><Trans i18nKey="dragAndDropBannerOrSpanbrowsespan">Drag and drop banner or <span>browse</span></Trans></p>
-                <p className={styles.uploadInfo}>{t('recommendedSize1200x400px', 'Recommended size: 1200x400px.')}</p>
-              </div>
+              <label className={styles.bannerDropzone} style={{ cursor: 'pointer', position: 'relative', overflow: 'hidden' }}>
+                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => { if (e.target.files?.[0]) setBannerFile(e.target.files[0]) }} />
+                
+                {bannerFile ? (
+                  <img src={URL.createObjectURL(bannerFile)} alt="Banner Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0 }} />
+                ) : orgDetails.bannerImage ? (
+                  <img src={orgDetails.bannerImage.startsWith('http') ? orgDetails.bannerImage : `https://beer-managers-uses-doctor.trycloudflare.com${orgDetails.bannerImage}`} alt="Current Banner" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0 }} />
+                ) : null}
+                
+                <div style={{ position: 'relative', zIndex: 1, backgroundColor: (bannerFile || orgDetails.bannerImage) ? 'rgba(255,255,255,0.8)' : 'transparent', padding: '16px', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <ImageIcon size={32} color="#94a3b8" />
+                  <p className={styles.dropzoneText}><Trans i18nKey="dragAndDropBannerOrSpanbrowsespan">Drag and drop banner or <span style={{ textDecoration: 'underline' }}>browse</span></Trans></p>
+                  <p className={styles.uploadInfo}>{t('recommendedSize1200x400px', 'Recommended size: 1200x400px.')}</p>
+                </div>
+              </label>
             </div>
           </div>
 
@@ -133,7 +214,14 @@ const CompanyProfileEditModal = () => {
                 <div className={styles.toolbarBtn}><LinkIcon size={18} /></div>
               </div>
               <div className={styles.editorField}>
-                {t('tellCandidatesAboutYourCompanyapossMissionCultureAndWhatItapossLikeToWorkWithYou', 'Tell candidates about your company&apos;s mission, culture, and what it&apos;s like to work with you...')}
+                <textarea 
+                  name="companyDescription"
+                  value={formData.companyDescription}
+                  onChange={handleInputChange}
+                  placeholder={t('tellCandidatesAboutYourCompanyapossMissionCultureAndWhatItapossLikeToWorkWithYou', 'Tell candidates about your company\'s mission, culture, and what it\'s like to work with you...')}
+                  className={styles.input}
+                  style={{ minHeight: '150px', resize: 'vertical', width: '100%', padding: '16px', border: 'none', outline: 'none' }}
+                />
               </div>
             </div>
           </div>
@@ -147,11 +235,11 @@ const CompanyProfileEditModal = () => {
             <div className={styles.grid}>
               <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
                 <label className={styles.label}>{t('headquarterAddress', 'Headquarter Address')}</label>
-                <input type="text" defaultValue="123 Ethical Way, London, UK" className={styles.input} />
+                <input type="text" name="headquartersLocation" value={formData.headquartersLocation} onChange={handleInputChange} className={styles.input} />
               </div>
               <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
                 <label className={styles.label}>{t('contactEmail', 'Contact Email')}</label>
-                <input type="email" defaultValue="careers@techsalam.io" className={styles.input} />
+                <input type="email" name="email" value={formData.email} onChange={handleInputChange} className={styles.input} />
               </div>
             </div>
           </div>
@@ -186,8 +274,10 @@ const CompanyProfileEditModal = () => {
         </div>
 
         <div className={styles.footer}>
-          <button className={styles.discardBtn} onClick={closeProfileEditModal}>{t('cancel', 'Cancel')}</button>
-          <button className={styles.saveBtn} onClick={closeProfileEditModal}>{t('saveChanges', 'Save Changes')}</button>
+          <button className={styles.discardBtn} onClick={closeProfileEditModal} disabled={isLoading}>{t('cancel', 'Cancel')}</button>
+          <button className={styles.saveBtn} onClick={handleSave} disabled={isLoading}>
+            {isLoading ? 'Saving...' : t('saveChanges', 'Save Changes')}
+          </button>
         </div>
       </div>
     </div>

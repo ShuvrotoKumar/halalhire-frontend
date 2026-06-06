@@ -1,4 +1,4 @@
-import { url } from "../config/envConfig";
+import { url, pdfUrl } from "../config/envConfig";
 
 export const imageUrl = (image) => {
   // Check if image is a string and then proceed with logic
@@ -6,8 +6,8 @@ export const imageUrl = (image) => {
     return image.startsWith('http')
       ? image
       : image.startsWith('/')
-      ? `${url}${image}`
-      : `${url}${image}`;
+      ? `${pdfUrl}${image}`
+      : `${pdfUrl}/${image}`;
   } else {
     // Handle cases where image is not a string
     return `https://avatar.iran.liara.run/public/50`;

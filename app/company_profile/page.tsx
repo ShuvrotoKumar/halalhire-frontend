@@ -27,6 +27,8 @@ import {
     X,
     MessageSquare
 } from 'lucide-react';
+import { useGetCompanyQuery } from '@/redux/api/companyApi';
+import { imageUrl } from '@/Utils/server';
 import ChatModal from '../components/ChatModal/ChatModal';
 
 const CompanyProfile = () => {
@@ -34,6 +36,20 @@ const CompanyProfile = () => {
     const { openProfileEditModal } = useModal();
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
+    
+    // Fetch company data
+    const { data: companyRes } = useGetCompanyQuery(undefined);
+    const companyData = companyRes?.data || {};
+    const orgDetails = companyData.organizationDetails || {};
+    
+    const companyName = companyData.companyName || t('ethicalWealthManagement', 'Ethical Wealth Management');
+    const industry = orgDetails.industry || t('shariacompliantFinancialServices', 'Sharia-Compliant Financial Services');
+    const location = orgDetails.headquartersLocation || (companyData.workplace && companyData.workplace[0]) || t('londonUk', 'London, UK');
+    const description = orgDetails.companyDescription || t('ethicalWealthManagementIsALeadingFinancialServicesFirm...', 'Ethical Wealth Management is a leading financial services firm dedicated to Shariah-compliant investment strategies and sustainable growth.');
+    
+    const bannerImg = orgDetails.bannerImage ? imageUrl(orgDetails.bannerImage) : "/about1.png";
+    const logoImg = orgDetails.companyLogo ? imageUrl(orgDetails.companyLogo) : (companyData.photo ? imageUrl(companyData.photo) : null);
+
     const notifications = useMemo(() => [
         {
             id: 1,
@@ -56,7 +72,7 @@ const CompanyProfile = () => {
             {/* Banner */}
             <div className={styles.banner}> 
                 <Image
-                    src="/about1.png"
+                    src={bannerImg}
                     alt={t('companyBanner', 'Company Banner')}
                     fill
                     className={styles.bannerImage}
@@ -66,19 +82,23 @@ const CompanyProfile = () => {
             <div className={styles.headerContainer}>
                 <div className={styles.headerCard}>
                     <div className={styles.topSection}>
-                        <div className={styles.logoContainer}>
-                            <Briefcase size={48} color="white" />
+                        <div className={styles.logoContainer} style={{ overflow: 'hidden', position: 'relative' }}>
+                            {logoImg ? (
+                                <Image src={logoImg} alt={companyName} fill style={{ objectFit: 'cover' }} />
+                            ) : (
+                                <Briefcase size={48} color="white" />
+                            )}
                         </div>
 
                         <div className={styles.infoContent}>
-                            <h1 className={styles.companyName}>{t('ethicalWealthManagement', 'Ethical Wealth Management')}</h1>
+                            <h1 className={styles.companyName}>{companyName}</h1>
                             <div className={styles.tagline}>
                                 <CheckCircle size={16} className={styles.verifiedIcon} />
-                                {t('shariacompliantFinancialServices', 'Sharia-Compliant Financial Services')}
+                                {industry}
                             </div>
                             <div className={styles.metaRow}>
                                 <div className={styles.metaItem}>
-                                    <MapPin size={14} /> {t('londonUk', 'London, UK')}
+                                    <MapPin size={14} /> {location}
                                 </div>
                                 <div className={styles.metaItem}>
                                     <Users size={14} /> {t('50200Employees', '50-200 Employees')}
@@ -122,10 +142,10 @@ const CompanyProfile = () => {
                     <section className={styles.card}>
                         <div className={styles.cardHeader}>
                             <h2 className={styles.cardTitle}>{t('aboutTheCompany', 'About the Company')}</h2>
-                            <Edit3 size={18} className={styles.editIcon} />
+                            <Edit3 size={18} className={styles.editIcon} onClick={() => openProfileEditModal()} style={{cursor: 'pointer'}} />
                         </div>
                         <p className={styles.description}>
-                            {t('ethicalWealthManagementIsALeadingFinancialServicesFirmDedicatedToShariahcompliantInvestmentStrategiesAndSustainableGrowthFoundedIn2015WeBridgeTheGapBetweenTraditionalWealthManagementAndIslamicPrinciplesEnsuringOurClientsPortfoliosReflectTheirValues', 'Ethical Wealth Management is a leading financial services firm dedicated to Shariah-compliant investment strategies and sustainable growth. Founded in 2015, we bridge the gap between traditional wealth management and Islamic principles, ensuring our clients\' portfolios reflect their values.')}
+                            {description}
                         </p>
                     </section>
 
@@ -199,9 +219,9 @@ const CompanyProfile = () => {
                             />
                             <MapPin size={32} className={styles.pin} fill="#fe6b2e" />
                         </div>
-                        <h4 className={styles.locTitle}>{t('mainHqKualaLumpur', 'Main HQ - Kuala Lumpur')}</h4>
+                        <h4 className={styles.locTitle}>{t('mainHqKualaLumpur', 'Main HQ')}</h4>
                         <p className={styles.locAddr}>
-                            {t('level24PetronasTower3PersiaranKlcc50088KualaLumpur', 'Level 24, Petronas Tower 3, Persiaran KLCC, 50088 Kuala Lumpur')}
+                            {location}
                         </p>
                     </section>
                 </div>
