@@ -179,7 +179,7 @@ const Navbar = () => {
                     />
                     <span className={styles.userName}>{displayName}</span>
                   </div>
-                  <Link href={user.role === 'company' ? "/company_profile" : "/user_profile"} className={styles.dropdownItem} onClick={() => setIsMenuOpen(false)}>
+                  <Link href={user.role === 'company' ? "/company_active_subscriptions" : "/user_profile"} className={styles.dropdownItem} onClick={() => setIsMenuOpen(false)}>
                     <User size={18} /> {t('profile', 'Profile')}
                   </Link>
                   <Link href="/user_settings" className={styles.dropdownItem} onClick={() => setIsMenuOpen(false)}>
@@ -263,7 +263,7 @@ const Navbar = () => {
                   {showDropdown && (
                     <div className={styles.dropdown}>
                       <Link
-                        href={user.role === 'company' ? "/company_profile" : "/user_profile"}
+                        href={user.role === 'company' ? "/company_active_subscriptions" : "/user_profile"}
                         className={styles.dropdownItem}
                       >
                         <User size={16} /> {t('profile', 'Profile')}
