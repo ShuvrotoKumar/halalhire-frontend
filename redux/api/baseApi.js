@@ -221,6 +221,7 @@ export const baseApi = createApi({
     "admin",
     "dashboard",
     "user",
+    "avatar",
     "termsAndConditions",
     "faq",
     "privacy",

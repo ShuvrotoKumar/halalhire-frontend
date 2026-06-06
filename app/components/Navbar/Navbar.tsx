@@ -9,11 +9,68 @@ import { useAuth } from '@/app/context/AuthContext';
 import { User, LogOut, Settings, Edit3, Menu, X } from 'lucide-react';
 import { useModal } from '@/app/context/ModalContext';
 import { useTranslation } from 'react-i18next'
+import { useGetAvatarQuery } from '@/redux/api/avatarApi';
+import { imageUrl } from '@/Utils/server';
+import { useGetUserDetailsQuery } from '@/redux/api/profileApi';
+
+const UserAvatar = ({ src, alt, size, className, placeholderChar }: { src: string | null, alt: string, size: number, className: string, placeholderChar: string }) => {
+  const [error, setError] = useState(false);
+
+  if (src && !error) {
+    return (
+      <Image 
+        src={src} 
+        alt={alt} 
+        width={size} 
+        height={size} 
+        className={className} 
+        onError={() => setError(true)} 
+      />
+    );
+  }
+
+  return (
+    <div className={styles.avatarPlaceholder} style={{ width: size, height: size, fontSize: size / 2.5 }}>
+      {placeholderChar}
+    </div>
+  );
+};
 
 const Navbar = () => {
   const { t, i18n } = useTranslation()
   const pathname = usePathname();
   const { user, logout, login } = useAuth();
+  
+  // Fetch user details and avatar
+  const { data: profileRes } = useGetUserDetailsQuery(undefined, { skip: !user });
+  const { data: avatarRes } = useGetAvatarQuery(undefined, { skip: !user });
+  
+  // Get avatar from avatarRes (handles both user and company)
+  const avatarData = avatarRes?.data?.data || avatarRes?.data || {};
+  let rawAvatar = avatarData.photo || avatarData.avatar || user?.avatar;
+  const displayAvatar = (rawAvatar && rawAvatar !== "null" && rawAvatar !== "") ? imageUrl(rawAvatar) : null;
+  
+  // Get name from profileRes or avatarRes
+  const profileData = profileRes?.data?.data || profileRes?.data?.user || profileRes?.data || {};
+  
+  let displayName = 'User';
+  if (profileData.companyName) displayName = profileData.companyName;
+  else if (profileData.name) displayName = profileData.name;
+  else if (profileData.fullName) displayName = profileData.fullName;
+  else if (profileData.firstName) displayName = `${profileData.firstName} ${profileData.lastName || ''}`.trim();
+  else if (avatarData.companyName) displayName = avatarData.companyName; // Check avatar API response for companyName
+  else if (avatarData.name) displayName = avatarData.name; // Check avatar API response for name
+  else if (user?.name) displayName = user.name;
+  else if (user?.email) displayName = user.email;
+
+  // If the display name happens to be an email address, show only the part before the @
+  if (displayName && displayName.includes('@')) {
+    displayName = displayName.split('@')[0];
+  }
+  
+  // Make sure the placeholder character logic doesn't crash if the name is somehow empty
+  const placeholderChar = displayName && displayName.length > 0 ? displayName.charAt(0).toUpperCase() : 'U';
+
   const { openProfileEditModal } = useModal();
   const [mounted, setMounted] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -113,14 +170,14 @@ const Navbar = () => {
                 <div className={styles.mobileProfileInfo}>
                   <div className={styles.divider} />
                   <div className={styles.mobileUser}>
-                    {user.avatar ? (
-                      <Image src={user.avatar} alt={user.name} width={40} height={40} className={styles.avatar} />
-                    ) : (
-                      <div className={styles.avatarPlaceholder}>
-                        {(user?.name || user?.email || 'U').charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                    <span className={styles.userName}>{user?.name || user?.email || 'User'}</span>
+                    <UserAvatar 
+                      src={displayAvatar} 
+                      alt={displayName} 
+                      size={40} 
+                      className={styles.avatar} 
+                      placeholderChar={placeholderChar} 
+                    />
+                    <span className={styles.userName}>{displayName}</span>
                   </div>
                   <Link href={user.role === 'company' ? "/company_profile" : "/user_profile"} className={styles.dropdownItem} onClick={() => setIsMenuOpen(false)}>
                     <User size={18} /> {t('profile', 'Profile')}
@@ -191,14 +248,14 @@ const Navbar = () => {
                 </div>
 
                 <div className={styles.profileContainer} onClick={() => setShowDropdown(!showDropdown)}>
-                  {user.avatar ? (
-                    <Image src={user.avatar} alt={user.name} width={36} height={36} className={styles.avatar} />
-                  ) : (
-                    <div className={styles.avatarPlaceholder}>
-                      {(user?.name || user?.email || 'U').charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <span className={styles.userName}>{user?.name || user?.email || 'User'}</span>
+                  <UserAvatar 
+                    src={displayAvatar} 
+                    alt={displayName} 
+                    size={36} 
+                    className={styles.avatar} 
+                    placeholderChar={placeholderChar} 
+                  />
+                  <span className={styles.userName}>{displayName}</span>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M6 9l6 6 6-6" />
                   </svg>
