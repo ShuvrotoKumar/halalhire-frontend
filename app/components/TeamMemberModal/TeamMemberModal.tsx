@@ -92,18 +92,20 @@ const TeamMemberModal = () => {
 
         <div className={styles.body}>
           <div className={styles.imageUploadSection}>
-            <div className={styles.imagePreview}>
-              {imagePreview ? (
-                <Image src={imagePreview} alt="Preview" fill style={{ objectFit: 'cover' }} />
-              ) : (
-                <div className={styles.uploadPlaceholder}>
-                  <Camera size={24} className={styles.uploadIcon} />
-                </div>
-              )}
-            </div>
-            <label className={styles.uploadLabel} style={{ cursor: 'pointer' }}>
-                {t('uploadProfilePhoto', 'Upload Profile Photo')}
-                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageChange} />
+            <label style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div className={styles.imagePreview}>
+                {imagePreview ? (
+                  <Image src={imagePreview} alt="Preview" fill style={{ objectFit: 'cover' }} />
+                ) : (
+                  <div className={styles.uploadPlaceholder}>
+                    <Camera size={24} className={styles.uploadIcon} />
+                  </div>
+                )}
+              </div>
+              <span className={styles.uploadLabel} style={{ marginTop: '16px' }}>
+                  {t('uploadProfilePhoto', 'Upload Profile Photo')}
+              </span>
+              <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageChange} />
             </label>
           </div>
 
