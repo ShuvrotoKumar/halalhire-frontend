@@ -7,7 +7,7 @@ import { useGetFreeSubscriberQuery } from '@/redux/api/allSubscriberApi';
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
 import styles from './CompanyActiveSubscriptions.module.css';
-import { Loader2, ArrowRight, CheckCircle2, Package } from 'lucide-react';
+import { Loader2, ArrowRight, CheckCircle2, Package, CalendarDays, Clock, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function CompanyActiveSubscriptions() {
@@ -104,11 +104,13 @@ export default function CompanyActiveSubscriptions() {
         <p className={styles.subtitle}>Select an active subscription to access your company profile.</p>
 
         <div className={styles.grid}>
-          {validSubscriptions.map((sub, index) => {
+            {validSubscriptions.map((sub, index) => {
               // Try to find a meaningful name
-              let planName = sub.planName || sub.subscriptionName || sub.plan || 'Premium Package';
+              let planName = sub.pricing?.data?.name || sub.planName || sub.subscriptionName || sub.plan || 'Premium Package';
               if (typeof planName === 'object' && planName.name) planName = planName.name;
               
+              const isActive = sub.isActive !== false;
+
               return (
                 <div key={index} className={styles.card}>
                 <div className={styles.cardHeader}>
@@ -117,8 +119,8 @@ export default function CompanyActiveSubscriptions() {
                     </div>
                     <div>
                     <h3 className={styles.planName}>{String(planName)}</h3>
-                    <div className={styles.status}>
-                        <CheckCircle2 size={14} /> Active
+                    <div className={styles.status} style={!isActive ? { backgroundColor: '#fef2f2', color: '#ef4444' } : {}}>
+                        <CheckCircle2 size={14} /> {isActive ? 'Active' : 'Inactive'}
                     </div>
                     </div>
                 </div>
