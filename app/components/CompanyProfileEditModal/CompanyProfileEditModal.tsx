@@ -5,6 +5,7 @@ import styles from './CompanyProfileEditModal.module.css';
 import { useModal } from '@/app/context/ModalContext';
 import { useTranslation, Trans } from 'react-i18next'
 import { useGetCompanyQuery, useUpdateCompanyMutation } from '@/redux/api/companyApi';
+import { useAuth } from '@/app/context/AuthContext';
 import {
   Info, 
   Palette, 
@@ -26,6 +27,7 @@ import {
 const CompanyProfileEditModal = () => {
   const { t } = useTranslation()
   const { isProfileEditModalOpen, closeProfileEditModal } = useModal();
+  const { user } = useAuth();
   const [selectedPerks, setSelectedPerks] = useState<string[]>(['Prayer Room', 'Halal Food', 'Jumu\'ah Flex']);
   
   const { data: companyRes } = useGetCompanyQuery(undefined, { skip: !isProfileEditModalOpen });
@@ -70,21 +72,27 @@ const CompanyProfileEditModal = () => {
       const payload = {
         companyName: formData.companyName,
         email: formData.email,
+        role: user?.role || companyData.role || 'company',
         organizationDetails: {
           ...orgDetails,
           industry: formData.industry,
           websiteUrl: formData.websiteUrl,
           headquartersLocation: formData.headquartersLocation,
           companyDescription: formData.companyDescription,
-        }
+        },
+        companyVerificationSchema: companyData.companyVerificationSchema || {},
+        workplace: companyData.workplace || []
       };
 
       const submitData = new FormData();
+      // The backend expects the role inside the JSON data string
       submitData.append('data', JSON.stringify(payload));
+      
       if (logoFile) submitData.append('companyLogo', logoFile);
       if (bannerFile) submitData.append('bannerImage', bannerFile);
 
       await updateCompany(submitData).unwrap();
+      
       alert('Company profile updated successfully!');
       closeProfileEditModal();
     } catch (error: any) {
