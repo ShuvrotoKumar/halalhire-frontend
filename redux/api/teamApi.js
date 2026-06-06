@@ -3,9 +3,9 @@ import { baseApi } from "./baseApi";
 const teamApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getTeam: builder.query({
-            query: () => {
+            query: ({id}) => {
                 return {
-                    url: "/team/find_my_team",
+                    url: `/team/find_my_team/${id}`,
                     method: "GET",
                 };
             },
@@ -21,8 +21,16 @@ const teamApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ["team"],
         }),
-        
+        deleteTeam: builder.mutation({
+            query: ({ id }) => {
+                return {
+                    url: `/team/delete_team/${id}`,
+                    method: "DELETE",
+                };
+            },
+            invalidatesTags: ["team"],
+        }),
     }),
 });
 
-export const { useGetTeamQuery, useCreateTeamMutation } = teamApi;
+export const { useGetTeamQuery, useCreateTeamMutation, useDeleteTeamMutation } = teamApi;

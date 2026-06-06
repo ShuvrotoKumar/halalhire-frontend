@@ -242,6 +242,34 @@
   letter-spacing: 0.5px;
 }
 
+.cardActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f3ef;
+}
+
+.deleteActionBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.deleteActionBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
 @media (max-width: 1024px) {
   .teamGrid {
     grid-template-columns: repeat(2, 1fr);

@@ -10,19 +10,15 @@ import { useCreateTeamMutation } from '@/redux/api/teamApi';
 
 const TeamMemberModal = () => {
   const { t } = useTranslation()
-  const { isTeamMemberModalOpen, closeTeamMemberModal, activeMember } = useModal();
-  const [imagePreview, setImagePreview] = useState<string | null>(activeMember?.image || null);
+  const { isTeamMemberModalOpen, closeTeamMemberModal } = useModal();
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
 
-  const [createTeam, { isLoading }] = useCreateTeamMutation();
+  const [createTeam, { isLoading: isCreating }] = useCreateTeamMutation();
 
   useEffect(() => {
-    if (activeMember && activeMember.image) {
-      setImagePreview(activeMember.image);
-    } else {
-      setImagePreview(null);
-    }
-  }, [activeMember]);
+    setImagePreview(null);
+  }, [isTeamMemberModalOpen]);
 
   if (!isTeamMemberModalOpen) return null;
 
@@ -54,10 +50,18 @@ const TeamMemberModal = () => {
         return;
     }
 
+    const getStoredId = () => {
+      if (typeof window === 'undefined') return null;
+      let id = localStorage.getItem('subscriberId') || localStorage.getItem('subscriptionId'); 
+      if (id) id = id.replace(/^"|"$/g, '');
+      return (id === 'null' || id === 'undefined' || id === undefined) ? null : id;
+    };
+
     const formData = new FormData();
     const dataObj = {
         name,
-        designation
+        designation,
+        currentSubscriberId: getStoredId() || "6a2213bf2b0fe5be36101c5c"
     };
     
     // According to Postman screenshot: key "data" contains stringified JSON object
@@ -69,12 +73,8 @@ const TeamMemberModal = () => {
     }
 
     try {
-        if (!activeMember) {
-            await createTeam(formData).unwrap();
-            console.log("Team member created successfully");
-        } else {
-            // Update logic here if needed
-        }
+        await createTeam(formData).unwrap();
+        console.log("Team member created successfully");
         handleClose();
     } catch (error) {
         console.error("Failed to save team member:", error);
@@ -86,7 +86,7 @@ const TeamMemberModal = () => {
     <div className={styles.overlay} onClick={handleClose}>
       <form className={styles.modal} onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit}>
         <div className={styles.header}>
-          <h2>{activeMember ? t('editTeamMember', 'Edit Team Member') : t('addTeamMember', 'Add Team Member')}</h2>
+          <h2>{t('addTeamMember', 'Add Team Member')}</h2>
           <X size={20} className={styles.closeBtn} onClick={handleClose} />
         </div>
 
@@ -111,33 +111,33 @@ const TeamMemberModal = () => {
 
           <div className={styles.inputGroup}>
             <label className={styles.label}>{t('fullName', 'Full Name')}</label>
-            <input 
-              type="text" 
-              name="name"
-              placeholder={t('egAhmedAlsayed', 'e.g. Ahmed Al-Sayed')} 
-              className={styles.input} 
-              defaultValue={activeMember?.name || ''}
-              required
-            />
+              <input 
+                type="text" 
+                name="name"
+                placeholder={t('egAhmedAlsayed', 'e.g. Ahmed Al-Sayed')} 
+                className={styles.input} 
+                defaultValue={''}
+                required
+              />
           </div>
 
           <div className={styles.inputGroup}>
             <label className={styles.label}>{t('rolePosition', 'Role / Position')}</label>
-            <input 
-              type="text" 
-              name="designation"
-              placeholder={t('egChiefExecutiveOfficer', 'e.g. Chief Executive Officer')} 
-              className={styles.input} 
-              defaultValue={activeMember?.role || ''}
-              required
-            />
+              <input 
+                type="text" 
+                name="designation"
+                placeholder={t('egChiefExecutiveOfficer', 'e.g. Chief Executive Officer')} 
+                className={styles.input} 
+                defaultValue={''}
+                required
+              />
           </div>
         </div>
 
         <div className={styles.footer}>
-          <button type="button" className={styles.cancelBtn} onClick={handleClose} disabled={isLoading}>{t('cancel', 'Cancel')}</button>
-          <button type="submit" className={styles.submitBtn} disabled={isLoading}>
-            {isLoading ? 'Saving...' : (activeMember ? t('saveChanges', 'Save Changes') : t('addMember', 'Add Member'))}
+          <button type="button" className={styles.cancelBtn} onClick={handleClose} disabled={isCreating}>{t('cancel', 'Cancel')}</button>
+          <button type="submit" className={styles.submitBtn} disabled={isCreating}>
+            {isCreating ? 'Saving...' : t('addMember', 'Add Member')}
           </button>
         </div>
       </form>

@@ -6,6 +6,7 @@ import ApplyModal from './components/ApplyModal/ApplyModal';
 import ProfileEditModal from './components/ProfileEditModal/ProfileEditModal';
 import JobEditModal from './components/JobEditModal/JobEditModal';
 import JobDeleteModal from './components/JobDeleteModal/JobDeleteModal';
+import TeamDeleteModal from './components/TeamDeleteModal/TeamDeleteModal';
 import TeamMemberModal from './components/TeamMemberModal/TeamMemberModal';
 import AcceptModal from './components/AcceptModal/AcceptModal';
 import RejectModal from './components/RejectModal/RejectModal';
@@ -54,6 +55,7 @@ export default async function RootLayout({
                     <JobEditModal />
                     <JobDeleteModal />
                     <TeamMemberModal />
+                    <TeamDeleteModal />
                     <AcceptModal />
                     <RejectModal />
                     <ContactConfirmModal />

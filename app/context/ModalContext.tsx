@@ -19,6 +19,9 @@ interface ModalContextType {
   isTeamMemberModalOpen: boolean;
   openTeamMemberModal: (member?: any) => void;
   closeTeamMemberModal: () => void;
+  isTeamDeleteModalOpen: boolean;
+  openTeamDeleteModal: (member: any) => void;
+  closeTeamDeleteModal: () => void;
   isAcceptModalOpen: boolean;
   openAcceptModal: (applicant: any) => void;
   closeAcceptModal: () => void;
@@ -41,6 +44,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isJobEditModalOpen, setIsJobEditModalOpen] = useState(false);
   const [isJobDeleteModalOpen, setIsJobDeleteModalOpen] = useState(false);
   const [isTeamMemberModalOpen, setIsTeamMemberModalOpen] = useState(false);
+  const [isTeamDeleteModalOpen, setIsTeamDeleteModalOpen] = useState(false);
   const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [activeMember, setActiveMember] = useState<any>(null);
@@ -87,6 +91,15 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setActiveMember(null);
   };
 
+  const openTeamDeleteModal = (member: any) => {
+    setActiveMember(member);
+    setIsTeamDeleteModalOpen(true);
+  };
+  const closeTeamDeleteModal = () => {
+    setIsTeamDeleteModalOpen(false);
+    setActiveMember(null);
+  };
+
   const openAcceptModal = (applicant: any) => {
     setActiveApplicant(applicant);
     setIsAcceptModalOpen(true);
@@ -126,6 +139,9 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       isTeamMemberModalOpen,
       openTeamMemberModal,
       closeTeamMemberModal,
+      isTeamDeleteModalOpen,
+      openTeamDeleteModal,
+      closeTeamDeleteModal,
       isAcceptModalOpen,
       openAcceptModal,
       closeAcceptModal,

@@ -18,12 +18,13 @@ import {
   Briefcase,
   Bell,
   X,
-  Globe
+  Globe,
+  Trash2
 } from 'lucide-react';
 
 const CompanyTeam = () => {
   const { t } = useTranslation();
-  const { openProfileEditModal, openTeamMemberModal } = useModal();
+  const { openProfileEditModal, openTeamMemberModal, openTeamDeleteModal } = useModal();
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
 
   // Fetch company data for the banner
@@ -37,9 +38,32 @@ const CompanyTeam = () => {
   const logoImg = orgDetails.companyLogo ? imageUrl(orgDetails.companyLogo) : (companyData.photo ? imageUrl(companyData.photo) : null);
   const websiteUrl = orgDetails.websiteUrl || '';
 
+  // Fetch team based on the active subscription ID (subscriberId)
+  // not the user ID, as per backend requirement.
+  const getStoredId = () => {
+    if (typeof window === 'undefined') return null;
+    let id = localStorage.getItem('subscriberId') || localStorage.getItem('subscriptionId'); 
+    if (id) id = id.replace(/^"|"$/g, '');
+    return (id === 'null' || id === 'undefined' || id === undefined) ? null : id;
+  };
+
+  const finalId = getStoredId() || "6a2213bf2b0fe5be36101c5c";
+
   // Fetch team data
-  const { data: teamRes, isLoading: isTeamLoading } = useGetTeamQuery(undefined);
-  let apiTeamMembers = teamRes?.data?.myTeams || [];
+  const { data: teamRes, isLoading: isTeamLoading, isError, error } = useGetTeamQuery(
+    { id: finalId },
+    { skip: !finalId }
+  );
+  
+  console.log("teamRes:", teamRes, "error:", error);
+
+  // Safely extract myTeams directly from data property
+  let apiTeamMembers = teamRes?.data?.data?.myTeams || teamRes?.data?.myTeams || teamRes?.myTeams || [];
+  
+  // Guard against unexpected object return types by validating it's an array
+  if (!Array.isArray(apiTeamMembers)) {
+      apiTeamMembers = [];
+  }
 
   const notifications = React.useMemo(() => [
         {
@@ -62,30 +86,6 @@ const CompanyTeam = () => {
     role: member.designation,
     image: member.photo ? imageUrl(member.photo) : '/b1.png'
   }));
-
-  // Fallback to dummy data if API returns empty, just to easily show the design as requested
-  if (teamMembers.length === 0 && !isTeamLoading) {
-    teamMembers = [
-      {
-        id: 1,
-        name: t('ahmedAlsayed', 'Ahmed Al-Sayed'),
-        role: t('chiefExecutiveOfficer', 'Chief Executive Officer'),
-        image: '/b1.png'
-      },
-      {
-        id: 2,
-        name: t('sarahJenkins', 'Sarah Jenkins'),
-        role: t('headOfIslamicCompliance', 'Head of Islamic Compliance'),
-        image: '/b2.png'
-      },
-      {
-        id: 3,
-        name: t('marcusThorne', 'Marcus Thorne'),
-        role: t('investmentDirector', 'Investment Director'),
-        image: '/b3.png'
-      }
-    ];
-  }
 
   return (
     <div className={styles.pageWrapper}>
@@ -163,22 +163,33 @@ const CompanyTeam = () => {
         </div>
 
         <div className={styles.teamGrid}>
-          {teamMembers.map((member: any) => (
-            <div key={member.id} className={styles.memberCard}>
-              <div className={styles.imageContainer}>
-                <Image 
-                  src={member.image} 
-                  alt={member.name} 
-                  fill 
-                  style={{ objectFit: 'cover' }}
-                />
+          {isTeamLoading ? (
+            <div style={{ textAlign: 'center', padding: '40px', gridColumn: '1 / -1' }}>Loading team...</div>
+          ) : teamMembers.length > 0 ? (
+            teamMembers.map((member: any) => (
+              <div key={member.id} className={styles.memberCard}>
+                <div className={styles.imageContainer}>
+                  <Image 
+                    src={member.image} 
+                    alt={member.name} 
+                    fill 
+                    style={{ objectFit: 'cover' }}
+                  />
+                </div>
+                <div className={styles.info}>
+                  <h3 className={styles.name}>{member.name}</h3>
+                  <span className={styles.role}>{member.role}</span>
+                  <div className={styles.cardActions}>
+                    <button className={styles.deleteActionBtn} onClick={() => openTeamDeleteModal(member)} title={t('deleteMember', 'Delete Member')}>
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className={styles.info}>
-                <h3 className={styles.name}>{member.name}</h3>
-                <span className={styles.role}>{member.role}</span>
-              </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#94a3b8', gridColumn: '1 / -1' }}>No team members added yet.</div>
+          )}
         </div>
       </main>
 
