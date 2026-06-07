@@ -11,11 +11,13 @@
   width: 100%;
   position: relative;
   overflow: hidden;
+  background: #f0f0f0;
 }
 
 .bannerImage {
-  object-fit: cover;
-  opacity: 0.8;
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .headerContainer {

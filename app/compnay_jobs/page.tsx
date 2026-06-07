@@ -43,8 +43,8 @@ const CompanyJobs = () => {
   const companyName = companyData.companyName || t('ethicalWealthManagement', 'Ethical Wealth Management');
   const industry = orgDetails.industry || t('shariacompliantFinancialServices', 'Sharia-Compliant Financial Services');
   const location = orgDetails.headquartersLocation || (companyData.workplace && companyData.workplace[0]) || t('londonUk', 'London, UK');
-  const bannerImg = orgDetails.bannerImage ? imageUrl(orgDetails.bannerImage) : "/about1.png";
-  const logoImg = orgDetails.companyLogo ? imageUrl(orgDetails.companyLogo) : (companyData.photo ? imageUrl(companyData.photo) : null);
+  const bannerImg = (companyData.bannerImage && companyData.bannerImage.trim()) || (orgDetails.bannerImage && orgDetails.bannerImage.trim()) ? imageUrl(companyData.bannerImage || orgDetails.bannerImage) : "/about1.png";
+  const logoImg = (companyData.companyLogo && companyData.companyLogo.trim()) || (orgDetails.companyLogo && orgDetails.companyLogo.trim()) ? imageUrl(companyData.companyLogo || orgDetails.companyLogo) : (companyData.photo && companyData.photo.trim() ? imageUrl(companyData.photo) : null);
   const websiteUrl = orgDetails.websiteUrl || '';
 
   // Use company ID directly from the company API response if possible,
