@@ -104,14 +104,14 @@ const CompanyProfile = () => {
                             </div>
                         </div>
                         <div className={styles.headerActions}>
-                            <button
+                            {/* <button
                                 className={styles.notificationBtn}
                                 onClick={() => setIsChatOpen(true)}
                                 aria-label={t('openChat', 'Open chat')}
                                 type="button"
                             >
                                 <MessageSquare size={18} />
-                            </button>
+                            </button> */}
                             <button
                                 className={styles.notificationBtn}
                                 onClick={() => setIsNotificationOpen(true)}
