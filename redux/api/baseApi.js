@@ -240,5 +240,8 @@ export const baseApi = createApi({
     "notification",
     "NDA",
     "contact",
+    "company",
+    "job",
+    "team",
   ],
 });

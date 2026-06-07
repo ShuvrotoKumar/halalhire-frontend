@@ -241,16 +241,13 @@ const Navbar = () => {
                   <button className={`btn ${styles.signupBtn}`} style={{ padding: '8px 24px', fontSize: '14px' }}>{t('signUp', 'Sign Up')}</button>
                 </Link>
               </div>
-            ) : (
-              <>
-                <div className={styles.roleSelect} onClick={() => login(user.role === 'user' ? 'company' : 'user')}>
-                  <span>{user.role === 'user' ? 'Individual' : 'Company'}</span>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
-                </div>
+              ) : (
+                <>
+                  <div className={styles.roleSelect} style={{ cursor: 'default' }}>
+                    <span>{user.role === 'user' ? 'Individual' : 'Company'}</span>
+                  </div>
 
-                <div className={styles.profileContainer} onClick={() => setShowDropdown(!showDropdown)}>
+                  <div className={styles.profileContainer} onClick={() => setShowDropdown(!showDropdown)}>
                   <UserAvatar 
                     src={displayAvatar} 
                     alt={displayName} 
@@ -265,24 +262,13 @@ const Navbar = () => {
 
                   {showDropdown && (
                     <div className={styles.dropdown}>
-                      <Link
-                        href={user.role === 'company' ? "/company_active_subscriptions" : "/user_profile"}
-                        className={styles.dropdownItem}
-                      >
+                      <Link href={user.role === 'company' ? "/company_active_subscriptions" : "/user_profile"} className={styles.dropdownItem}>
                         <User size={16} /> {t('profile', 'Profile')}
                       </Link>
-                      {user.role === 'company' && (
-                        <div className={styles.dropdownItem} onClick={() => {
-                          openProfileEditModal();
-                          setShowDropdown(false);
-                        }}>
-                          <Edit3 size={16} /> {t('editProfile', 'Edit Profile')}
-                        </div>
-                      )}
                       <Link href="/user_settings" className={styles.dropdownItem}>
                         <Settings size={16} /> {t('settings', 'Settings')}
                       </Link>
-                      <div className={styles.divider} />
+                      <div className={styles.divider}></div>
                       <div className={`${styles.dropdownItem} ${styles.logoutItem}`} onClick={logout}>
                         <LogOut size={16} /> {t('logout', 'Logout')}
                       </div>
