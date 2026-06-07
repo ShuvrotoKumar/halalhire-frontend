@@ -49,8 +49,8 @@ const CompanyProfile = () => {
     const websiteUrl = orgDetails.websiteUrl || 'https://halalhire.com';
     const description = orgDetails.companyDescription || t('ethicalWealthManagementIsALeadingFinancialServicesFirm...', 'Ethical Wealth Management is a leading financial services firm dedicated to Shariah-compliant investment strategies and sustainable growth.');
     
-    const bannerImg = orgDetails.bannerImage ? imageUrl(orgDetails.bannerImage) : "/about1.png";
-    const logoImg = orgDetails.companyLogo ? imageUrl(orgDetails.companyLogo) : (companyData.photo ? imageUrl(companyData.photo) : null);
+    const bannerImg = (companyData.bannerImage && companyData.bannerImage.trim()) || (orgDetails.bannerImage && orgDetails.bannerImage.trim()) ? imageUrl(companyData.bannerImage || orgDetails.bannerImage) : "/about1.png";
+    const logoImg = (companyData.companyLogo && companyData.companyLogo.trim()) || (orgDetails.companyLogo && orgDetails.companyLogo.trim()) ? imageUrl(companyData.companyLogo || orgDetails.companyLogo) : (companyData.photo && companyData.photo.trim() ? imageUrl(companyData.photo) : null);
 
     const { data: notificationData } = useGetAllNotificationQuery(undefined);
     const notifications = notificationData?.data?.all_notification?.map((n: any) => ({
@@ -70,7 +70,8 @@ const CompanyProfile = () => {
                     src={bannerImg}
                     alt={t('companyBanner', 'Company Banner')}
                     fill
-                    unoptimized={true}
+                    sizes="100vw"
+                    priority
                     className={styles.bannerImage}
                 />
             </div>
