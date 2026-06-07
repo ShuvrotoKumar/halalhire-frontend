@@ -40,7 +40,7 @@ const CompanyProfile = () => {
     
     // Fetch company data
     const { data: companyRes } = useGetCompanyQuery(undefined);
-    const companyData = companyRes?.data || {};
+    const companyData = companyRes?.data?.data || companyRes?.data || {};
     const orgDetails = companyData.organizationDetails || {};
     
     const companyName = companyData.companyName || t('ethicalWealthManagement', 'Ethical Wealth Management');
@@ -70,6 +70,7 @@ const CompanyProfile = () => {
                     src={bannerImg}
                     alt={t('companyBanner', 'Company Banner')}
                     fill
+                    unoptimized={true}
                     className={styles.bannerImage}
                 />
             </div>

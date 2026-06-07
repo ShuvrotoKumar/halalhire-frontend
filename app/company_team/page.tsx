@@ -91,6 +91,7 @@ const CompanyTeam = () => {
           src={bannerImg} 
           alt={t('companyBanner', 'Company Banner')} 
           fill 
+          unoptimized={true}
           className={styles.bannerImage}
         />
       </div>

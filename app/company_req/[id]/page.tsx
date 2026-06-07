@@ -15,7 +15,6 @@ import {
   Globe
 } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import { useModal } from '@/app/context/ModalContext';
 import { useTranslation } from 'react-i18next'
 import { useGetJobDetailsQuery } from '@/redux/api/jobApi';
 import { imageUrl } from '@/Utils/server';
@@ -23,7 +22,6 @@ import { imageUrl } from '@/Utils/server';
 const ApplicantDetails = () => {
   const { t } = useTranslation()
   const params = useParams();
-  const { openAcceptModal, openRejectModal } = useModal();
   
   const { data: jobRes, isLoading } = useGetJobDetailsQuery({ id: params.id });
 
@@ -316,16 +314,6 @@ const ApplicantDetails = () => {
               </div>
             </div>
 
-            {/* Footer Action Bar */}
-            <div className={styles.footerActions}>
-              <div className={styles.footerInner}>
-                <span className={styles.footerText}>Currently viewing {applicant.name}&apos;s application</span>
-                <div className={styles.actionBtns}>
-                  <button className={styles.rejectPageBtn} onClick={() => openRejectModal(applicant)}>Reject Application</button>
-                  <button className={styles.acceptPageBtn} onClick={() => openAcceptModal(applicant)}>Accept Application</button>
-                </div>
-              </div>
-            </div>
           </>
         )}
       </div>
