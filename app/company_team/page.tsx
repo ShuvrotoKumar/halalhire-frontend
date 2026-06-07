@@ -35,8 +35,8 @@ const CompanyTeam = () => {
   const companyName = companyData.companyName || t('ethicalWealthManagement', 'Ethical Wealth Management');
   const industry = orgDetails.industry || t('shariacompliantFinancialServices', 'Sharia-Compliant Financial Services');
   const location = orgDetails.headquartersLocation || (companyData.workplace && companyData.workplace[0]) || t('londonUk', 'London, UK');
-  const bannerImg = orgDetails.bannerImage ? (orgDetails.bannerImage.startsWith('http') ? orgDetails.bannerImage : `https://beer-managers-uses-doctor.trycloudflare.com/${orgDetails.bannerImage.replace(/^\/+/, '')}`) : "/about1.png";
-  const logoImg = orgDetails.companyLogo ? (orgDetails.companyLogo.startsWith('http') ? orgDetails.companyLogo : `https://beer-managers-uses-doctor.trycloudflare.com/${orgDetails.companyLogo.replace(/^\/+/, '')}`) : (companyData.photo ? (companyData.photo.startsWith('http') ? companyData.photo : `https://beer-managers-uses-doctor.trycloudflare.com/${companyData.photo.replace(/^\/+/, '')}`) : null);
+  const bannerImg = orgDetails.bannerImage ? imageUrl(orgDetails.bannerImage) : "/about1.png";
+  const logoImg = orgDetails.companyLogo ? imageUrl(orgDetails.companyLogo) : (companyData.photo ? imageUrl(companyData.photo) : null);
   const websiteUrl = orgDetails.websiteUrl || '';
 
   // Fetch team based on the active subscription ID (subscriberId)

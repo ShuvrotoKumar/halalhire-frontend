@@ -54,7 +54,7 @@ const jobApi = baseApi.injectEndpoints({
         getJobDetails: builder.query({
             query: ({id}) => {
                 return {
-                    url: `/employee/find_by_specific_job/${id}`,
+                    url: `/apply/find_by_specific_company_applied_user_details/${id}`,
                     method: "GET",
                 };
             },

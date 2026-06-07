@@ -3,97 +3,69 @@
 import React from 'react';
 import styles from '../ApplicantDetails.module.css';
 import Image from 'next/image';
-import Link from 'next/link';
 import Navbar from '../../components/Navbar/Navbar';
 import Footer from '../../components/Footer/Footer';
 import { 
   CheckCircle, 
   MapPin, 
   Briefcase, 
-  FileText, 
-  GraduationCap, 
-  Users,
   Mail, 
-  Phone, 
-  Linkedin,
-  Download,
   ShieldCheck,
   Calendar,
-  Clock,
   Globe
 } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useModal } from '@/app/context/ModalContext';
 import { useTranslation } from 'react-i18next'
+import { useGetJobDetailsQuery } from '@/redux/api/jobApi';
+import { imageUrl } from '@/Utils/server';
 
 const ApplicantDetails = () => {
   const { t } = useTranslation()
   const params = useParams();
   const { openAcceptModal, openRejectModal } = useModal();
   
-  // Hardcoded data for "Fatima Zahra" as per design
+  const { data: jobRes, isLoading } = useGetJobDetailsQuery({ id: params.id });
+
+  const resData = jobRes?.data || {};
+  const userData = resData.userId || {};
+  const profData = userData.professionalProfile || {};
+  const workPref = userData.WorkPreferences || {};
+  const verify = userData.verifyIdentity || {};
+
   const applicant = {
-    name: t('fatimaZahra', 'Fatima Zahra'),
-    role: t('seniorSoftwareEngineer', 'Senior Software Engineer'),
-    location: 'London, UK',
-    avatar: '/b1.png',
-    joinedDate: t('joinedOct2023', 'Joined Oct 2023'),
-    languages: t('fluentInEnglishArabic', 'Fluent in English, Arabic'),
-    position: t('seniorSoftwareEngineer', 'Senior Software Engineer'),
-    appliedDate: t('october242023', 'October 24, 2023'),
-    status: 'Under Review',
-    applicationId: '#HH-4820-11',
-    summary: t('dedicatedSeniorSoftwareEngineerWithOver8YearsOfExperienceBuildingScalableDistributedSystemsAndHighperformanceWebApplicationsIAmPassionateAboutEthicalTechnologyAndAlignMyProfessionalWorkWithIslamicPrinciplesISpecializeInBackendArchitectureWithAFocusOnPythonAndCloudInfrastructureThroughoutMyCareerIvePrioritizedFosteringInclusiveEnvironmentsAndMentoringJuniorDevelopersWhileMaintainingACommitmentToExcellenceAndHalalWorkplaceValues', 'Dedicated Senior Software Engineer with over 8 years of experience building scalable distributed systems and high-performance web applications. I am passionate about ethical technology and align my professional work with Islamic principles. I specialize in backend architecture with a focus on Python and Cloud Infrastructure. Throughout my career, I\'ve prioritized fostering inclusive environments and mentoring junior developers while maintaining a commitment to excellence and halal workplace values.'),
-    experience: [
-      {
-        id: 1,
-        title: t('seniorSoftwareEngineer', 'Senior Software Engineer'),
-        company: 'TechNova Solutions',
-        location: 'London, UK',
-        period: t('2020Present2', '2020 - Present'),
-        current: true,
-        highlights: [
-          t('architectedAndMigratedLegacyMonolithToMicroservicesUsingFastapiAndAws', 'Architected and migrated legacy monolith to microservices using FastAPI and AWS.'),
-          t('ledATeamOf6EngineersToDeliverAHightrafficFintechApiProcessing10mDaily', 'Led a team of 6 engineers to deliver a high-traffic fintech API processing $10M+ daily.'),
-          t('reducedInfrastructureCostsBy35ThroughContainerOrchestrationAndServerlessAdoption', 'Reduced infrastructure costs by 35% through container orchestration and serverless adoption.')
-        ]
-      },
-      {
-        id: 2,
-        title: t('fullStackDeveloper', 'Full Stack Developer'),
-        company: 'GreenSphere Interactive',
-        location: 'Dubai, UAE',
-        period: t('20172020', '2017 - 2020'),
-        current: false,
-        highlights: [
-          t('developedResponsiveUserInterfacesUsingReactjsAndIntegratedComplexRestfulApis', 'Developed responsive user interfaces using React.js and integrated complex RESTful APIs.'),
-          t('optimizedDatabaseQueriesInPostgresqlImprovingApplicationPerformanceBy40', 'Optimized database queries in PostgreSQL, improving application performance by 40%.')
-        ]
-      }
-    ],
-    education: [
-      {
-        degree: t('mscInComputerScience', 'M.Sc. in Computer Science'),
-        school: t('imperialCollegeLondon', 'Imperial College London'),
-        year: '2017',
-        specialization: t('specializationInDistributedSystems', 'Specialization in Distributed Systems')
-      }
-    ],
-    skills: [
-      { name: t('pythonExpert', 'Python (Expert)'), highlighted: true },
-      { name: 'AWS', highlighted: true },
-      { name: t('fastapi', 'FastAPI'), highlighted: false },
-      { name: t('postgresql', 'PostgreSQL'), highlighted: false },
-      { name: t('redis', 'Redis'), highlighted: false },
-      { name: t('docker', 'Docker'), highlighted: false },
-      { name: t('leadership', 'Leadership'), highlighted: true },
-      { name: t('halalWorkplaceEthics', 'Halal Workplace Ethics'), highlighted: true }
-    ],
-    contact: {
-      email: 'fatima.zahra@example.com',
-      phone: t('447700900xxx', '+44 7700 900XXX'),
-      linkedin: 'linkedin.com/in/fzahra'
-    }
+    name: userData.name || 'N/A',
+    email: userData.email || 'N/A',
+    avatar: userData.photo ? imageUrl(userData.photo) : '/b1.png',
+    maritalStatus: userData.maritalStatus || 'N/A',
+    dateOfBirth: userData.dateOfBirth || 'N/A',
+    countryOrigin: userData.countryOrigin || 'N/A',
+    numberOfChildren: userData.numberOfChildren ?? 0,
+    religiousPractice: userData.religiousPractice || 'N/A',
+    isVerified: verify.isVerified || false,
+    isVerify: userData.isVerify || false,
+    nationalId: verify.nationalId || '',
+    internationalPassport: verify.internationalPassport || '',
+    userId: userData._id || userData.id || '',
+    isDeleted: userData.isDeleted || false,
+    workplace: userData.workplace || [],
+    currentJobTitle: profData.currentJobTitle || 'N/A',
+    yearsOfExperience: profData.yearsOfExperience ?? 0,
+    skills: profData.skills || [],
+    primaryLanguage: profData.primaryLanguage || 'N/A',
+    otherLanguages: profData.otherLanguages || [],
+    document: profData.document || '',
+    professionalCertificates: profData.professionalCertificates || [],
+    salaryExpectations: workPref.salaryExpectations || 'N/A',
+    employmentType: workPref.employmentType || 'N/A',
+    availableFrom: workPref.availableFrom || '',
+    remoteAcceptable: workPref.remoteAcceptable ?? false,
+    willingToRelocate: workPref.willingToRelocate ?? false,
+    willingToTravel: workPref.willingToTravel ?? false,
+    applicationId: resData._id || 'N/A',
+    accepted: resData.accepted ?? false,
+    isApply: resData.isApply ?? false,
+    applicationCreatedAt: resData.createdAt || '',
   };
 
   return (
@@ -101,192 +73,266 @@ const ApplicantDetails = () => {
       <Navbar />
       
       <div className={styles.maxContainer}>
-        {/* Profile Header */}
-        <section className={styles.profileHeader}>
-          <div className={styles.avatarWrapper}>
-            <Image src={applicant.avatar} alt={applicant.name} fill style={{ objectFit: 'cover' }} />
-            <div className={styles.verifiedBadge}>
-              <ShieldCheck size={18} fill="#e2ab4c" color="white" />
-            </div>
+        {isLoading ? (
+          <div style={{ padding: '100px 0', textAlign: 'center' }}>Loading details...</div>
+        ) : !jobRes?.data ? (
+          <div style={{ padding: '60px 0', textAlign: 'center' }}>
+            <ShieldCheck size={48} color="#94a3b8" style={{ marginBottom: '16px' }} />
+            <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#1e293b', marginBottom: '8px' }}>No Data Found</h2>
+            <p style={{ fontSize: '14px', color: '#64748b' }}>
+              Application ID: <strong>{params.id}</strong>
+            </p>
           </div>
-          <div className={styles.headerInfo}>
-            <h1>{applicant.name}</h1>
-            <div className={styles.roleLocation}>{t('roleLocation', '{{role}} • {{location}}', { role: applicant.role, location: applicant.location })}</div>
-            <div className={styles.metaRow}>
-              <div className={styles.metaItem}>
-                <Clock size={14} /> {applicant.joinedDate}
+        ) : (
+          <>
+            {/* Profile Header */}
+            <section className={styles.profileHeader}>
+              <div className={styles.avatarWrapper}>
+                <Image src={applicant.avatar} alt={applicant.name} fill style={{ objectFit: 'cover' }} />
+                {applicant.isVerified && (
+                  <div className={styles.verifiedBadge}>
+                    <ShieldCheck size={18} fill="#e2ab4c" color="white" />
+                  </div>
+                )}
               </div>
-              <div className={styles.metaItem}>
-                <Globe size={14} /> {applicant.languages}
+              <div className={styles.headerInfo}>
+                <h1>{applicant.name}</h1>
+                <div className={styles.roleLocation}>{applicant.currentJobTitle} • {applicant.countryOrigin}</div>
+                <div className={styles.metaRow}>
+                  <div className={styles.metaItem}>
+                    <Globe size={14} /> {applicant.primaryLanguage}
+                    {applicant.otherLanguages.length > 0 && `, ${applicant.otherLanguages.join(', ')}`}
+                  </div>
+                  <div className={styles.metaItem}>
+                    <Briefcase size={14} /> {applicant.yearsOfExperience} years experience
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </section>
+            </section>
 
-        {/* Stats Bar */}
-        <section className={styles.statsBar}>
-          <div className={styles.statItem}>
-            <span className={styles.statLabel}>{t('appliedPosition', 'Applied Position')}</span>
-            <span className={styles.statValue}>{applicant.position}</span>
-          </div>
-          <div className={styles.statItem}>
-            <span className={styles.statLabel}>{t('applicationDate', 'Application Date')}</span>
-            <span className={styles.statValue}>{applicant.appliedDate}</span>
-          </div>
-          <div className={styles.statItem}>
-            <span className={styles.statLabel}>{t('currentStatus', 'Current Status')}</span>
-            <span className={styles.statValue}>
-              <span className={styles.statusIndicator}></span>
-              {applicant.status}
-            </span>
-          </div>
-          <div className={styles.statItem}>
-            <span className={styles.statLabel}>{t('applicationId', 'Application ID')}</span>
-            <span className={styles.statValue}>{applicant.applicationId}</span>
-          </div>
-        </section>
-
-        {/* Main Grid */}
-        <div className={styles.mainLayout}>
-          {/* Main Content */}
-          <div className={styles.contentCol}>
-            {/* Professional Summary */}
-            <div className={styles.card}>
-              <div className={styles.sectionHeader}>
-                <Users size={20} className={styles.sectionIcon} />
-                <h2 className={styles.sectionTitle}>{t('professionalSummary', 'Professional Summary')}</h2>
+            {/* Stats Bar */}
+            <section className={styles.statsBar}>
+              <div className={styles.statItem}>
+                <span className={styles.statLabel}>Application ID</span>
+                <span className={styles.statValue}>{applicant.applicationId}</span>
               </div>
-              <p className={styles.summaryText}>{applicant.summary}</p>
-            </div>
-
-            {/* Work Experience */}
-            <div className={styles.card}>
-              <div className={styles.sectionHeader}>
-                <Briefcase size={20} className={styles.sectionIcon} />
-                <h2 className={styles.sectionTitle}>{t('workExperience', 'Work Experience')}</h2>
+              <div className={styles.statItem}>
+                <span className={styles.statLabel}>Country of Origin</span>
+                <span className={styles.statValue}>{applicant.countryOrigin}</span>
               </div>
-              
-              <div className={styles.timeline}>
-                {applicant.experience.map((exp, idx) => (
-                  <div key={exp.id} className={styles.timelineItem}>
-                    <div className={styles.timelineLine}></div>
-                    <div className={`${styles.timelineDot} ${!exp.current ? styles.timelineDotInactive : ''}`}></div>
-                    <div className={styles.expContent}>
-                      <div className={styles.expHeader}>
-                        <h3 className={styles.expTitle}>{exp.title}</h3>
-                        <span className={styles.expDate}>{exp.period}</span>
+              <div className={styles.statItem}>
+                <span className={styles.statLabel}>Religious Practice</span>
+                <span className={styles.statValue}>{applicant.religiousPractice}</span>
+              </div>
+              <div className={styles.statItem}>
+                <span className={styles.statLabel}>Marital Status</span>
+                <span className={styles.statValue}>{applicant.maritalStatus}</span>
+              </div>
+              <div className={styles.statItem}>
+                <span className={styles.statLabel}>Date of Birth</span>
+                <span className={styles.statValue}>{applicant.dateOfBirth}</span>
+              </div>
+              <div className={styles.statItem}>
+                <span className={styles.statLabel}>Children</span>
+                <span className={styles.statValue}>{applicant.numberOfChildren}</span>
+              </div>
+              <div className={styles.statItem}>
+                <span className={styles.statLabel}>Verified</span>
+                <span className={styles.statValue}>{applicant.isVerify ? 'Yes' : 'No'}</span>
+              </div>
+            </section>
+
+            {/* Main Grid */}
+            <div className={styles.mainLayout}>
+              {/* Main Content */}
+              <div className={styles.contentCol}>
+                {/* Skills */}
+                {applicant.skills.length > 0 && (
+                  <div className={styles.card}>
+                    <div className={styles.sectionHeader}>
+                      <Briefcase size={20} className={styles.sectionIcon} />
+                      <h2 className={styles.sectionTitle}>Skills</h2>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {applicant.skills.map((skill: string, i: number) => (
+                        <span key={i} style={{ padding: '6px 14px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '20px', fontSize: '14px', color: '#166534' }}>
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Work Preferences */}
+                <div className={styles.card}>
+                  <div className={styles.sectionHeader}>
+                    <Briefcase size={20} className={styles.sectionIcon} />
+                    <h2 className={styles.sectionTitle}>Work Preferences</h2>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {[
+                      ['Salary Expectations', applicant.salaryExpectations],
+                      ['Employment Type', applicant.employmentType],
+                      ['Available From', applicant.availableFrom ? new Date(applicant.availableFrom).toLocaleDateString() : 'N/A'],
+                      ['Remote Acceptable', applicant.remoteAcceptable ? 'Yes' : 'No'],
+                      ['Willing to Relocate', applicant.willingToRelocate ? 'Yes' : 'No'],
+                      ['Willing to Travel', applicant.willingToTravel ? 'Yes' : 'No'],
+                    ].map(([label, value], i) => (
+                      <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+                        <span style={{ fontWeight: 500, color: '#475569' }}>{label}</span>
+                        <span style={{ color: '#334155' }}>{value}</span>
                       </div>
-                      <div className={styles.expSubtitle}>{t('companyLocation', '{{company}} • {{location}}', { company: exp.company, location: exp.location })}</div>
-                      <ul className={styles.expList}>
-                        {exp.highlights.map((h, i) => (
-                          <li key={i}>{h}</li>
-                        ))}
-                      </ul>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Workplace */}
+                {applicant.workplace.length > 0 && (
+                  <div className={styles.card}>
+                    <div className={styles.sectionHeader}>
+                      <Globe size={20} className={styles.sectionIcon} />
+                      <h2 className={styles.sectionTitle}>Workplace</h2>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {applicant.workplace.map((w: string, i: number) => (
+                        <span key={i} style={{ padding: '6px 14px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '20px', fontSize: '14px', color: '#1e40af' }}>
+                          {w}
+                        </span>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
+                )}
 
-            {/* Education */}
-            <div className={styles.card}>
-              <div className={styles.sectionHeader}>
-                <GraduationCap size={20} className={styles.sectionIcon} />
-                <h2 className={styles.sectionTitle}>{t('education', 'Education')}</h2>
-              </div>
-              
-              {applicant.education.map((edu, idx) => (
-                <div key={idx} className={styles.timelineItem}>
-                  <div className={styles.expContent}>
-                    <div className={styles.expHeader}>
-                      <h3 className={styles.expTitle}>{edu.degree}</h3>
-                      <span className={styles.expDate}>{edu.year}</span>
+                {/* Professional Certificates */}
+                {applicant.professionalCertificates.length > 0 && (
+                  <div className={styles.card}>
+                    <div className={styles.sectionHeader}>
+                      <CheckCircle size={20} className={styles.sectionIcon} />
+                      <h2 className={styles.sectionTitle}>Professional Certificates</h2>
                     </div>
-                    <div className={styles.expSubtitle}>{edu.school}</div>
-                    <p className={styles.summaryText} style={{ fontSize: '12px' }}>{edu.specialization}</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {applicant.professionalCertificates.map((cert: string, i: number) => (
+                        <div key={i} style={{ padding: '10px 14px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '14px', color: '#334155', wordBreak: 'break-all' }}>
+                          {cert}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                )}
 
-          {/* Sidebar */}
-          <div className={styles.sidebarCol}>
-            {/* Contact Information */}
-            <div className={styles.sideCard}>
-              <h3 className={styles.sideTitle}>{t('contactInformation', 'Contact Information')}</h3>
-              <div className={styles.contactList}>
-                <div className={styles.contactItem}>
-                  <div className={styles.contactIcon}><Mail size={16} /></div>
-                  <div>
-                    <span className={styles.contactLabel}>{t('email', 'Email')}</span>
-                    <span className={styles.contactValue}>{applicant.contact.email}</span>
+                {/* Documents */}
+                {applicant.document && (
+                  <div className={styles.card}>
+                    <div className={styles.sectionHeader}>
+                      <CheckCircle size={20} className={styles.sectionIcon} />
+                      <h2 className={styles.sectionTitle}>Documents</h2>
+                    </div>
+                    <div style={{ padding: '10px 14px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '14px', color: '#334155', wordBreak: 'break-all' }}>
+                      {applicant.document}
+                    </div>
+                  </div>
+                )}
+
+                {/* Identity Verification */}
+                <div className={styles.card}>
+                  <div className={styles.sectionHeader}>
+                    <ShieldCheck size={20} className={styles.sectionIcon} />
+                    <h2 className={styles.sectionTitle}>Identity Verification</h2>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+                      <span style={{ fontWeight: 500, color: '#475569' }}>National ID</span>
+                      <span style={{ color: '#334155', wordBreak: 'break-all', maxWidth: '60%', textAlign: 'right' }}>{applicant.nationalId || 'Not uploaded'}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+                      <span style={{ fontWeight: 500, color: '#475569' }}>International Passport</span>
+                      <span style={{ color: '#334155', wordBreak: 'break-all', maxWidth: '60%', textAlign: 'right' }}>{applicant.internationalPassport || 'Not uploaded'}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 14px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+                      <span style={{ fontWeight: 500, color: '#475569' }}>Verified Status</span>
+                      <span style={{ color: applicant.isVerified ? '#16a34a' : '#dc2626', fontWeight: 600 }}>{applicant.isVerified ? 'Verified' : 'Not Verified'}</span>
+                    </div>
                   </div>
                 </div>
-                <div className={styles.contactItem}>
-                  <div className={styles.contactIcon}><Phone size={16} /></div>
-                  <div>
-                    <span className={styles.contactLabel}>{t('phone', 'Phone')}</span>
-                    <span className={styles.contactValue}>{applicant.contact.phone}</span>
+              </div>
+
+              {/* Sidebar */}
+              <div className={styles.sidebarCol}>
+                {/* Contact Information */}
+                <div className={styles.sideCard}>
+                  <h3 className={styles.sideTitle}>Contact Information</h3>
+                  <div className={styles.contactList}>
+                    <div className={styles.contactItem}>
+                      <div className={styles.contactIcon}><Mail size={16} /></div>
+                      <div>
+                        <span className={styles.contactLabel}>Email</span>
+                        <span className={styles.contactValue}>{applicant.email}</span>
+                      </div>
+                    </div>
+                    <div className={styles.contactItem}>
+                      <div className={styles.contactIcon}><MapPin size={16} /></div>
+                      <div>
+                        <span className={styles.contactLabel}>Origin</span>
+                        <span className={styles.contactValue}>{applicant.countryOrigin}</span>
+                      </div>
+                    </div>
+                    <div className={styles.contactItem}>
+                      <div className={styles.contactIcon}><Calendar size={16} /></div>
+                      <div>
+                        <span className={styles.contactLabel}>Date of Birth</span>
+                        <span className={styles.contactValue}>{applicant.dateOfBirth}</span>
+                      </div>
+                    </div>
+                    <div className={styles.contactItem}>
+                      <div className={styles.contactIcon}><Globe size={16} /></div>
+                      <div>
+                        <span className={styles.contactLabel}>Primary Language</span>
+                        <span className={styles.contactValue}>{applicant.primaryLanguage}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className={styles.contactItem}>
-                  <div className={styles.contactIcon}><Linkedin size={16} /></div>
-                  <div>
-                    <span className={styles.contactLabel}>{t('linkedin', 'LinkedIn')}</span>
-                    <span className={styles.contactValue}>{applicant.contact.linkedin}</span>
+
+                {/* User Details */}
+                <div className={styles.sideCard}>
+                  <h3 className={styles.sideTitle}>User Details</h3>
+                  <div className={styles.contactList}>
+                    <div className={styles.contactItem}>
+                      <div className={styles.contactIcon}><Briefcase size={16} /></div>
+                      <div>
+                        <span className={styles.contactLabel}>User ID</span>
+                        <span className={styles.contactValue} style={{ fontSize: '12px', wordBreak: 'break-all' }}>{applicant.userId}</span>
+                      </div>
+                    </div>
+                    <div className={styles.contactItem}>
+                      <div className={styles.contactIcon}><CheckCircle size={16} /></div>
+                      <div>
+                        <span className={styles.contactLabel}>Account Status</span>
+                        <span className={styles.contactValue}>{applicant.isDeleted ? 'Deleted' : 'Active'}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Key Skills */}
-            <div className={styles.sideCard}>
-              <h3 className={styles.sideTitle}>{t('keySkills', 'Key Skills')}</h3>
-              <div className={styles.skillsGrid}>
-                {applicant.skills.map((skill, idx) => (
-                  <div 
-                    key={idx} 
-                    className={`${styles.skillBadge} ${skill.highlighted ? styles.skillBadgeHighlighted : ''}`}
-                  >
-                    {skill.name}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Documents */}
-            <div className={styles.sideCard}>
-              <h3 className={styles.sideTitle}>{t('attachedDocuments', 'Attached Documents')}</h3>
-              <div className={styles.docList}>
-                <div className={styles.docItem}>
-                  <div className={styles.docInfo}>
-                    <FileText size={18} className={styles.docIcon} />
-                    <span>Resume_Fatima.pdf</span>
-                  </div>
-                  <Download size={16} className={styles.downloadIcon} />
+            {/* Footer Action Bar */}
+            <div className={styles.footerActions}>
+              <div className={styles.footerInner}>
+                <span className={styles.footerText}>Currently viewing {applicant.name}&apos;s application</span>
+                <div className={styles.actionBtns}>
+                  <button className={styles.rejectPageBtn} onClick={() => openRejectModal(applicant)}>Reject Application</button>
+                  <button className={styles.acceptPageBtn} onClick={() => openAcceptModal(applicant)}>Accept Application</button>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer Action Bar */}
-      <div className={styles.footerActions}>
-        <div className={styles.footerInner}>
-          <span className={styles.footerText}>{t('currentlyViewingNameapossApplication', 'Currently viewing {{name}}&apos;s application', { name: applicant.name })}</span>
-          <div className={styles.actionBtns}>
-            <button className={styles.rejectPageBtn} onClick={() => openRejectModal(applicant)}>{t('rejectApplication2', 'Reject Application')}</button>
-            <button className={styles.acceptPageBtn} onClick={() => openAcceptModal(applicant)}>{t('acceptApplication', 'Accept Application')}</button>
-          </div>
-        </div>
+          </>
+        )}
       </div>
 
       <Footer />
     </div>
   );
 };
-
 
 export default ApplicantDetails;

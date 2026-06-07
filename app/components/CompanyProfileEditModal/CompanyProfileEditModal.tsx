@@ -6,6 +6,7 @@ import { useModal } from '@/app/context/ModalContext';
 import { useTranslation, Trans } from 'react-i18next'
 import { useGetCompanyQuery, useUpdateCompanyMutation } from '@/redux/api/companyApi';
 import { useAuth } from '@/app/context/AuthContext';
+import { imageUrl } from '@/Utils/server';
 import {
   Info, 
   Palette, 
@@ -174,7 +175,7 @@ const CompanyProfileEditModal = () => {
                 {logoFile ? (
                   <img src={URL.createObjectURL(logoFile)} alt="Logo Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (orgDetails.companyLogo || companyData.photo) ? (
-                  <img src={(orgDetails.companyLogo || companyData.photo).startsWith('http') ? (orgDetails.companyLogo || companyData.photo) : `https://beer-managers-uses-doctor.trycloudflare.com${orgDetails.companyLogo || companyData.photo}`} alt="Current Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img src={imageUrl(orgDetails.companyLogo || companyData.photo)} alt="Current Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
                   <ImageIcon size={32} />
                 )}
@@ -196,7 +197,7 @@ const CompanyProfileEditModal = () => {
                 {bannerFile ? (
                   <img src={URL.createObjectURL(bannerFile)} alt="Banner Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0 }} />
                 ) : orgDetails.bannerImage ? (
-                  <img src={orgDetails.bannerImage.startsWith('http') ? orgDetails.bannerImage : `https://beer-managers-uses-doctor.trycloudflare.com${orgDetails.bannerImage}`} alt="Current Banner" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0 }} />
+                  <img src={imageUrl(orgDetails.bannerImage)} alt="Current Banner" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0 }} />
                 ) : null}
                 
                 <div style={{ position: 'relative', zIndex: 1, backgroundColor: (bannerFile || orgDetails.bannerImage) ? 'rgba(255,255,255,0.8)' : 'transparent', padding: '16px', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

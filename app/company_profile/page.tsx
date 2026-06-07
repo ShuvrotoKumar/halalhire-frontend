@@ -49,8 +49,8 @@ const CompanyProfile = () => {
     const websiteUrl = orgDetails.websiteUrl || 'https://halalhire.com';
     const description = orgDetails.companyDescription || t('ethicalWealthManagementIsALeadingFinancialServicesFirm...', 'Ethical Wealth Management is a leading financial services firm dedicated to Shariah-compliant investment strategies and sustainable growth.');
     
-    const bannerImg = orgDetails.bannerImage ? (orgDetails.bannerImage.startsWith('http') ? orgDetails.bannerImage : `https://beer-managers-uses-doctor.trycloudflare.com/${orgDetails.bannerImage.replace(/^\/+/, '')}`) : "/about1.png";
-    const logoImg = orgDetails.companyLogo ? (orgDetails.companyLogo.startsWith('http') ? orgDetails.companyLogo : `https://beer-managers-uses-doctor.trycloudflare.com/${orgDetails.companyLogo.replace(/^\/+/, '')}`) : (companyData.photo ? (companyData.photo.startsWith('http') ? companyData.photo : `https://beer-managers-uses-doctor.trycloudflare.com/${companyData.photo.replace(/^\/+/, '')}`) : null);
+    const bannerImg = orgDetails.bannerImage ? imageUrl(orgDetails.bannerImage) : "/about1.png";
+    const logoImg = orgDetails.companyLogo ? imageUrl(orgDetails.companyLogo) : (companyData.photo ? imageUrl(companyData.photo) : null);
 
     const { data: notificationData } = useGetAllNotificationQuery(undefined);
     const notifications = notificationData?.data?.all_notification?.map((n: any) => ({
