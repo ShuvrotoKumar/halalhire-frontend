@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import ChatModal from '../components/ChatModal/ChatModal';
 import Footer from '../components/Footer/Footer';
+import { useGetAllNotificationQuery } from '@/redux/api/notificationApi';
 import { useTranslation } from 'react-i18next'
 
 const UserProfile = () => {
@@ -56,20 +57,13 @@ const UserProfile = () => {
   ], [t]);
 
   const { openProfileEditModal } = useModal();
-  const notifications = useMemo(() => [
-    {
-      id: 1,
-      title: t('profileNotificationInterview', 'Interview update'),
-      description: t('profileNotificationInterviewDesc', 'Your application at NEOM Design Division moved to the shortlist stage.'),
-      time: t('notificationTwoHoursAgo', '2 hours ago')
-    },
-    {
-      id: 2,
-      title: t('profileNotificationSavedMatch', 'New saved job match'),
-      description: t('profileNotificationSavedMatchDesc', 'A Sharia-compliant product role now matches your saved preferences.'),
-      time: t('notificationYesterday', 'Yesterday')
-    }
-  ], [t]);
+  const { data: notificationData } = useGetAllNotificationQuery(undefined);
+    const notifications = notificationData?.data?.all_notification?.map((n: any) => ({
+        id: n._id || Math.random().toString(),
+        title: n.title || 'Notification',
+        description: n.message || n.description || '',
+        time: n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'Recently'
+    })) || [];
 
   return (
     <div className={styles.pageWrapper}>
@@ -226,7 +220,7 @@ const UserProfile = () => {
             </div>
 
             <div className={styles.notificationList}>
-              {notifications.map((notification) => (
+              {notifications.map((notification: any) => (
                 <div key={notification.id} className={styles.notificationItem}>
                   <div className={styles.notificationIcon}>
                     <Bell size={16} />

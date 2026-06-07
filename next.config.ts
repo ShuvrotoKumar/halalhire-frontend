@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'learning-reg-museum-rebate.trycloudflare.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'beer-managers-uses-doctor.trycloudflare.com',
         port: '',
         pathname: '/**',
@@ -27,7 +33,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/v1/:path*',
-        destination: 'https://beer-managers-uses-doctor.trycloudflare.com/api/v1/:path*'
+        destination: 'https://learning-reg-museum-rebate.trycloudflare.com/api/v1/:path*'
       }
     ]
   }

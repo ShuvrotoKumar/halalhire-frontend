@@ -40,6 +40,19 @@ const AuthContent = () => {
     const dispatch = useDispatch();
     const [logIn, { isLoading: isLoggingIn }] = useLogInMutation();
 
+    const decodeJwtPayload = (token: string) => {
+        try {
+            const base64Url = token.split('.')[1];
+            let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            while (base64.length % 4) {
+                base64 += '=';
+            }
+            return JSON.parse(atob(base64));
+        } catch {
+            return null;
+        }
+    };
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoginError(null);
@@ -52,10 +65,29 @@ const AuthContent = () => {
         try {
             const response = await logIn({ email, password }).unwrap();
             
-            // Assume response contains user and token. Adjust according to your backend's actual response structure.
-            const user = response?.data?.user || response?.user || { email, role };
             const token = response?.data?.token || response?.token || response?.data?.accessToken;
             const refreshToken = response?.data?.refreshToken || response?.refreshToken;
+            
+            let user = response?.data?.user || response?.user;
+
+            // If user object doesn't have role explicitly but token exists, decode token to get role
+            if (!user?.role && token) {
+                const decoded = decodeJwtPayload(token);
+                if (decoded?.role) {
+                    user = { ...user, role: decoded.role };
+                } else if (decoded?.user?.role) {
+                    user = { ...user, role: decoded.user.role };
+                }
+            }
+
+            // Fallback if user is still not available
+            if (!user) user = { email, role };
+            
+            // Validate the selected role matches the user's actual role
+            if (user?.role && user.role !== role) {
+                setLoginError(`Incorrect role selected. Please login as ${user.role === 'company' ? 'Company' : 'Individual'}.`);
+                return;
+            }
             
             if (token) {
                 localStorage.setItem('token', token);

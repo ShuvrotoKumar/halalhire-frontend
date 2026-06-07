@@ -42,7 +42,9 @@ const Navbar = () => {
   const { user, logout, login } = useAuth();
   
   // Fetch user details and avatar
-  const { data: profileRes } = useGetUserDetailsQuery(undefined, { skip: !user });
+  // Removed useGetUserDetailsQuery to fix 404 error from user/user-detail endpoint
+  // const { data: profileRes } = useGetUserDetailsQuery(undefined, { skip: !user });
+  
   const { data: avatarRes } = useGetAvatarQuery(undefined, { skip: !user });
   
   // Get avatar from avatarRes (handles both user and company)
@@ -51,7 +53,8 @@ const Navbar = () => {
   const displayAvatar = (rawAvatar && rawAvatar !== "null" && rawAvatar !== "") ? imageUrl(rawAvatar) : null;
   
   // Get name from profileRes or avatarRes
-  const profileData = profileRes?.data?.data || profileRes?.data?.user || profileRes?.data || {};
+  // const profileData = profileRes?.data?.data || profileRes?.data?.user || profileRes?.data || {};
+  const profileData: any = {}; // Mock empty profileData since we removed the API call
   
   let displayName = 'User';
   if (profileData.companyName) displayName = profileData.companyName;

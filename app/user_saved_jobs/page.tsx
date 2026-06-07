@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 
 import { useModal } from '@/app/context/ModalContext';
+import { useGetAllNotificationQuery } from '@/redux/api/notificationApi';
 import { useTranslation } from 'react-i18next'
 
 const SavedJobs = () => {
@@ -52,20 +53,13 @@ const SavedJobs = () => {
       icon: <Shield size={24} />,
     }
   ], [t]);
-  const notifications = useMemo(() => [
-    {
-      id: 1,
-      title: t('applicationStatusUpdated', 'Application status updated'),
-      description: t('applicationStatusUpdatedDesc', 'Your application for Product Security Manager is now under review.'),
-      time: t('notificationOneHourAgo', '1 hour ago')
-    },
-    {
-      id: 2,
-      title: t('savedJobReminder', 'Saved job reminder'),
-      description: t('savedJobReminderDesc', 'One of your saved roles closes applications tomorrow.'),
-      time: t('notificationToday', 'Today')
-    }
-  ], [t]);
+  const { data: notificationData } = useGetAllNotificationQuery(undefined);
+    const notifications = notificationData?.data?.all_notification?.map((n: any) => ({
+        id: n._id || Math.random().toString(),
+        title: n.title || 'Notification',
+        description: n.message || n.description || '',
+        time: n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'Recently'
+    })) || [];
 
   return (
     <div className={styles.pageWrapper}>
@@ -217,7 +211,7 @@ const SavedJobs = () => {
             </div>
 
             <div className={styles.notificationList}>
-              {notifications.map((notification) => (
+              {notifications.map((notification: any) => (
                 <div key={notification.id} className={styles.notificationItem}>
                   <div className={styles.notificationIcon}>
                     <Bell size={16} />

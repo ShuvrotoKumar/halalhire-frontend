@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { useGetCompanyQuery } from '@/redux/api/companyApi';
 import { imageUrl } from '@/Utils/server';
+import { useGetAllNotificationQuery } from '@/redux/api/notificationApi';
 import ChatModal from '../components/ChatModal/ChatModal';
 
 const CompanyProfile = () => {
@@ -51,20 +52,13 @@ const CompanyProfile = () => {
     const bannerImg = orgDetails.bannerImage ? (orgDetails.bannerImage.startsWith('http') ? orgDetails.bannerImage : `https://beer-managers-uses-doctor.trycloudflare.com/${orgDetails.bannerImage.replace(/^\/+/, '')}`) : "/about1.png";
     const logoImg = orgDetails.companyLogo ? (orgDetails.companyLogo.startsWith('http') ? orgDetails.companyLogo : `https://beer-managers-uses-doctor.trycloudflare.com/${orgDetails.companyLogo.replace(/^\/+/, '')}`) : (companyData.photo ? (companyData.photo.startsWith('http') ? companyData.photo : `https://beer-managers-uses-doctor.trycloudflare.com/${companyData.photo.replace(/^\/+/, '')}`) : null);
 
-    const notifications = useMemo(() => [
-        {
-            id: 1,
-            title: t('newCandidateAlert', 'New candidate alert'),
-            description: t('newCandidateAlertDesc', 'Three new candidates matched your Senior Product Designer opening.'),
-            time: t('notificationThirtyMinutesAgo', '30 minutes ago')
-        },
-        {
-            id: 2,
-            title: t('companyRequestReminder', 'Verification reminder'),
-            description: t('companyRequestReminderDesc', 'Your company verification request needs one final supporting document.'),
-            time: t('notificationToday', 'Today')
-        }
-    ], [t]);
+    const { data: notificationData } = useGetAllNotificationQuery(undefined);
+    const notifications = notificationData?.data?.all_notification?.map((n: any) => ({
+        id: n._id || Math.random().toString(),
+        title: n.title || 'Notification',
+        description: n.message || n.description || '',
+        time: n.createdAt ? new Date(n.createdAt).toLocaleDateString() : 'Recently'
+    })) || [];
 
     return (
         <div className={styles.pageWrapper}>
@@ -256,7 +250,7 @@ const CompanyProfile = () => {
                         </div>
 
                         <div className={styles.notificationList}>
-                            {notifications.map((notification) => (
+                            {notifications.map((notification: any) => (
                                 <div key={notification.id} className={styles.notificationItem}>
                                     <div className={styles.notificationIcon}>
                                         <Bell size={16} />
